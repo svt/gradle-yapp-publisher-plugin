@@ -74,7 +74,8 @@ open class GradlePluginExtension(
     var id: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_ID", "gradlePlugin.id"))
     var webSite: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_WEBSITE", "gradlePlugin.web"))
     var vcsUrl: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_VCS", "gradlePlugin.vcs"))
-    var tags: ListProperty<String> = project.withDefaultList(project.prop("GRADLEPLUGIN_TAGS", "gradlePlugin.tags"))
+   // var tags: ListProperty<String> = project.withDefaultList(project.propList("GRADLEPLUGIN_TAGS", "gradlePlugin.tags"))
+    var tags: ListProperty<String> = project.withDefaultList(project.propList("GRADLEPLUGIN_TAGS", "gradlePlugin.tags"))
     var implementationClass: Property<String> =
         project.withDefault(project.prop("GRADLEPLUGIN_CLASS", "gradlePlugin.class"))
     var description: Property<String> =
@@ -104,5 +105,5 @@ private fun Project.propList(envName: String, propName: String): List<String> {
 inline fun <reified T> Project.withDefault(value: T): Property<T> =
     objects.property(T::class.java).apply { convention(value) }
 
-inline fun <reified T> Project.withDefaultList(value: T): ListProperty<T> =
-    objects.listProperty(T::class.java).apply { listOf(value) }
+inline fun <reified T> Project.withDefaultList(value: List<T>): ListProperty<T> =
+    objects.listProperty(T::class.java).apply { value }
