@@ -106,4 +106,4 @@ inline fun <reified T> Project.withDefault(value: T): Property<T> =
     objects.property(T::class.java).apply { convention(value) }
 
 inline fun <reified T> Project.withDefaultList(value: List<T>): ListProperty<T> =
-    objects.listProperty(T::class.java).apply { value }
+    objects.listProperty(T::class.java).apply { convention(value) }
