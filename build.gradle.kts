@@ -13,7 +13,7 @@ plugins {
  //   id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.3"
 }
 
-group = "se.svt.ossk
+group = "se.svt.oss"
 version = scmVersion.version
 description = "Yet another plugin that manages publishing for Gradle projects"
 
