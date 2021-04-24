@@ -97,6 +97,10 @@ private fun Project.propBool(envName: String, propName: String): Boolean {
     return prop?.toString()?.toBoolean() ?: System.getenv(envName).toBoolean()
 }
 
+private fun Project.propList(envName: String, propName: String): List<String> {
+    return (this.findProperty(propName) ?: System.getenv(envName) ?: "").toString().split(",")
+}
+
 inline fun <reified T> Project.withDefault(value: T): Property<T> =
     objects.property(T::class.java).apply { convention(value) }
 

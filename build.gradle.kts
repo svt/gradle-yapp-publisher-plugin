@@ -15,7 +15,7 @@ plugins {
 
 group = "se.svt.oss"
 version = scmVersion.version
-description = "Manages publishing for Gradle projects"
+description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
     gradlePluginPortal()
