@@ -112,7 +112,7 @@ Signing
 Gradle Plugin and publishing
 
 | Build File                           | Property File                | System Environment         | Description |
-| yapp { gradlePlugin { property } } } | yapp.gradlePlugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
+| yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
 | ------------------------------------ | -----------------------      | -------------------------  | ------------|
 | web                                  | *                            | *                          |             |
 | vcs                                  | *                            | *                          |             |

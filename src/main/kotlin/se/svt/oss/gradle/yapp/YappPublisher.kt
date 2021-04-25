@@ -175,28 +175,28 @@ class YappPublisher : Plugin<Project> {
             project.extensions.configure(GradlePluginDevelopmentExtension::class.java) {
                 it.plugins.create("${project.name}plugin") { pd ->
                     with(pd) {
-                        description = ext.gradlePluginE.description.get() ?: project.description
-                        displayName = ext.gradlePluginE.displayName.get()
-                        id = ext.gradlePluginE.id.get() ?: "${project.group}.${project.name}"
-                        implementationClass = ext.gradlePluginE.implementationClass.get()
+                        description = ext.gradlepluginE.description.get() ?: project.description
+                        displayName = ext.gradlepluginE.displayName.get()
+                        id = ext.gradlepluginE.id.get() ?: "${project.group}.${project.name}"
+                        implementationClass = ext.gradlepluginE.implementationClass.get()
                     }
                 }
 
                 project.extensions.extraProperties.set(
                     "gradle.publish.key",
-                    ext.gradlePluginE.key.get()
+                    ext.gradlepluginE.key.get()
                 )
                 project.extensions.extraProperties.set(
                     "gradle.publish.secret",
-                    ext.gradlePluginE.keySecret.get()
+                    ext.gradlepluginE.keySecret.get()
                 )
             }
 
             project.extensions.configure(PluginBundleExtension::class.java) {
                 with(it) {
-                    website = ext.gradlePluginE.webSite.get()
-                    vcsUrl = ext.gradlePluginE.vcsUrl.get()
-                    tags = ext.gradlePluginE.tags.get()
+                    website = ext.gradlepluginE.webSite.get()
+                    vcsUrl = ext.gradlepluginE.vcsUrl.get()
+                    tags = ext.gradlepluginE.tags.get()
                 }
             }
         }

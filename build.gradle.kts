@@ -10,7 +10,7 @@ plugins {
     id("org.owasp.dependencycheck") version "6.1.5"
     id("com.gradle.plugin-publish") version "0.14.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.2"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.6"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.9"
 }
 
 group = "se.svt.oss"

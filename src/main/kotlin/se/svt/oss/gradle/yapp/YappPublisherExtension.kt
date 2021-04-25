@@ -12,11 +12,11 @@ open class YappPublisherExtension(project: Project) {
 
     internal val sign: SignExtension = SignExtension(project)
     internal val pomE: PomExtension = PomExtension(project)
-    internal val gradlePluginE: GradlePluginExtension = GradlePluginExtension(project)
+    internal val gradlepluginE: GradlePluginExtension = GradlePluginExtension(project)
 
     fun pom(action: Action<in PomExtension>) = action.execute(pomE)
     fun signing(action: Action<in SignExtension>) = action.execute(sign)
-    fun gradlePlugin(action: Action<in GradlePluginExtension>) = action.execute(gradlePluginE)
+    fun gradleplugin(action: Action<in GradlePluginExtension>) = action.execute(gradlepluginE)
 }
 
 open class PomExtension(project: Project) {
