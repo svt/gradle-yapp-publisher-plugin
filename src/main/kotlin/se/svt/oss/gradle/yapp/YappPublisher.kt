@@ -30,7 +30,7 @@ class YappPublisher : Plugin<Project> {
     override fun apply(project: Project) {
         isMinSupportedGradleVersion(project)
 
-        val extension = project.extensions.create("yappPublisher", YappPublisherExtension::class.java, project)
+        val extension = project.extensions.create("yapp", YappPublisherExtension::class.java, project)
 
         configureJavaPlugin(project)
         configureMavenPublishingPlugin(project, extension)
@@ -82,7 +82,7 @@ class YappPublisher : Plugin<Project> {
                                 l.license { license ->
                                     license.name.set(ext.pomE.licenseName)
                                     license.url.set(ext.pomE.licenseUrl)
-                                    license.comments.set(ext.pomE.licenseComment)
+                                    license.comments.set(ext.pomE.licenseComments)
                                     license.distribution.set(ext.pomE.licenseDistribution)
                                 }
                             }
@@ -147,7 +147,7 @@ class YappPublisher : Plugin<Project> {
                         project.extensions.extraProperties.set("signing.keyId", extension.sign.keyId.get())
                         project.extensions.extraProperties.set(
                             "signing.password",
-                            extension.sign.password.get()
+                            extension.sign.keySecret.get()
                         )
                         project.extensions.extraProperties.set(
                             "signing.secretKeyRingFile",
@@ -158,7 +158,7 @@ class YappPublisher : Plugin<Project> {
                         it.useInMemoryPgpKeys(
                             extension.sign.keyId.get(),
                             extension.sign.key.get(),
-                            extension.sign.password.get()
+                            extension.sign.keySecret.get()
                         )
                         it.sign(project.extensions.findByType(PublishingExtension::class.java)?.publications)
                     }
@@ -181,6 +181,15 @@ class YappPublisher : Plugin<Project> {
                         implementationClass = ext.gradlePluginE.implementationClass.get()
                     }
                 }
+
+                project.extensions.extraProperties.set(
+                    "gradle.publish.key",
+                    ext.gradlePluginE.key.get()
+                )
+                project.extensions.extraProperties.set(
+                    "gradle.publish.secret",
+                    ext.gradlePluginE.keySecret.get()
+                )
             }
 
             project.extensions.configure(PluginBundleExtension::class.java) {

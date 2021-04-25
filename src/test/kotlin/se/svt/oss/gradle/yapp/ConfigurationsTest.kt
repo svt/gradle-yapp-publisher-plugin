@@ -69,23 +69,23 @@ class ConfigurationsTest : AbstractIntegrationTest() {
         val group = "se.order"
         val version = "0.0.4-SNAPSHOT"
 
-        environmentVariables.set("POM_NAME", "envname")
+        environmentVariables.set("YAPP_POM_NAME", "envname")
 
         publish(
             conf.buildGradle(group, version),
             """
-            yappPublisher{
+            yapp{
                 pom {
                     name.set("confname")
                 }
             }
             """.trimIndent(),
-            """pom.name=propertyname"""
+            """yapp.pom.name=propertyname"""
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
-        publish(conf.buildGradle(group, version), "", """pom.name=propertyname""")
+        publish(conf.buildGradle(group, version), "", """yapp.pom.name=propertyname""")
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
 
@@ -103,18 +103,18 @@ class ConfigurationsTest : AbstractIntegrationTest() {
         publish(
             conf.buildGradle(group, version),
             """
-            yappPublisher{
+            yapp{
                 pom {
                     name.set("confname")
                 }
             }
             """.trimIndent(),
-            """pom.name=propertyname"""
+            """yapp.pom.name=propertyname"""
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
-        publish(conf.buildGradle(group, version), "", """pom.name=propertyname""")
+        publish(conf.buildGradle(group, version), "", """yapp.pom.name=propertyname""")
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
     }

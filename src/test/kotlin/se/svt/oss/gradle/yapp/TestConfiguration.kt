@@ -43,38 +43,38 @@ dependencies {
 
     fun yappPropertiesConf(group: String, version: String) = """
        
-       |pom.groupId=$group
-       |pom.version=$version
-       |pom.artifactId=$pluginName
+       |yapp.pom.groupId=$group
+       |yapp.pom.version=$version
+       |yapp.pom.artifactId=$pluginName
        
-       |pom.name=property name 
-       |pom.description=property description
-       |pom.url=http://propertyurl.se
-       |pom.inceptionYear=1901
+       |yapp.pom.name=property name 
+       |yapp.pom.description=property description
+       |yapp.pom.url=http://propertyurl.se
+       |yapp.pom.inceptionYear=1901
 
-       |pom.licenseName=property licensename
-       |pom.licenseUrl=property licenseurl
-       |pom.licenseDistribution=property distribution
-       |pom.licenseComment=property comments
+       |yapp.pom.licenseName=property licensename
+       |yapp.pom.licenseUrl=property licenseurl
+       |yapp.pom.licenseDistribution=property distribution
+       |yapp.pom.licenseComments=property comments
 
-       |pom.developerId=property developerid
-       |pom.developerName=property developername
-       |pom.developerEmail=property developeremail
-       |pom.organization=property developerorganization
-       |pom.organizationUrl=property developerorganizationurl
+       |yapp.pom.developerId=property developerid
+       |yapp.pom.developerName=property developername
+       |yapp.pom.developerEmail=property developeremail
+       |yapp.pom.organization=property developerorganization
+       |yapp.pom.organizationUrl=property developerorganizationurl
 
-       |pom.scmUrl=property scmurl
-       |pom.scmConnection=property scmconnection
-       |pom.scmDeveloperConnection=property scmdeveloperconnection
+       |yapp.pom.scmUrl=property scmurl
+       |yapp.pom.scmConnection=property scmconnection
+       |yapp.pom.scmDeveloperConnection=property scmdeveloperconnection
 
-       |signing.enabled=false
-       |signing.signSnapshot=false
-       |signing.keyId=propsk
-       |signing.password=propsp
-       |signing.key=propkf
-
-       |pom.ossrhUser=propu
-       |pom.ossrhPassword=proppw
+       |yapp.signing.enabled=false
+       |yapp.signing.signSnapshot=false
+       |yapp.signing.keyId=propsk
+       |yapp.signing.password=propsp
+       |yapp.signing.key=propkf
+       
+       |yapp.ossrhUser=propu
+       |yapp.ossrhPassword=proppw
     """.trimMargin()
 
     fun yappBuildGradleConf(
@@ -85,7 +85,7 @@ dependencies {
         signSnapshot: Boolean = false
     ) = """
        
-yappPublisher{
+yapp {
 
     pom {
         groupId.set("$group")
@@ -99,7 +99,7 @@ yappPublisher{
         licenseName.set("pln")
         licenseUrl.set("plu")
         licenseDistribution.set("pld")
-        licenseComment.set("plc")
+        licenseComments.set("plc")
 
         developerId.set("pdi")
         developerName.set("pdn")
@@ -117,40 +117,41 @@ yappPublisher{
         enabled.set($signingEnabled)
         signSnapshot.set($signSnapshot)
         keyId.set("3DC10F04")
-        password.set("signing")
+        keySecret.set("signing")
         key.set("$signingKey")
     }
 }
     """.trimIndent()
 
     fun systemEnv(): Map<String, String> {
+        val envPrefix = "YAPP_POM_"
         return mapOf(
-            Pair("POM_NAME", "pom.name"),
-            Pair("POM_DESCRIPTION", "pom.description"),
-            Pair("POM_URL", "pom.url"),
-            Pair("POM_INCEPTIONYEAR", "pom.inceptionYear"),
-            Pair("POM_LICENCENAME", "pom.licenseName"),
-            Pair("POM_LICENCEURL", "pom.licenseUrl"),
-            Pair("POM_LICENCEDISTRIBUTION", "pom.licenseDistribution"),
-            Pair("POM_LICENCECOMMENTS", "pom.licenseComments"),
-            Pair("POM_DEVELOPERID", "pom.developerId"),
-            Pair("POM_DEVELOPERNAME", "pom.developerName"),
-            Pair("POM_DEVELOPEREMAIL", "pom.developerEmail"),
-            Pair("POM_ORGANIZATION", "pom.organization"),
-            Pair("POM_ORGANIZATIONURL", "pom.organizationUrl"),
-            Pair("POM_SCMURL", "pom.scmUrl"),
-            Pair("POM_SCMCONNECTION", "pom.scmConnection"),
-            Pair("POM_SCMDEVELOPERCONNECTION", "pom.scmDeveloperConnection"),
-            Pair("POM_GROUPID", "se.env"),
-            Pair("POM_VERSION", "0.0.4-SNAPSHOT"),
-            Pair("POM_ARTIFACTID", "gradle-yapp-publisher-plugin"),
-            Pair("SIGNING_ENABLED", "false"),
-            Pair("SIGNING_SNAPSHOT", "false"),
-            Pair("SIGNING_KEYID", "signing.keyId"),
-            Pair("SIGNING_PASSWORD", "signing.password"),
-            Pair("SIGNING_KEY", "signing.keyFile"),
-            Pair("OSSRH_USER", "ossrhUser"),
-            Pair("OSSRH_PASSWORD", "ossrhPassword")
+            Pair("${envPrefix}NAME", "yapp.pom.name"),
+            Pair("${envPrefix}DESCRIPTION", "yapp.pom.description"),
+            Pair("${envPrefix}URL", "yapp.pom.url"),
+            Pair("${envPrefix}INCEPTIONYEAR", "yapp.pom.inceptionYear"),
+            Pair("${envPrefix}LICENSENAME", "yapp.pom.licenseName"),
+            Pair("${envPrefix}LICENSEURL", "yapp.pom.licenseUrl"),
+            Pair("${envPrefix}LICENSEDISTRIBUTION", "yapp.pom.licenseDistribution"),
+            Pair("${envPrefix}LICENSECOMMENTS", "yapp.pom.licenseComments"),
+            Pair("${envPrefix}DEVELOPERID", "yapp.pom.developerId"),
+            Pair("${envPrefix}DEVELOPERNAME", "yapp.pom.developerName"),
+            Pair("${envPrefix}DEVELOPEREMAIL", "yapp.pom.developerEmail"),
+            Pair("${envPrefix}ORGANIZATION", "yapp.pom.organization"),
+            Pair("${envPrefix}ORGANIZATIONURL", "yapp.pom.organizationUrl"),
+            Pair("${envPrefix}SCMURL", "yapp.pom.scmUrl"),
+            Pair("${envPrefix}SCMCONNECTION", "yapp.pom.scmConnection"),
+            Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.pom.scmDeveloperConnection"),
+            Pair("${envPrefix}GROUPID", "se.env"),
+            Pair("${envPrefix}VERSION", "0.0.4-SNAPSHOT"),
+            Pair("${envPrefix}ARTIFACTID", "gradle-yapp-publisher-plugin"),
+            Pair("YAPP_SIGNING_ENABLED", "false"),
+            Pair("YAPP_SIGNING_SIGNSNAPSHOT", "false"),
+            Pair("YAPP_SIGNING_KEYID", "yapp.signing.keyId"),
+            Pair("YAPP_SIGNING_KEYSECRET", "yapp.signing.keySecret"),
+            Pair("YAPP_SIGNING_KEY", "yapp.signing.keyFile"),
+            Pair("YAPP_OSSRHUSER", "yapp.ossrhUser"),
+            Pair("YAPP_OSSRHPASSWORD", "yapp.ossrhPassword")
         )
     }
 

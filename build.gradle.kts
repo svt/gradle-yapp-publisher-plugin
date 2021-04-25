@@ -10,7 +10,7 @@ plugins {
     id("org.owasp.dependencycheck") version "6.1.5"
     id("com.gradle.plugin-publish") version "0.14.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.2"
- //   id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.3"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.5"
 }
 
 group = "se.svt.oss"
@@ -42,7 +42,7 @@ tasks {
     }
 }
 
-pluginBundle {
+/*pluginBundle {
     website = "https://github.com/svt/gradle-yapp-publisher-plugin"
     vcsUrl = "https://github.com/svt/gradle-yapp-publisher-plugin.git"
     tags = listOf("maven central", "gradle portal", "publish")
@@ -58,6 +58,8 @@ gradlePlugin {
         }
     }
 }
+
+ */
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11

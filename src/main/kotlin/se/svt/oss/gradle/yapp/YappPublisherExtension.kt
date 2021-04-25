@@ -21,85 +21,101 @@ open class YappPublisherExtension(project: Project) {
 
 open class PomExtension(project: Project) {
 
-    var artifactId: Property<String> = project.withDefault(project.prop("POM_ARTIFACTID", "pom.artifactId"))
-    var groupId: Property<String> = project.withDefault(project.prop("POM_GROUPID", "pom.groupId"))
-    var version: Property<String> = project.withDefault(project.prop("POM_VERSION", "pom.version"))
-    var name: Property<String> = project.withDefault(project.prop("POM_NAME", "pom.name"))
+    val envPrefix: String = "YAPP_POM_"
+    var propPrefix: String = "yapp.pom."
 
-    var description: Property<String> = project.withDefault(project.prop("POM_DESCRIPTION", "pom.description"))
-    var url: Property<String> = project.withDefault(project.prop("POM_URL", "pom.url"))
-    var inceptionYear: Property<String> = project.withDefault(project.prop("POM_INCEPTIONYEAR", "pom.inceptionYear"))
+    var artifactId: Property<String> = project.withDefault(project.prop("artifactId", propPrefix, envPrefix))
+    var groupId: Property<String> = project.withDefault(project.prop("groupId", propPrefix, envPrefix))
+    var version: Property<String> = project.withDefault(project.prop("version", propPrefix, envPrefix))
+    var name: Property<String> = project.withDefault(project.prop("name", propPrefix, envPrefix))
 
-    var licenseName: Property<String> = project.withDefault(project.prop("POM_LICENCENAME", "pom.licenseName"))
-    var licenseUrl: Property<String> = project.withDefault(project.prop("POM_LICENCEURL", "pom.licenseUrl"))
+    var description: Property<String> = project.withDefault(project.prop("description", propPrefix, envPrefix))
+    var url: Property<String> = project.withDefault(project.prop("url", propPrefix, envPrefix))
+    var inceptionYear: Property<String> =
+        project.withDefault(project.prop("inceptionYear", propPrefix, envPrefix))
+
+    var licenseName: Property<String> = project.withDefault(project.prop("licenseName", propPrefix, envPrefix))
+    var licenseUrl: Property<String> = project.withDefault(project.prop("licenseUrl", propPrefix, envPrefix))
     var licenseDistribution: Property<String> =
-        project.withDefault(project.prop("POM_LICENCEDISTRIBUTION", "pom.licenseDistribution"))
-    var licenseComment: Property<String> =
-        project.withDefault(project.prop("POM_LICENCECOMMENTS", "pom.licenseComment"))
+        project.withDefault(project.prop("licenseDistribution", propPrefix, envPrefix))
+    var licenseComments: Property<String> =
+        project.withDefault(project.prop("licenseComments", propPrefix, envPrefix))
 
-    var developerId: Property<String> = project.withDefault(project.prop("POM_DEVELOPERID", "pom.developerId"))
-    var developerName: Property<String> = project.withDefault(project.prop("POM_DEVELOPERNAME", "pom.developerName"))
+    var developerId: Property<String> = project.withDefault(project.prop("developerId", propPrefix, envPrefix))
+    var developerName: Property<String> =
+        project.withDefault(project.prop("developerName", propPrefix, envPrefix))
     var developerEmail: Property<String> =
-        project.withDefault(project.prop("POM_DEVELOPEREMAIL", "pom.developerEmail"))
+        project.withDefault(project.prop("developerEmail", propPrefix, envPrefix))
 
-    var organization: Property<String> = project.withDefault(project.prop("POM_ORGANIZATION", "pom.organization"))
+    var organization: Property<String> = project.withDefault(project.prop("organization", propPrefix, envPrefix))
     var organizationUrl: Property<String> =
-        project.withDefault(project.prop("POM_ORGANIZATIONURL", "pom.organizationUrl"))
+        project.withDefault(project.prop("organizationUrl", propPrefix, envPrefix))
 
-    var scmUrl: Property<String> = project.withDefault(project.prop("POM_SCMURL", "pom.scmUrl"))
-    var scmConnection: Property<String> = project.withDefault(project.prop("POM_SCMCONNECTION", "pom.scmConnection"))
+    var scmUrl: Property<String> = project.withDefault(project.prop("scmUrl", propPrefix, envPrefix))
+    var scmConnection: Property<String> =
+        project.withDefault(project.prop("scmConnection", propPrefix, envPrefix))
     var scmDeveloperConnection: Property<String> =
-        project.withDefault(project.prop("POM_SCMDEVELOPERCONNECTION", "pom.scmDeveloperConnection"))
+        project.withDefault(project.prop("scmDeveloperConnection", propPrefix, envPrefix))
 
-    var ossrhUser: Property<String> = project.withDefault(project.prop("OSSRH_USER", "ossrhUser"))
-    var ossrhPassword: Property<String> = project.withDefault(project.prop("OSSRH_PASSWORD", "ossrhPassword"))
+    var ossrhUser: Property<String> = project.withDefault(project.prop("ossrhUser", "yapp.", "YAPP_"))
+    var ossrhPassword: Property<String> = project.withDefault(project.prop("ossrhPassword", "yapp.", "YAPP_"))
 }
 
 open class SignExtension(
     project: Project
 ) {
 
-    var enabled: Property<Boolean> = project.withDefault(project.propBool("SIGNING_ENABLED", "signing.enabled"))
+    val envPrefix: String = "YAPP_SIGNING_"
+    var propPrefix: String = "yapp.signing."
+
+    var enabled: Property<Boolean> = project.withDefault(project.propBool("enabled", propPrefix, envPrefix))
     var signSnapshot: Property<Boolean> =
-        project.withDefault(project.propBool("SIGNING_SNAPSHOT", "signing.snapshot"))
-    var keyId: Property<String> = project.withDefault(project.prop("SIGNING_KEYID", "signing.keyId"))
-    var password: Property<String> = project.withDefault(project.prop("SIGNING_PASSWORD", "signing.password"))
-    var key: Property<String> = project.withDefault(project.prop("SIGNING_KEY", "signing.key"))
+        project.withDefault(project.propBool("signSnapshot", propPrefix, envPrefix))
+    var keyId: Property<String> = project.withDefault(project.prop("keyId", propPrefix, envPrefix))
+    var keySecret: Property<String> = project.withDefault(project.prop("keySecret", propPrefix, envPrefix))
+    var key: Property<String> = project.withDefault(project.prop("key", propPrefix, envPrefix))
 }
 
 open class GradlePluginExtension(
     project: Project
 ) {
 
-    var id: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_ID", "gradlePlugin.id"))
-    var webSite: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_WEBSITE", "gradlePlugin.web"))
-    var vcsUrl: Property<String> = project.withDefault(project.prop("GRADLEPLUGIN_VCS", "gradlePlugin.vcs"))
-   // var tags: ListProperty<String> = project.withDefaultList(project.propList("GRADLEPLUGIN_TAGS", "gradlePlugin.tags"))
-    var tags: ListProperty<String> = project.withDefaultList(project.propList("GRADLEPLUGIN_TAGS", "gradlePlugin.tags"))
+    val envPrefix: String = "YAPP_GRADLEPLUGIN_"
+    var propPrefix: String = "yapp.gradleplugin."
+
+    var id: Property<String> = project.withDefault(project.prop("id", propPrefix, envPrefix))
+    var webSite: Property<String> = project.withDefault(project.prop("web", propPrefix, envPrefix))
+    var vcsUrl: Property<String> = project.withDefault(project.prop("vcs", propPrefix, envPrefix))
+    var tags: ListProperty<String> =
+        project.withDefaultList(project.propList("tags", propPrefix, envPrefix))
     var implementationClass: Property<String> =
-        project.withDefault(project.prop("GRADLEPLUGIN_CLASS", "gradlePlugin.class"))
+        project.withDefault(project.prop("class", propPrefix, envPrefix))
     var description: Property<String> =
-        project.withDefault(project.prop("GRADLEPLUGIN_DESCRIPTION", "gradlePlugin.description"))
+        project.withDefault(project.prop("description", propPrefix, envPrefix))
     var displayName: Property<String> =
-        project.withDefault(project.prop("GRADLEPLUGIN_DISPLAYNAME", "gradlePlugin.displayname"))
+        project.withDefault(project.prop("displayname", propPrefix, envPrefix))
 
     var key: Property<String> =
-        project.withDefault(project.prop("GRADLEPLUGIN_KEY", "gradlePlugin.key"))
+        project.withDefault(project.prop("key", propPrefix, envPrefix))
     var keySecret: Property<String> =
-        project.withDefault(project.prop("GRADLEPLUGIN_KEYSECRET", "gradlePlugin.keysecret"))
+        project.withDefault(project.prop("keySecret", propPrefix, envPrefix))
 }
 
-private fun Project.prop(envName: String, propName: String, notFound: String = ""): String {
-    return (this.findProperty(propName) ?: System.getenv(envName) ?: notFound).toString()
+private fun Project.prop(property: String, propPrefix: String, envPrefix: String, notFound: String = ""): String {
+    return (
+        this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.toUpperCase()}")
+            ?: notFound
+        ).toString()
 }
 
-private fun Project.propBool(envName: String, propName: String): Boolean {
-    val prop = this.findProperty(propName)
-    return prop?.toString()?.toBoolean() ?: System.getenv(envName).toBoolean()
+private fun Project.propBool(property: String, propPrefix: String, envPrefix: String): Boolean {
+    val prop = this.findProperty("$propPrefix$property")
+    return prop?.toString()?.toBoolean() ?: System.getenv("$envPrefix$property").toBoolean()
 }
 
-private fun Project.propList(envName: String, propName: String): List<String> {
-    return (this.findProperty(propName) ?: System.getenv(envName) ?: "").toString().split(",")
+private fun Project.propList(property: String, propPrefix: String, envPrefix: String): List<String> {
+    return (this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix$property") ?: "").toString()
+        .split(",")
 }
 
 inline fun <reified T> Project.withDefault(value: T): Property<T> =

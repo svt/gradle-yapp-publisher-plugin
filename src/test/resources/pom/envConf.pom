@@ -11,31 +11,31 @@
     <groupId>se.env</groupId>
     <artifactId>gradle-yapp-publisher-plugin</artifactId>
     <version>0.0.4-SNAPSHOT</version>
-    <name>pom.name</name>
-    <description>pom.description</description>
-    <url>pom.url</url>
-    <inceptionYear>pom.inceptionYear</inceptionYear>
+    <name>yapp.pom.name</name>
+    <description>yapp.pom.description</description>
+    <url>yapp.pom.url</url>
+    <inceptionYear>yapp.pom.inceptionYear</inceptionYear>
     <licenses>
         <license>
-            <name>pom.licenseName</name>
-            <url>pom.licenseUrl</url>
-            <distribution>pom.licenseDistribution</distribution>
-            <comments>pom.licenseComments</comments>
+            <name>yapp.pom.licenseName</name>
+            <url>yapp.pom.licenseUrl</url>
+            <distribution>yapp.pom.licenseDistribution</distribution>
+            <comments>yapp.pom.licenseComments</comments>
         </license>
     </licenses>
     <developers>
         <developer>
-            <id>pom.developerId</id>
-            <name>pom.developerName</name>
-            <email>pom.developerEmail</email>
-            <organization>pom.organization</organization>
-            <organizationUrl>pom.organizationUrl</organizationUrl>
+            <id>yapp.pom.developerId</id>
+            <name>yapp.pom.developerName</name>
+            <email>yapp.pom.developerEmail</email>
+            <organization>yapp.pom.organization</organization>
+            <organizationUrl>yapp.pom.organizationUrl</organizationUrl>
         </developer>
     </developers>
     <scm>
-        <connection>pom.scmConnection</connection>
-        <developerConnection>pom.scmDeveloperConnection</developerConnection>
-        <url>pom.scmUrl</url>
+        <connection>yapp.pom.scmConnection</connection>
+        <developerConnection>yapp.pom.scmDeveloperConnection</developerConnection>
+        <url>yapp.pom.scmUrl</url>
     </scm>
     <dependencies>
         <dependency>
