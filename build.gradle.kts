@@ -42,7 +42,7 @@ tasks {
     }
 }
 
-/*pluginBundle {
+pluginBundle {
     website = "https://github.com/svt/gradle-yapp-publisher-plugin"
     vcsUrl = "https://github.com/svt/gradle-yapp-publisher-plugin.git"
     tags = listOf("maven central", "gradle portal", "publish")
@@ -59,7 +59,7 @@ gradlePlugin {
     }
 }
 
- */
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
