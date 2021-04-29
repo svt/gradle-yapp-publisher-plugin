@@ -63,11 +63,18 @@ as \n.
 
 ## Configuration
 
+You can put your configuration in a
+
+- Build File (build.gradle.kts etc)
+- Property File (gradle.properties etc)
+- System Environment Variable     
+
 Note: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
 
-Pom
+Note: Configurations are picked up in order: Build File, Property File, System Env.
 
-| Build File                   | Property File           | System Environment        | Description |
+**POM Configuration**
+
 | yapp { pom { property } } }  | yapp.pom.property       | YAPP_POM_PROPERTY         |             |
 | ---------------------------  | ----------------------- | ------------------------- | ----------- |
 | artifactId                   | *                       | *                         |             |
@@ -90,17 +97,15 @@ Pom
 | scmConnection                | *                       | *                         |             | 
 | scmDeveloperConnection       | *                       | *                         |             | 
 
-Maven Central
+**Maven Central**
 
-| Build File         | Property File     | System Environment     | Description  |
 | yapp { property }  | yapp.property     | YAPP_PROPERTY          |              |
 | --------------     | ----------------- | ---------------------- | ------------ |
 | ossrhUser          | *                 | *                      |              |
 | ossrhPassword      | *                 | *                      |              |
 
-Signing
+**Signing**
 
-| Build File                      | Property File         | System Environment        | Description  |
 | yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
 | ------------------------------- | ----------------------| ------------------------- | ------------ |
 | enabled                         | *                     | *                         |              |
@@ -109,11 +114,10 @@ Signing
 | keyId                           | *                     | *                         |              |
 | key                             | *                     | *                         |              |
 
-Gradle Plugin and publishing
+**Gradle Plugin and publishing**
 
-| Build File                           | Property File                | System Environment         | Description |
 | yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
-| ------------------------------------ | -----------------------      | -------------------------  | ------------|
+| ------------------------------------ | -----------------------      | -------------------------  | ----------- |
 | web                                  | *                            | *                          |             |
 | vcs                                  | *                            | *                          |             |
 | tags                                 | *                            | *                          |             |
