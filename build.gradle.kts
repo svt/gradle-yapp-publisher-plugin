@@ -5,12 +5,12 @@ plugins {
     idea
     kotlin("jvm") version "1.4.32"
     id("org.jetbrains.dokka") version "1.4.30"
-    id("se.ascp.gradle.gradle-versions-filter") version "0.1.4"
+    id("se.ascp.gradle.gradle-versions-filter") version "0.1.8"
     id("org.jmailen.kotlinter") version "3.4.0"
     id("org.owasp.dependencycheck") version "6.1.5"
     id("com.gradle.plugin-publish") version "0.14.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.2"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.10"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.12"
 }
 
 group = "se.svt.oss"
