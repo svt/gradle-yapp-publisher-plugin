@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Sveriges Television AB
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package se.svt.oss.gradle.yapp
 
 import org.apache.commons.io.FileUtils
@@ -20,9 +24,11 @@ import kotlin.io.path.writeText
 @ExperimentalPathApi
 abstract class AbstractIntegrationTest {
 
-    lateinit var settingsFile: Path
-    lateinit var buildFile: Path
-    lateinit var propertyFile: Path
+    open val mcProjectPath: String = "/src/test/resources/projects/mcproject/"
+
+    open lateinit var settingsFile: Path
+    open lateinit var buildFile: Path
+    open lateinit var propertyFile: Path
     lateinit var signingKey: String
 
     private val pluginName = "gradle-yapp-publisher-plugin"
@@ -39,14 +45,15 @@ abstract class AbstractIntegrationTest {
 
         FileUtils.copyDirectory(File("./"), File(testDirPath.toAbsolutePath().toString()))
 
-        publish(se.svt.oss.gradle.yapp.TestConfiguration.yappBasePlugin())
+        publish(TestConfiguration.yappBasePlugin())
     }
 
     fun publish(
         buildGradleBase: String = "",
         buildGradleAppend: String = "",
         properties: String = "",
-        gradleTask: String = "publishToMavenLocal"
+        gradleTask: String = "publishToMavenLocal",
+        projectdir: File = testDirPath.toFile()
     ) {
 
         buildFile.writeText(buildGradleBase)
@@ -54,7 +61,7 @@ abstract class AbstractIntegrationTest {
         propertyFile.toFile().writeText(properties)
 
         val buildResult = GradleRunner.create()
-            .withProjectDir(testDirPath.toFile())
+            .withProjectDir(projectdir)
             .withArguments("-Dmaven.repo.local=$tmpdir", "clean", gradleTask)
             .withPluginClasspath()
             .forwardOutput()
@@ -72,19 +79,19 @@ abstract class AbstractIntegrationTest {
         return diff
     }
 
-    fun generatedPom(subdir: String, version: String, extension: String = "pom") = Paths.get(
-        tmpdir, "se", subdir, pluginName, version,
-        "$pluginName-$version.$extension"
+    fun generatedPom(name: String, subdir: String, version: String, extension: String = "pom") = Paths.get(
+        tmpdir, "se", subdir, name, version,
+        "$name-$version.$extension"
     ).toFile()
 
-    fun generatedSignatures(subdir: String, version: String) = Paths.get(
-        tmpdir, "se", subdir, pluginName, version
+    fun generatedSignatures(name: String = pluginName, subdir: String, version: String) = Paths.get(
+        tmpdir, "se", subdir, name, version
     ).toFile().walk().filter { it.extension == "asc" }.map { it.name }.toList().sorted()
 
-    fun xpathFieldDiff(query: String, expectedValue: String, subdir: String, version: String) {
+    fun xpathFieldDiff(query: String, expectedValue: String, subdir: String, version: String, name: String = "mc") {
         val xpath: XPathEngine = JAXPXPathEngine()
         xpath.setNamespaceContext(mapOf(Pair("m", "http://maven.apache.org/POM/4.0.0")))
-        val nodes = xpath.selectNodes(query, Input.fromFile(generatedPom(subdir, version)).build())
+        val nodes = xpath.selectNodes(query, Input.fromFile(generatedPom(name, subdir, version)).build())
 
         Assertions.assertTrue(nodes.count() > 0)
 
@@ -96,6 +103,6 @@ abstract class AbstractIntegrationTest {
     companion object {
         @JvmStatic
         @TempDir
-        lateinit var testDirPath: Path
+        open lateinit var testDirPath: Path
     }
 }
