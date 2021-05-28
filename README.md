@@ -1,24 +1,61 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/fsfe/reuse-tool)](https://api.reuse.software/info/github.com/fsfe/reuse-tool) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/svt/gradle-yapp-publisher-plugin)
+
 # Gradle Yapp Publisher Plugin - Yet Another Publisher Plugin
 
-A Gradle plugin for making publishing releases and snapshots more convenient.
+## What is it?
+
+A Gradle plugin for publishing releases and snapshots to Maven Central, Gradle Portal.
+
+## Why does it exist?
+
+To make life easier when configuring the plugins needed for these tasks.
+To offer a simpler interface for these tasks.
 
 ## Features
 
 * Maven Central Publishing
-* Signing
 * Gradle Portal Publishing
-* Build file, properties or System Environment Configuration
+* Signing
+* Choose between Build file, properties or System Environment Configuration
+* Semi smart configuration
+
+## How does it work?
+
+It abstracts the following plugins and creates a simplified, coherent configuration:
+
+* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
+* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
+* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
+* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
+
+and more.
 
 ## Usage
 
-Add the plugin to your plugins block and configure it:
+1. Add the plugin to your plugins block:
 
 ```kotlin
 plugins {
     id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.0.0"
+        ...
 }
 
-//Configure the plugin. 
+2. If you are publishing to Maven Central (Java/Kotlin Library)
+    
+plugins {
+    `maven-publish`
+        ...
+}            
+If you are publishing to Gradle Portal (Gradle Plugin)
+
+plugins {
+    `java-gradle-plugin`
+        ...
+}
+
+(A semi smart identification  will add the necessary needed plugins)
+    
+3. Configure the plugin. Example - Pom with signing
 
 yapp {
 
@@ -58,8 +95,29 @@ yapp {
 }
 ```
 
-Note: If signing is enabled, the signing key can be either a path to an gpg-key or in textformat with literal newlines
-as \n.
+Or even simpler, configure it in a properties location like gradle.properties
+
+```
+yapp.pom.name = exampleproject
+yapp.pom.description = an pom example description
+yapp.pom.url = https://github.com/myexamplaproject
+yapp.pom.inceptionYear = 2021
+
+yapp.pom.scmConnection = scm:git:github.com/example.git
+yapp.pom.scmDeveloperConnection = scm:git:ssh://github.com/example.git
+yapp.pom.scmUrl = https://github.com/example
+
+yapp.pom.licenseName = The Apache Software License, Version 2.0
+yapp.pom.licenseUrl = http://www.apache.org/licenses/LICENSE-2.0.txt
+
+yapp.pom.developerId = an dev id
+yapp.pom.developerName = an dev name
+yapp.pom.developerEmail = my@email.com
+yapp.pom.organization =  my org name
+yapp.pom.organizationUrl = my org url
+
+yapp.signing.enabled = false
+```
 
 ## Configuration
 
@@ -67,11 +125,12 @@ You can put your configuration in a
 
 - Build File (build.gradle.kts etc)
 - Property File (gradle.properties etc)
-- System Environment Variable     
+- System Environment Variable
 
 Note: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
 
-Note: Configurations are picked up in order: Build File, Property File, System Env.
+Note: Configurations are picked up in this order: Build File, Property File, System Env.
+All locations are checked so theoretically, you can spread out your properties.
 
 **POM Configuration**
 
@@ -106,6 +165,10 @@ Note: Configurations are picked up in order: Build File, Property File, System E
 
 **Signing**
 
+Note: If signing is enabled, the signing key can be either a path to an gpg-key or in text format with literal newlines
+as \n.
+See the gpg folder under the Project test resources for examples.
+
 | yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
 | ------------------------------- | ----------------------| ------------------------- | ------------ |
 | enabled                         | *                     | *                         |              |
@@ -130,15 +193,16 @@ Note: Configurations are picked up in order: Build File, Property File, System E
 
 ## Future
 
-In a very early stage, the following features would be nice to have:
+In a very early stage, the following features are planned, according to priority:
 
+* Better semi smart Plugin identification
+* More settings can be simplified and auto set
 * Android Library support
-* Better Java usage support
+* Better Java support
 * Dokka-support
-* More tests
-* Nested object model
-* Plugin selection applied only on configuration in project
-* Ability to do final release stage on maven central so one does not have to do it manually 
+* More tests are 
+* Nested object model, for the few 10% that might need them
+* Ability to do final release stage on maven central so one does not have to do it manually - MAYBE, on the other hand, it is a dangerous process.
 * and more
 
 ## Getting help
@@ -153,7 +217,7 @@ General instructions for contributing [CONTRIBUTING](docs/CONTRIBUTIONS.adoc).
 
 ## License
 
-The Gradle Yap Publisher Plugin is released under:
+The Gradle Yapp Publisher Plugin is released under the:
 
 [Apache License 2.0](LICENSE)
 

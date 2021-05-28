@@ -1,6 +1,6 @@
 # Development
 
-1. Checkout the project
+1. Clone the project
 
 ```
 $ git clone GITURL 
@@ -12,7 +12,7 @@ $ git clone GITURL
 ./gradlew publishToMavenLocal
 ``` 
 
-3. Setup your test project to look in your local repository for gradle plugins (besides gradlePortal). Note: Gradle
+3. Setup your laboration/test project to look in your local repository for gradle plugins (besides gradlePortal). Note: Gradle
    demands that the plugin management block is the first block in the settings file.
 
 .settings.gradle.kts
@@ -22,13 +22,12 @@ pluginManagement {
     repositories {
     mavenLocal()
     gradlePluginPortal()
-    // maven(url="https://dl.bintray.com/kotlin/dokka")
     }
 }
 rootProject.name = "your project name"
 ```
 
-4. Add the plugin to the plugins block in your build filed
+4. Add the plugin to the plugins block in the labproject/testproject build file
 
 .build.gradle.kts
 

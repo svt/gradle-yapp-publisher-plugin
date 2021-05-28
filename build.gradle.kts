@@ -1,6 +1,6 @@
 plugins {
-    `java-gradle-plugin`
     `maven-publish`
+    `java-gradle-plugin`
     signing
     idea
     kotlin("jvm") version "1.4.32"
@@ -18,6 +18,7 @@ version = scmVersion.version
 description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
+    //mavenLocal()
     gradlePluginPortal()
     mavenCentral()
 //    maven(url="https://dl.bintray.com/kotlin/dokka")
@@ -43,13 +44,11 @@ tasks {
 }
 
 
-/*
-pluginBundle {
+/*pluginBundle {
     website = "https://github.com/svt/gradle-yapp-publisher-plugin"
     vcsUrl = "https://github.com/svt/gradle-yapp-publisher-plugin.git"
     tags = listOf("maven central", "gradle portal", "publish")
 }
-
 gradlePlugin {
     plugins {
         create("yappPlugin") {
@@ -61,17 +60,15 @@ gradlePlugin {
     }
 }
 */
-
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-    withJavadocJar()
     withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "6.8.3"
+    gradleVersion = "7.0.2"
 }

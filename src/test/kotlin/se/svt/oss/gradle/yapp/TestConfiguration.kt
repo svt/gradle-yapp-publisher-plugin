@@ -7,45 +7,39 @@ object TestConfiguration {
 
     private const val pluginName = "gradle-yapp-publisher-plugin"
 
-    fun buildGradle(group: String, version: String) =
+    fun buildGradle(group: String, version: String, yappConf: String = "") =
         """
     plugins {
-        id("java-gradle-plugin")
+        id("maven-publish")
         kotlin("jvm") version "1.4.32"
         id("se.svt.oss.gradle-yapp-publisher-plugin") version "1.0.0-SNAPSHOT"
-        id("com.gradle.plugin-publish") version "0.14.0"
     }
 
     group = "$group"
     version = "$version"
 
     repositories {
+        mavenLocal() 
         mavenCentral()
-    gradlePluginPortal()
-    
     }
 
-    gradlePlugin {
-        plugins {
-            create("yappPlugin") {
-                id = "se.svt.oss.gradle-yapp-publisher-plugin"
-                implementationClass = "se.svt.oss.gradle.yapp.YappPublisher"
-            }
-        }
-    }
+
+"$yappConf"
+    
     
     
 dependencies {
-    api("com.gradle.publish:plugin-publish-plugin:0.14.0")
+    
+    implementation(kotlin("stdlib-jdk8"))
     
     }
     """
 
-    fun yappPropertiesConf(group: String, version: String) = """
+    fun yappPropertiesConf(name: String = pluginName, group: String, version: String) = """
        
        |yapp.pom.groupId=$group
        |yapp.pom.version=$version
-       |yapp.pom.artifactId=$pluginName
+       |yapp.pom.artifactId=$name
        
        |yapp.pom.name=property name 
        |yapp.pom.description=property description
@@ -120,9 +114,31 @@ yapp {
         keySecret.set("signing")
         key.set("$signingKey")
     }
+    
+    
 }
     """.trimIndent()
 
+    fun yappBuildGradleConfSigning(
+        group: String,
+        version: String,
+        signingKey: String = "",
+        signingEnabled: Boolean = false,
+        signSnapshot: Boolean = false
+    ) = """
+       
+yapp {
+
+    
+    signing { 
+        enabled.set($signingEnabled)
+        signSnapshot.set($signSnapshot)
+        keyId.set("3DC10F04")
+        keySecret.set("signing")
+        key.set("$signingKey")
+    }
+}
+    """.trimIndent()
     fun systemEnv(): Map<String, String> {
         val envPrefix = "YAPP_POM_"
         return mapOf(
@@ -144,7 +160,7 @@ yapp {
             Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.pom.scmDeveloperConnection"),
             Pair("${envPrefix}GROUPID", "se.env"),
             Pair("${envPrefix}VERSION", "0.0.4-SNAPSHOT"),
-            Pair("${envPrefix}ARTIFACTID", "gradle-yapp-publisher-plugin"),
+            Pair("${envPrefix}ARTIFACTID", "mc"),
             Pair("YAPP_SIGNING_ENABLED", "false"),
             Pair("YAPP_SIGNING_SIGNSNAPSHOT", "false"),
             Pair("YAPP_SIGNING_KEYID", "yapp.signing.keyId"),
@@ -155,107 +171,73 @@ yapp {
         )
     }
 
-    fun yappBasePlugin(group: String = "se.svt.oss.gradle", version: String = "1.0.0-SNAPSHOT") = """
+    fun yappBasePlugin(group: String = "se.svt.oss", version: String = "1.0.0-SNAPSHOT") = """
     
 plugins {
-    `java-gradle-plugin`
     `maven-publish`
+    `java-gradle-plugin`
     signing
     kotlin("jvm") version "1.4.32"
     id("com.gradle.plugin-publish") version "0.14.0"
-    id("org.jetbrains.dokka") version "1.4.30"
 }
 
 group = "$group"
 version = "$version"
+description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
-    mavenCentral()
-    maven(url="https://dl.bintray.com/kotlin/dokka")
     gradlePluginPortal()
+    mavenCentral()
+//    maven(url="https://dl.bintray.com/kotlin/dokka")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-
     api("com.gradle.publish:plugin-publish-plugin:0.14.0")
 
     testImplementation("commons-io:commons-io:2.8.0")
+    testImplementation("org.xmlunit:xmlunit-core:2.8.2")
+    testImplementation("org.xmlunit:xmlunit-matchers:2.8.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("uk.org.webcompere:system-stubs-jupiter:1.2.0")
+
 }
 
-
 tasks {
-    "test"(Test::class) {
+    test {
         useJUnitPlatform()
     }
 }
 
-pluginBundle {
-    website = "websiteUrl"
-    vcsUrl = "websiteUrli"
-    tags = listOf("maven central","gradle portal")
-}
 
+pluginBundle {
+    website = "https://github.com/svt/gradle-yapp-publisher-plugin"
+    vcsUrl = "https://github.com/svt/gradle-yapp-publisher-plugin.git"
+    tags = listOf("maven central", "gradle portal", "publish")
+}
 gradlePlugin {
     plugins {
-        create("simplePlugin") {
+        create("yappPlugin") {
             id = "se.svt.oss.gradle-yapp-publisher-plugin"
-            displayName = "fullName"
-            description = "projectDetails"
+            displayName = "Gradle Yapp Publisher Plugin"
             implementationClass = "se.svt.oss.gradle.yapp.YappPublisher"
+            description = project.description
         }
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-    withJavadocJar()
     withSourcesJar()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("pluginMaven") {
-            artifactId = "gradle-yapp-publisher-plugin"
-
-            pom {
-                name.set("Gradle Yap Publisher Plugin")
-                description.set("default description")
-                url.set("http://www.example.com/library")
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("devid")
-                        name.set("devname")
-                        email.set("dev@dev.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://dev.com/my-library.git")
-                    developerConnection.set("scm:git:ssh://dev.com/my-library.git")
-                    url.set("http://dev.com/my-library/")
-                }
-            }
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
+    withJavadocJar()
 }
 
 tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "6.8.3"
+    gradleVersion = "7.0.2"
 }
     """.trimIndent()
 }
