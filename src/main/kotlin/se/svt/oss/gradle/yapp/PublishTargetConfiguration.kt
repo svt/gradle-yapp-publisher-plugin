@@ -35,7 +35,8 @@ interface PublishTarget {
     fun configure()
 }
 
-internal class GradlePortal(private val project: Project, private val extension: YappPublisherExtension) : PublishTarget {
+internal class GradlePortal(private val project: Project, private val extension: YappPublisherExtension) :
+    PublishTarget {
     override fun configure() {
 
         project.logger.warn("Yapp-Publisher-Plugin PublishTarget Configuration GradlePortal")
@@ -43,11 +44,11 @@ internal class GradlePortal(private val project: Project, private val extension:
     }
 }
 
-internal class MavenCentral(private val project: Project, private val extension: YappPublisherExtension) : PublishTarget {
+internal class MavenCentral(private val project: Project, private val extension: YappPublisherExtension) :
+    PublishTarget {
 
     override fun configure() {
 
-        project.logger.warn("PublishTarget Configuration MavenCentral")
         val platform: LibraryType = when {
             project.hasPlugin("org.jetbrains.kotlin.jvm") -> KotlinLibrary(project, extension)
             project.hasPlugin("java-library") -> JavaLibrary(project, extension)
@@ -57,6 +58,13 @@ internal class MavenCentral(private val project: Project, private val extension:
         project.configureMavenPublishingPlugin(extension)
         project.configureSigningPlugin(extension)
         project.configureJavaLibraryArtifact()
+
+        project.afterEvaluate {
+
+            val snapShotPostfix: String =
+                if (extension.pomE.version.get().endsWith("SNAPSHOT")) "Snapshot Repo" else ""
+            project.logger.warn("Yapp-Publisher-Plugin PublishTarget Configuration MavenCentral $snapShotPostfix")
+        }
     }
 }
 
