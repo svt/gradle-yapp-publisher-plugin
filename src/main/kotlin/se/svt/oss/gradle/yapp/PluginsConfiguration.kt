@@ -149,11 +149,12 @@ fun Project.configureMavenPublishingPlugin(
             }
 
             p.repositories { repository ->
+
                 repository.maven { r ->
                     r.apply {
                         name = "MavenCentral"
                         url =
-                            if (ext.pomE.version.get().endsWith("SNAPSHOT")) {
+                            if (project.version.toString().endsWith("SNAPSHOT")) {
                                 URI("https://oss.sonatype.org/content/repositories/snapshots/")
                             } else {
                                 URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
