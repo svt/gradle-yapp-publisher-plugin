@@ -1,16 +1,18 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `maven-publish`
     `java-gradle-plugin`
     signing
     idea
-    kotlin("jvm") version "1.4.32"
-    id("org.jetbrains.dokka") version "1.4.30"
-    id("se.ascp.gradle.gradle-versions-filter") version "0.1.8"
-    id("org.jmailen.kotlinter") version "3.4.0"
-    id("org.owasp.dependencycheck") version "6.1.5"
-    id("com.gradle.plugin-publish") version "0.14.0"
-    id("pl.allegro.tech.build.axion-release") version "1.13.2"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.12"
+    kotlin("jvm") version "1.4.31"
+    id("org.jetbrains.dokka") version "1.5.0"
+    id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
+    id("org.jmailen.kotlinter") version "3.4.5"
+    id("org.owasp.dependencycheck") version "6.2.2"
+    id("com.gradle.plugin-publish") version "0.15.0"
+    id("pl.allegro.tech.build.axion-release") version "1.13.3"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.13"
 }
 
 group = "se.svt.oss"
@@ -25,14 +27,13 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    api("com.gradle.publish:plugin-publish-plugin:0.14.0")
+    api("com.gradle.publish:plugin-publish-plugin:0.15.0")
 
     testImplementation("commons-io:commons-io:2.8.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.2")
     testImplementation("org.xmlunit:xmlunit-matchers:2.8.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
     testImplementation("uk.org.webcompere:system-stubs-jupiter:1.2.0")
 
 }
@@ -61,14 +62,18 @@ gradlePlugin {
 }
 */
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     withSourcesJar()
     withJavadocJar()
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
+}
+
 tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "7.0.2"
+    gradleVersion = "7.1.1"
 }

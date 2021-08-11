@@ -108,60 +108,61 @@ fun Project.configureMavenPublishingPlugin(
                     publication.version = ext.pomE.version.get().ifEmpty {
                         project.version.toString()
                     }
-                }
-                with(publication) {
 
-                    pom.apply {
-                        name.set(ext.pomE.name)
-                        description.set(ext.pomE.description)
-                        inceptionYear.set(ext.pomE.inceptionYear)
-                        url.set(ext.pomE.url)
+                    with(publication) {
 
-                        licenses { l ->
-                            l.license { license ->
-                                license.name.set(ext.pomE.licenseName)
-                                license.url.set(ext.pomE.licenseUrl)
-                                license.comments.set(ext.pomE.licenseComments)
-                                license.distribution.set(ext.pomE.licenseDistribution)
-                            }
-                        }
+                        pom.apply {
+                            name.set(ext.pomE.name)
+                            description.set(ext.pomE.description)
+                            inceptionYear.set(ext.pomE.inceptionYear)
+                            url.set(ext.pomE.url)
 
-                        developers { d ->
-                            d.developer { dev ->
-                                dev.apply {
-                                    id.set(ext.pomE.developerId)
-                                    name.set(ext.pomE.developerName)
-                                    organization.set(ext.pomE.organization)
-                                    organizationUrl.set(ext.pomE.organizationUrl)
-                                    email.set(ext.pomE.developerEmail)
+                            licenses { l ->
+                                l.license { license ->
+                                    license.name.set(ext.pomE.licenseName)
+                                    license.url.set(ext.pomE.licenseUrl)
+                                    license.comments.set(ext.pomE.licenseComments)
+                                    license.distribution.set(ext.pomE.licenseDistribution)
                                 }
                             }
-                        }
 
-                        scm { scm ->
-                            scm.url.set(ext.pomE.scmUrl)
-                            scm.connection.set(ext.pomE.scmConnection)
-                            scm.developerConnection.set(ext.pomE.scmDeveloperConnection)
+                            developers { d ->
+                                d.developer { dev ->
+                                    dev.apply {
+                                        id.set(ext.pomE.developerId)
+                                        name.set(ext.pomE.developerName)
+                                        organization.set(ext.pomE.organization)
+                                        organizationUrl.set(ext.pomE.organizationUrl)
+                                        email.set(ext.pomE.developerEmail)
+                                    }
+                                }
+                            }
+
+                            scm { scm ->
+                                scm.url.set(ext.pomE.scmUrl)
+                                scm.connection.set(ext.pomE.scmConnection)
+                                scm.developerConnection.set(ext.pomE.scmDeveloperConnection)
+                            }
                         }
                     }
                 }
             }
-        }
 
-        p.repositories { repository ->
-            repository.maven { r ->
-                r.apply {
-                    name = "MavenCentral"
-                    url =
-                        if (ext.pomE.version.get().endsWith("SNAPSHOT")) {
-                            URI("https://oss.sonatype.org/content/repositories/snapshots/")
-                        } else {
-                            URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            p.repositories { repository ->
+                repository.maven { r ->
+                    r.apply {
+                        name = "MavenCentral"
+                        url =
+                            if (ext.pomE.version.get().endsWith("SNAPSHOT")) {
+                                URI("https://oss.sonatype.org/content/repositories/snapshots/")
+                            } else {
+                                URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                            }
+
+                        credentials { credentials ->
+                            credentials.username = ext.pomE.ossrhUser.get()
+                            credentials.password = ext.pomE.ossrhPassword.get()
                         }
-
-                    credentials { credentials ->
-                        credentials.username = ext.pomE.ossrhUser.get()
-                        credentials.password = ext.pomE.ossrhPassword.get()
                     }
                 }
             }

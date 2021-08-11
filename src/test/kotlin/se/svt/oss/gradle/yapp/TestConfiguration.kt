@@ -178,7 +178,7 @@ plugins {
     `java-gradle-plugin`
     signing
     kotlin("jvm") version "1.4.32"
-    id("com.gradle.plugin-publish") version "0.14.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
 }
 
 group = "$group"
@@ -193,7 +193,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    api("com.gradle.publish:plugin-publish-plugin:0.14.0")
+    api("com.gradle.publish:plugin-publish-plugin:0.15.0")
 
     testImplementation("commons-io:commons-io:2.8.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.2")
