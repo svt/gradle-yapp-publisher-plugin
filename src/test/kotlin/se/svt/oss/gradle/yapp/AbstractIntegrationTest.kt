@@ -15,8 +15,10 @@ import org.xmlunit.diff.Diff
 import org.xmlunit.xpath.JAXPXPathEngine
 import org.xmlunit.xpath.XPathEngine
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.appendText
 import kotlin.io.path.writeText
@@ -25,6 +27,7 @@ import kotlin.io.path.writeText
 abstract class AbstractIntegrationTest {
 
     open val mcProjectPath: String = "/src/test/resources/projects/mcproject/"
+    open val buildFileTemplatePath: String = "/src/test/resources/projects/build.gradle.kts"
 
     open lateinit var settingsFile: Path
     open lateinit var buildFile: Path
@@ -36,7 +39,10 @@ abstract class AbstractIntegrationTest {
 
     @BeforeAll
     open fun setup() {
+        publishYappPluginToTmp()
+    }
 
+    fun publishYappPluginToTmp() {
         settingsFile = testDirPath.resolve("settings.gradle.kts")
         buildFile = testDirPath.resolve("build.gradle.kts")
         propertyFile = testDirPath.resolve("gradle.properties")
@@ -45,10 +51,10 @@ abstract class AbstractIntegrationTest {
 
         FileUtils.copyDirectory(File("./"), File(testDirPath.toAbsolutePath().toString()))
 
-        publish(TestConfiguration.yappBasePlugin())
+        publishToTmp(ConfigurationData.yappBasePlugin())
     }
 
-    fun publish(
+    fun publishToTmp(
         buildGradleBase: String = "",
         buildGradleAppend: String = "",
         properties: String = "",
@@ -62,7 +68,7 @@ abstract class AbstractIntegrationTest {
 
         val buildResult = GradleRunner.create()
             .withProjectDir(projectdir)
-            .withArguments("-Dmaven.repo.local=$tmpdir", "clean", gradleTask)
+            .withArguments("-Dmaven.repo.local=$tmpdir", gradleTask)
             .withPluginClasspath()
             .forwardOutput()
             .build()
@@ -98,6 +104,13 @@ abstract class AbstractIntegrationTest {
         nodes.forEach {
             Assertions.assertEquals(expectedValue, it.textContent)
         }
+    }
+
+    fun copyTemplateBuildFile(projectPath: String = mcProjectPath) {
+        Files.copy(
+            Paths.get("$testDirPath", "$buildFileTemplatePath"),
+            Paths.get("$testDirPath", "$projectPath", "build.gradle.kts"), StandardCopyOption.REPLACE_EXISTING
+        )
     }
 
     companion object {

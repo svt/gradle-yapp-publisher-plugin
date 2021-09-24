@@ -14,17 +14,18 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension
 import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
-import se.svt.oss.gradle.yapp.TestConfiguration as conf
+import se.svt.oss.gradle.yapp.ConfigurationData as conf
 
 @ExperimentalPathApi
 @ExtendWith(
     SystemStubsExtension::class
 )
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ConfigurationsTest : AbstractIntegrationTest() {
+class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun before() {
+        copyTemplateBuildFile()
         settingsFile = Paths.get("$testDirPath/${mcProjectPath}settings.gradle.kts")
         buildFile = Paths.get("$testDirPath/${mcProjectPath}build.gradle.kts")
         propertyFile = Paths.get("$testDirPath/${mcProjectPath}gradle.properties")
@@ -36,8 +37,8 @@ class ConfigurationsTest : AbstractIntegrationTest() {
         val group = "se.build"
         val version = "0.0.2-SNAPSHOT"
 
-        publish(
-            conf.buildGradle(group, version),
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile),
             conf.yappBuildGradleConf(group, version),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
@@ -52,8 +53,10 @@ class ConfigurationsTest : AbstractIntegrationTest() {
         val group = "se.property"
         val version = "0.0.3-SNAPSHOT"
 
-        publish(
-            conf.buildGradle(group, version), "", conf.yappPropertiesConf("mc", group, version),
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile),
+            "",
+            conf.yappPropertiesConf("mc", group, version),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -72,8 +75,8 @@ class ConfigurationsTest : AbstractIntegrationTest() {
             environmentVariables.set(it.key, it.value)
         }
 
-        publish(
-            conf.buildGradle(group, version),
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -90,10 +93,12 @@ class ConfigurationsTest : AbstractIntegrationTest() {
 
         environmentVariables.set("YAPP_POM_NAME", "envname")
 
-        publish(
-            conf.buildGradle(group, version),
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile),
             """
+            
             yapp{
+            
                 pom {
                     name.set("confname")
                 }
@@ -105,15 +110,17 @@ class ConfigurationsTest : AbstractIntegrationTest() {
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
-        publish(
-            conf.buildGradle(group, version), "", """yapp.pom.name=propertyname""",
+        copyTemplateBuildFile()
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.pom.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
 
-        publish(
-            conf.buildGradle(group, version), "", "",
+        copyTemplateBuildFile()
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "", "",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -126,9 +133,10 @@ class ConfigurationsTest : AbstractIntegrationTest() {
         val group = "se.order"
         val version = "0.0.5-SNAPSHOT"
 
-        publish(
-            conf.buildGradle(group, version),
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile),
             """
+                
             yapp{
                 pom {
                     name.set("confname")
@@ -141,8 +149,9 @@ class ConfigurationsTest : AbstractIntegrationTest() {
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
-        publish(
-            conf.buildGradle(group, version), "", """yapp.pom.name=propertyname""",
+        copyTemplateBuildFile()
+        publishToTmp(
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.pom.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 

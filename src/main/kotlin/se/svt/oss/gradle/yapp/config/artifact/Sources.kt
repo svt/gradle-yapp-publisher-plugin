@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package se.svt.oss.gradle.yapp.artifact
+package se.svt.oss.gradle.yapp.config.artifact
 
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.jvm.tasks.Jar

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package se.svt.oss.gradle.yapp
+package se.svt.oss.gradle.yapp.config
 
 import com.gradle.publish.PluginBundleExtension
 import com.gradle.publish.PublishPlugin
@@ -16,8 +16,9 @@ import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.plugin.use.resolve.internal.ArtifactRepositoriesPluginResolver
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
-import se.svt.oss.gradle.yapp.artifact.JavaDoc
-import se.svt.oss.gradle.yapp.artifact.Sources
+import se.svt.oss.gradle.yapp.YappPublisherExtension
+import se.svt.oss.gradle.yapp.config.artifact.JavaDoc
+import se.svt.oss.gradle.yapp.config.artifact.Sources
 import java.io.File
 import java.net.URI
 
@@ -95,7 +96,7 @@ fun Project.configureMavenPublishingPlugin(
     project.extensions.configure(PublishingExtension::class.java) { p ->
 
         p.publications { publications ->
-            publications.register("pluginMaven", MavenPublication::class.java) { publication ->
+            publications.register("pluginMavenPublication", MavenPublication::class.java) { publication ->
                 project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                     // so we cant get rid of the afterEvalute
 
@@ -208,7 +209,7 @@ fun Project.configureSigningPlugin(extension: YappPublisherExtension) {
     }
 }
 
-fun Project.isValidFilePath(path: String): Boolean = try {
+fun isValidFilePath(path: String): Boolean = try {
     File(path).canonicalPath
     true
 } catch (e: Exception) {
@@ -232,7 +233,7 @@ fun Project.configureJavaLibraryArtifact() {
 
     project.extensions.configure(PublishingExtension::class.java) { pe ->
         pe.publications { publications ->
-            val p = publications.getByName("pluginMaven") as MavenPublication
+            val p = publications.getByName("pluginMavenPublication") as MavenPublication
             p.from(project.components.getByName("java"))
 
             val sourcesJar = project.tasks.create(sources, Sources::class.java)

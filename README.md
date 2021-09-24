@@ -203,7 +203,7 @@ In a very early stage, the following features are planned, according to priority
 * More tests are 
 * Nested object model, for the few 10% that might need them
 * Ability to do final release stage on maven central so one does not have to do it manually - MAYBE, on the other hand, it is a dangerous process.
-* and more
+* and more,
 
 ## Getting help
 

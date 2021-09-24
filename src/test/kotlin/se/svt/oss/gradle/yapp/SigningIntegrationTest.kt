@@ -20,11 +20,11 @@ import kotlin.io.path.ExperimentalPathApi
     SystemStubsExtension::class
 )
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SigningTest : AbstractIntegrationTest() {
+class SigningIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun before() {
-
+        copyTemplateBuildFile()
         settingsFile = Paths.get("$testDirPath/${mcProjectPath}settings.gradle.kts")
         buildFile = Paths.get("$testDirPath/${mcProjectPath}build.gradle.kts")
         propertyFile = Paths.get("$testDirPath/${mcProjectPath}gradle.properties")
@@ -38,28 +38,32 @@ class SigningTest : AbstractIntegrationTest() {
 
         var signatures = signatures(version)
 
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConfSigning(group, version, signingKey, true),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConfSigning(group, version, signingKey, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
         assertIterableEquals(generatedSignatures("mc", "signing", version), signatures)
 
         version = "0.0.7-SNAPSHOT"
 
+        copyTemplateBuildFile()
+
         signatures = signatures(version)
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConfSigning(group, version, signingKey, true, true),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConfSigning(group, version, signingKey, true, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
         assertIterableEquals(generatedSignatures("mc", "signing", version), signatures)
 
+        copyTemplateBuildFile()
+
         version = "0.0.8-SNAPSHOT"
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConf(group, version, signingKey, true, false),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true, false),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -69,21 +73,24 @@ class SigningTest : AbstractIntegrationTest() {
     @Test
     fun `not signing when signing is disabled or a snapshot version`() {
 
+        copyTemplateBuildFile()
         val group = "se.signing"
         var version = "0.0.9"
 
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConf(group, version, signingKey, false),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConf(group, version, signingKey, false),
             projectdir = File("$testDirPath/$mcProjectPath")
 
         )
         assertTrue(generatedSignatures("mc", "signing", version).isEmpty())
 
+        copyTemplateBuildFile()
+
         version = "0.0.10-SNAPSHOT"
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConf(group, version, signingKey, true),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
     }
@@ -95,9 +102,9 @@ class SigningTest : AbstractIntegrationTest() {
 
         val signatures = signatures(version)
 
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConf(group, version, signingKey, true),
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -107,9 +114,11 @@ class SigningTest : AbstractIntegrationTest() {
         signingKey = resource("gpg/sec_signingkey.gpg").canonicalPath
 
         group = "se.signing2"
-        publish(
-            TestConfiguration.buildGradle(group, version),
-            TestConfiguration.yappBuildGradleConf(group, version, signingKey, true),
+
+        copyTemplateBuildFile()
+        publishToTmp(
+            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
             projectdir = File("$testDirPath/$mcProjectPath")
 
         )

@@ -5,14 +5,14 @@ plugins {
     `java-gradle-plugin`
     signing
     idea
-    kotlin("jvm") version "1.4.31"
-    id("org.jetbrains.dokka") version "1.5.0"
+    kotlin("jvm") version "1.5.21"
+    id("org.jetbrains.dokka") version "1.5.30"
     id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
-    id("org.jmailen.kotlinter") version "3.4.5"
-    id("org.owasp.dependencycheck") version "6.2.2"
-    id("com.gradle.plugin-publish") version "0.15.0"
+    id("org.jmailen.kotlinter") version "3.6.0"
+    id("org.owasp.dependencycheck") version "6.3.1"
+    id("com.gradle.plugin-publish") version "0.16.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.3"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.13"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.15"
 }
 
 group = "se.svt.oss"
@@ -27,13 +27,13 @@ repositories {
 }
 
 dependencies {
-    api("com.gradle.publish:plugin-publish-plugin:0.15.0")
+    api("com.gradle.publish:plugin-publish-plugin:0.16.0")
 
-    testImplementation("commons-io:commons-io:2.8.0")
+    testImplementation("commons-io:commons-io:2.11.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.2")
     testImplementation("org.xmlunit:xmlunit-matchers:2.8.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     testImplementation("uk.org.webcompere:system-stubs-jupiter:1.2.0")
 
 }
@@ -75,5 +75,5 @@ tasks.withType<KotlinCompile> {
 
 tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "7.1.1"
+    gradleVersion = "7.2"
 }

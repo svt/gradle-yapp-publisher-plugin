@@ -3,37 +3,31 @@
 // SPDX-License-Identifier: Apache-2.0
 package se.svt.oss.gradle.yapp
 
-object TestConfiguration {
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.readText
+
+@ExperimentalPathApi
+object ConfigurationData {
 
     private const val pluginName = "gradle-yapp-publisher-plugin"
 
-    fun buildGradle(group: String, version: String, yappConf: String = "") =
-        """
-    plugins {
-        id("maven-publish")
-        kotlin("jvm") version "1.4.32"
-        id("se.svt.oss.gradle-yapp-publisher-plugin") version "1.0.0-SNAPSHOT"
+    fun buildGradle(
+        group: String,
+        version: String,
+        yappConf: String = "",
+        plugin1: String = "id(\"maven-publish\")\n",
+        plugin2: String = "kotlin(\"jvm\") version \"1.5.21\"",
+        buildGradleFile: Path
+    ): String {
+
+        return buildGradleFile.readText()
+            .replace("{group}", group)
+            .replace("{version}", version)
+            .replace("{yappConf}", yappConf)
+            .replace("{plugin1}", plugin1)
+            .replace("{plugin2}", plugin2)
     }
-
-    group = "$group"
-    version = "$version"
-
-    repositories {
-        mavenLocal() 
-        mavenCentral()
-    }
-
-
-"$yappConf"
-    
-    
-    
-dependencies {
-    
-    implementation(kotlin("stdlib-jdk8"))
-    
-    }
-    """
 
     fun yappPropertiesConf(name: String = pluginName, group: String, version: String) = """
        
@@ -139,6 +133,7 @@ yapp {
     }
 }
     """.trimIndent()
+
     fun systemEnv(): Map<String, String> {
         val envPrefix = "YAPP_POM_"
         return mapOf(
@@ -177,7 +172,7 @@ plugins {
     `maven-publish`
     `java-gradle-plugin`
     signing
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.5.21"
     id("com.gradle.plugin-publish") version "0.15.0"
 }
 

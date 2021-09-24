@@ -103,7 +103,7 @@ open class GradlePluginExtension(
 
 private fun Project.prop(property: String, propPrefix: String, envPrefix: String, notFound: String = ""): String {
     return (
-        this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.toUpperCase()}")
+        this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.uppercase()}")
             ?: notFound
         ).toString()
 }
