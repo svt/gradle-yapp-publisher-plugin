@@ -1,7 +1,6 @@
 package se.svt.oss.gradle.yapp.config
 
 import org.gradle.api.Project
-import se.svt.oss.gradle.yapp.YappPublisherExtension
 import se.svt.oss.gradle.yapp.hasPlugin
 
 enum class PROJECTTYPE {
@@ -13,43 +12,37 @@ enum class PROJECTTYPE {
 }
 
 open class ProjectType(open val project: Project) {
-    fun configure() {
-        project.logger.warn("Project: {} is a {}", project.name, this.javaClass.simpleName)
-    }
 
     companion object {
-        fun libraryType(project: Project, extension: YappPublisherExtension): ProjectType = when {
+        fun libraryType(project: Project): ProjectType = when {
             project.hasPlugin("org.jetbrains.kotlin.jvm") &&
                 project.hasPlugin("java-gradle-plugin") &&
-                project.hasPlugin("java-library") -> GradleKotlinPlugin(
-                project,
-                extension
-            )
+                project.hasPlugin("java-library") -> GradleKotlinPlugin(project)
             project.hasPlugin("org.jetbrains.kotlin.jvm") &&
-                project.hasPlugin("java-library") -> KotlinProject(
-                project,
-                extension
-            )
-            project.hasPlugin("java-gradle-plugin") -> GradleJavaPlugin(project, extension)
-            project.hasPlugin("java-library") -> JavaProject(project, extension)
-            project.hasPlugin("java") -> JavaProject(project, extension)
+                project.hasPlugin("java-library") -> KotlinLibrary(project)
+            project.hasPlugin("java-gradle-plugin") -> GradleJavaPlugin(project)
+            project.hasPlugin("java-library") -> JavaLibrary(project)
+            project.hasPlugin("java") -> JavaProject(project)
 
-            else -> UnknownProject(project, extension)
+            else -> UnknownProject(project)
         }
     }
 }
 
-internal class JavaProject(override val project: Project, private val extension: YappPublisherExtension) :
+class JavaLibrary(override val project: Project) :
     ProjectType(project)
 
-internal class KotlinProject(override val project: Project, private val extension: YappPublisherExtension) :
+internal class JavaProject(override val project: Project) :
     ProjectType(project)
 
-internal class GradleJavaPlugin(override val project: Project, private val extension: YappPublisherExtension) :
+internal class KotlinLibrary(override val project: Project) :
     ProjectType(project)
 
-internal class GradleKotlinPlugin(override val project: Project, private val extension: YappPublisherExtension) :
+class GradleJavaPlugin(override val project: Project) :
     ProjectType(project)
 
-internal class UnknownProject(override val project: Project, private val extension: YappPublisherExtension) :
+class GradleKotlinPlugin(override val project: Project) :
+    ProjectType(project)
+
+internal class UnknownProject(override val project: Project) :
     ProjectType(project)

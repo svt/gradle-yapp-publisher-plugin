@@ -12,7 +12,7 @@ import kotlin.io.path.ExperimentalPathApi
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExperimentalPathApi
-class ProjectTypeIntegrationTest : AbstractIntegrationTest() {
+class ProjectPublishTargetTypeIntegrationTest : AbstractIntegrationTest() {
 
     val kotlinLibProjectPath: String = "/src/test/resources/projects/kotlin-library/"
     val javaLibProjectPath: String = "/src/test/resources/projects/java-library/"
@@ -22,6 +22,29 @@ class ProjectTypeIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `a java library is identified correctly`() {
+        copyTemplateBuildFile(javaLibProjectPath)
+        settingsFile = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
+        buildFile = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
+        propertyFile = Paths.get("$testDirPath/${javaLibProjectPath}gradle.properties")
+
+        val group = "se.javalib"
+        val version = "0.0.2"
+
+        publishToTmp(
+            ConfigurationData.buildGradle(
+                group,
+                version,
+                "",
+                plugin2 = """`java-library`""",
+                buildGradleFile = buildFile
+            ),
+            ConfigurationData.yappBuildGradleConf(group, version),
+            projectdir = File("$testDirPath/$javaLibProjectPath")
+        )
+    }
+
+    @Test
+    fun `a java library having a snapshot version is identified correctly`() {
         copyTemplateBuildFile(javaLibProjectPath)
         settingsFile = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
         buildFile = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
@@ -126,7 +149,7 @@ class ProjectTypeIntegrationTest : AbstractIntegrationTest() {
         val group = "se.unknownplugin"
         val version = "0.0.1-SNAPSHOT"
 
-        var assertThrows = assertThrows<IllegalStateException> {
+        assertThrows<IllegalStateException> {
             publishToTmp(
                 ConfigurationData.buildGradle(
                     group,
