@@ -6,14 +6,12 @@ package se.svt.oss.gradle.yapp
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
-import org.slf4j.LoggerFactory
 import se.svt.oss.gradle.yapp.config.ProjectType.Companion.libraryType
-import se.svt.oss.gradle.yapp.config.PublishTargetType.Companion.publishTarget
+import se.svt.oss.gradle.yapp.config.publishTarget
 
 class YappPublisher : Plugin<Project> {
     companion object {
         // Why not Kotlinglogging etc - see https://discuss.gradle.org/t/logging-in-gradle-plugin/31685/2
-        val logger = LoggerFactory.getLogger("GradleYappPublisherPlugin")
         val MIN_GRADLE = GradleVersion.version("7.0.0")
     }
 
@@ -23,8 +21,9 @@ class YappPublisher : Plugin<Project> {
         val extension = project.extensions.create("yapp", YappPublisherExtension::class.java, project)
 
         project.afterEvaluate {
-            libraryType(project, extension).configure()
-            publishTarget(project, extension).configure()
+            val projectType = libraryType(project)
+            val publishTarget = publishTarget(projectType, project, extension)
+            project.logger.warn("Project: {}, Type: {}, Target: {}", project.name, projectType.javaClass.simpleName, publishTarget.name)
         }
     }
 

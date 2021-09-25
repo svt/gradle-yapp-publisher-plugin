@@ -89,6 +89,7 @@ fun Project.configureGradlePublishingPlugin(ext: YappPublisherExtension) {
 }
 
 fun Project.configureMavenPublishingPlugin(
+    uri: URI,
     ext: YappPublisherExtension
 ) {
 
@@ -96,7 +97,7 @@ fun Project.configureMavenPublishingPlugin(
     project.extensions.configure(PublishingExtension::class.java) { p ->
 
         p.publications { publications ->
-            publications.register("pluginMavenPublication", MavenPublication::class.java) { publication ->
+            publications.register("pluginMaven", MavenPublication::class.java) { publication ->
                 project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                     // so we cant get rid of the afterEvalute
 
@@ -154,13 +155,7 @@ fun Project.configureMavenPublishingPlugin(
                 repository.maven { r ->
                     r.apply {
                         name = "MavenCentral"
-                        url =
-                            if (project.version.toString().endsWith("SNAPSHOT")) {
-                                URI("https://oss.sonatype.org/content/repositories/snapshots/")
-                            } else {
-                                URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                            }
-
+                        url = uri
                         credentials { credentials ->
                             credentials.username = ext.pomE.ossrhUser.get()
                             credentials.password = ext.pomE.ossrhPassword.get()
@@ -233,7 +228,7 @@ fun Project.configureJavaLibraryArtifact() {
 
     project.extensions.configure(PublishingExtension::class.java) { pe ->
         pe.publications { publications ->
-            val p = publications.getByName("pluginMavenPublication") as MavenPublication
+            val p = publications.getByName("pluginMaven") as MavenPublication
             p.from(project.components.getByName("java"))
 
             val sourcesJar = project.tasks.create(sources, Sources::class.java)

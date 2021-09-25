@@ -114,8 +114,6 @@ yapp {
     """.trimIndent()
 
     fun yappBuildGradleConfSigning(
-        group: String,
-        version: String,
         signingKey: String = "",
         signingEnabled: Boolean = false,
         signSnapshot: Boolean = false

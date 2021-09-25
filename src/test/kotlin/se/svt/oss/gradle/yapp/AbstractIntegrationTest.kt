@@ -38,11 +38,11 @@ abstract class AbstractIntegrationTest {
     private val tmpdir: String = System.getProperty("java.io.tmpdir")
 
     @BeforeAll
-    open fun setup() {
+    fun setup() {
         publishYappPluginToTmp()
     }
 
-    fun publishYappPluginToTmp() {
+    private fun publishYappPluginToTmp() {
         settingsFile = testDirPath.resolve("settings.gradle.kts")
         buildFile = testDirPath.resolve("build.gradle.kts")
         propertyFile = testDirPath.resolve("gradle.properties")
@@ -74,7 +74,7 @@ abstract class AbstractIntegrationTest {
             .build()
     }
 
-    fun resource(resource: String): File = File(javaClass.classLoader.getResource(resource).file)
+    fun resource(resource: String): File = File(javaClass.classLoader.getResource(resource)!!.file)
 
     fun diff(resourcePom: File, generatedPom: File): Diff {
 
@@ -85,7 +85,7 @@ abstract class AbstractIntegrationTest {
         return diff
     }
 
-    fun generatedPom(name: String, subdir: String, version: String, extension: String = "pom") = Paths.get(
+    fun generatedPom(name: String, subdir: String, version: String, extension: String = "pom"): File = Paths.get(
         tmpdir, "se", subdir, name, version,
         "$name-$version.$extension"
     ).toFile()
@@ -108,14 +108,14 @@ abstract class AbstractIntegrationTest {
 
     fun copyTemplateBuildFile(projectPath: String = mcProjectPath) {
         Files.copy(
-            Paths.get("$testDirPath", "$buildFileTemplatePath"),
-            Paths.get("$testDirPath", "$projectPath", "build.gradle.kts"), StandardCopyOption.REPLACE_EXISTING
+            Paths.get("$testDirPath", buildFileTemplatePath),
+            Paths.get("$testDirPath", projectPath, "build.gradle.kts"), StandardCopyOption.REPLACE_EXISTING
         )
     }
 
     companion object {
         @JvmStatic
         @TempDir
-        open lateinit var testDirPath: Path
+        lateinit var testDirPath: Path
     }
 }

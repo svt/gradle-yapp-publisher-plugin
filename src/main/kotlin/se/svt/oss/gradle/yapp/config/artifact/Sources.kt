@@ -4,14 +4,14 @@
 
 package se.svt.oss.gradle.yapp.config.artifact
 
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.jvm.tasks.Jar
 
 open class Sources : Jar() {
     init {
         archiveClassifier.set("sources")
 
-        val javaPlugin = project.convention.getPlugin(JavaPluginConvention::class.java)
+        val javaPlugin = project.extensions.getByType(JavaPluginExtension::class.java)
         from(javaPlugin.sourceSets.getByName("main").allSource)
     }
 }

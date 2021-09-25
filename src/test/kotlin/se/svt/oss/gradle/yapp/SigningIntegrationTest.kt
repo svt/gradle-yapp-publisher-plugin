@@ -40,7 +40,7 @@ class SigningIntegrationTest : AbstractIntegrationTest() {
 
         publishToTmp(
             ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConfSigning(group, version, signingKey, true),
+            ConfigurationData.yappBuildGradleConfSigning(signingKey, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
         assertIterableEquals(generatedSignatures("mc", "signing", version), signatures)
@@ -52,7 +52,7 @@ class SigningIntegrationTest : AbstractIntegrationTest() {
         signatures = signatures(version)
         publishToTmp(
             ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConfSigning(group, version, signingKey, true, true),
+            ConfigurationData.yappBuildGradleConfSigning(signingKey, true, true),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
