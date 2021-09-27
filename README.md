@@ -28,35 +28,51 @@ It abstracts the following plugins and creates a simplified, coherent configurat
 * [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
 * [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
 
-and more.
+with more planned.
 
-## Usage
+## How do I use it?
+
+### The plugin needs to identify:
+
+* A project type (for example, a java-library)
+* A publish target (for example, maven-central)
+
+It tries to identify the project and publish target depending on your configuration.
+You can also configure the type and target TO-DO NOT YET REALLY
+
 
 1. Add the plugin to your plugins block:
 
 ```kotlin
 plugins {
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.0.0"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.17"
         ...
 }
+```
 
-2. If you are publishing to Maven Central (Java/Kotlin Library)
-    
+2. Add basic plugins
+
+If you are publishing to Maven Central (Java/Kotlin Library)
+
+```kotlin
 plugins {
     `maven-publish`
         ...
 }            
+```
+
 If you are publishing to Gradle Portal (Gradle Plugin)
 
+```kotlin
 plugins {
     `java-gradle-plugin`
         ...
 }
-
-(A semi smart identification  will add the necessary needed plugins)
+```
     
 3. Configure the plugin. Example - Pom with signing
 
+```kotlin
 yapp {
 
     pom {
@@ -121,16 +137,20 @@ yapp.signing.enabled = false
 
 ## Configuration
 
+
 You can put your configuration in a
 
 - Build File (build.gradle.kts etc)
 - Property File (gradle.properties etc)
 - System Environment Variable
 
-Note: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
+NOTE: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
 
-Note: Configurations are picked up in this order: Build File, Property File, System Env.
+NOTE: Configurations are picked up in this order: Build File, Property File, System Env.
 All locations are checked so theoretically, you can spread out your properties.
+
+NOTE: The configuration examples given earlier should be enough for a working release.
+
 
 **POM Configuration**
 

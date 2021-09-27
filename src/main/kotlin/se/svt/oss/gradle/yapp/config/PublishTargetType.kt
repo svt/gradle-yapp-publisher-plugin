@@ -16,10 +16,23 @@ open class PublishTargetType(
     open val project: Project
 ) {
 
-    open var name: String = this.javaClass.simpleName
+    open fun configure() {}
+
+    fun name(): String {
+
+        return if (project.isSnapShot()) {
+            "${this.javaClass.simpleName}-SNAPSHOT"
+        } else {
+            this.javaClass.simpleName
+        }
+    }
 }
 
-fun publishTarget(projectType: ProjectType, project: Project, extension: YappPublisherExtension): PublishTargetType =
+fun publishTarget(
+    projectType: ProjectType,
+    project: Project,
+    extension: YappPublisherExtension
+): PublishTargetType =
     when (projectType) {
         is GradleKotlinPlugin -> GradlePortal(project, extension)
         is GradleJavaPlugin -> GradlePortal(project, extension)
@@ -28,22 +41,23 @@ fun publishTarget(projectType: ProjectType, project: Project, extension: YappPub
         is KotlinLibrary -> MavenCentral(project, extension)
         else -> UnknownPublishTarget(project)
     }
-internal class GradlePortal(override val project: Project, extension: YappPublisherExtension) :
+
+internal class GradlePortal(override val project: Project, var extension: YappPublisherExtension) :
     PublishTargetType(project) {
 
-    init {
+    override fun configure() {
+        super.configure()
         project.configureGradlePublishingPlugin(extension)
     }
 }
 
-internal class MavenCentral(override val project: Project, extension: YappPublisherExtension) :
+internal class MavenCentral(override val project: Project, val extension: YappPublisherExtension) :
     PublishTargetType(project) {
 
-    init {
-        val isSnapShot = project.version.toString().endsWith("SNAPSHOT")
+    override fun configure() {
+        super.configure()
 
-        val uri = if (isSnapShot) {
-            name = "${javaClass.simpleName}-SNAPSHOT"
+        val uri = if (project.isSnapShot()) {
             URI("https://oss.sonatype.org/content/repositories/snapshots/")
         } else {
             URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
@@ -57,10 +71,15 @@ internal class MavenCentral(override val project: Project, extension: YappPublis
 internal class UnknownPublishTarget(override val project: Project) :
     PublishTargetType(project) {
 
-    init {
+    override fun configure() {
+        super.configure()
         project.logger.error(
-            "Yapp-Publisher-Plugin could not identify a PublishTarget (As you added this plugin," +
-                "it is assumed that you wanted to publish your project), see the docs"
+            """
+                |Yapp-Publisher-Plugin could not identify a PublishTarget.
+                |As you added this plugin it is assumed that you wanted to publish your project somewhere.
+                |Please see the docs (README or https://github.com/svt/gradle-yapp-publisher-plugin )
+                |on how you can add a PublishTarget
+            """.trimIndent()
         )
     }
 }
