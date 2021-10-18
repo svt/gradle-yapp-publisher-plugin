@@ -31,29 +31,29 @@ object ConfigurationData {
 
     fun yappPropertiesConf(name: String = pluginName, group: String, version: String) = """
        
-       |yapp.pom.groupId=$group
-       |yapp.pom.version=$version
-       |yapp.pom.artifactId=$name
-       
-       |yapp.pom.name=property name 
-       |yapp.pom.description=property description
-       |yapp.pom.url=http://propertyurl.se
-       |yapp.pom.inceptionYear=1901
+       |yapp.mavenPublishing.groupId=$group
+       |yapp.mavenPublishing.version=$version
+       |yapp.mavenPublishing.artifactId=$name
+            
+       |yapp.mavenPublishing.name=property name 
+       |yapp.mavenPublishing.description=property description
+       |yapp.mavenPublishing.url=http://propertyurl.se
+       |yapp.mavenPublishing.inceptionYear=1901
+                             
+       |yapp.mavenPublishing.licenseName=property licensename
+       |yapp.mavenPublishing.licenseUrl=property licenseurl
+       |yapp.mavenPublishing.licenseDistribution=property distribution
+       |yapp.mavenPublishing.licenseComments=property comments
+            
+       |yapp.mavenPublishing.developerId=property developerid
+       |yapp.mavenPublishing.developerName=property developername
+       |yapp.mavenPublishing.developerEmail=property developeremail
+       |yapp.mavenPublishing.organization=property developerorganization
+       |yapp.mavenPublishing.organizationUrl=property developerorganizationurl
 
-       |yapp.pom.licenseName=property licensename
-       |yapp.pom.licenseUrl=property licenseurl
-       |yapp.pom.licenseDistribution=property distribution
-       |yapp.pom.licenseComments=property comments
-
-       |yapp.pom.developerId=property developerid
-       |yapp.pom.developerName=property developername
-       |yapp.pom.developerEmail=property developeremail
-       |yapp.pom.organization=property developerorganization
-       |yapp.pom.organizationUrl=property developerorganizationurl
-
-       |yapp.pom.scmUrl=property scmurl
-       |yapp.pom.scmConnection=property scmconnection
-       |yapp.pom.scmDeveloperConnection=property scmdeveloperconnection
+       |yapp.mavenPublishing.scmUrl=property scmurl
+       |yapp.mavenPublishing.scmConnection=property scmconnection
+       |yapp.mavenPublishing.scmDeveloperConnection=property scmdeveloperconnection
 
        |yapp.signing.enabled=false
        |yapp.signing.signSnapshot=false
@@ -75,7 +75,7 @@ object ConfigurationData {
        
 yapp {
 
-    pom {
+    mavenPublishing {
         groupId.set("$group")
         version.set("$version")
 
@@ -133,24 +133,24 @@ yapp {
     """.trimIndent()
 
     fun systemEnv(): Map<String, String> {
-        val envPrefix = "YAPP_POM_"
+        val envPrefix = "YAPP_MAVENPUBLISHING_"
         return mapOf(
-            Pair("${envPrefix}NAME", "yapp.pom.name"),
-            Pair("${envPrefix}DESCRIPTION", "yapp.pom.description"),
-            Pair("${envPrefix}URL", "yapp.pom.url"),
-            Pair("${envPrefix}INCEPTIONYEAR", "yapp.pom.inceptionYear"),
-            Pair("${envPrefix}LICENSENAME", "yapp.pom.licenseName"),
-            Pair("${envPrefix}LICENSEURL", "yapp.pom.licenseUrl"),
-            Pair("${envPrefix}LICENSEDISTRIBUTION", "yapp.pom.licenseDistribution"),
-            Pair("${envPrefix}LICENSECOMMENTS", "yapp.pom.licenseComments"),
-            Pair("${envPrefix}DEVELOPERID", "yapp.pom.developerId"),
-            Pair("${envPrefix}DEVELOPERNAME", "yapp.pom.developerName"),
-            Pair("${envPrefix}DEVELOPEREMAIL", "yapp.pom.developerEmail"),
-            Pair("${envPrefix}ORGANIZATION", "yapp.pom.organization"),
-            Pair("${envPrefix}ORGANIZATIONURL", "yapp.pom.organizationUrl"),
-            Pair("${envPrefix}SCMURL", "yapp.pom.scmUrl"),
-            Pair("${envPrefix}SCMCONNECTION", "yapp.pom.scmConnection"),
-            Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.pom.scmDeveloperConnection"),
+            Pair("${envPrefix}NAME", "yapp.mavenPublishing.name"),
+            Pair("${envPrefix}DESCRIPTION", "yapp.mavenPublishing.description"),
+            Pair("${envPrefix}URL", "yapp.mavenPublishing.url"),
+            Pair("${envPrefix}INCEPTIONYEAR", "yapp.mavenPublishing.inceptionYear"),
+            Pair("${envPrefix}LICENSENAME", "yapp.mavenPublishing.licenseName"),
+            Pair("${envPrefix}LICENSEURL", "yapp.mavenPublishing.licenseUrl"),
+            Pair("${envPrefix}LICENSEDISTRIBUTION", "yapp.mavenPublishing.licenseDistribution"),
+            Pair("${envPrefix}LICENSECOMMENTS", "yapp.mavenPublishing.licenseComments"),
+            Pair("${envPrefix}DEVELOPERID", "yapp.mavenPublishing.developerId"),
+            Pair("${envPrefix}DEVELOPERNAME", "yapp.mavenPublishing.developerName"),
+            Pair("${envPrefix}DEVELOPEREMAIL", "yapp.mavenPublishing.developerEmail"),
+            Pair("${envPrefix}ORGANIZATION", "yapp.mavenPublishing.organization"),
+            Pair("${envPrefix}ORGANIZATIONURL", "yapp.mavenPublishing.organizationUrl"),
+            Pair("${envPrefix}SCMURL", "yapp.mavenPublishing.scmUrl"),
+            Pair("${envPrefix}SCMCONNECTION", "yapp.mavenPublishing.scmConnection"),
+            Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.mavenPublishing.scmDeveloperConnection"),
             Pair("${envPrefix}GROUPID", "se.env"),
             Pair("${envPrefix}VERSION", "0.0.4-SNAPSHOT"),
             Pair("${envPrefix}ARTIFACTID", "mc"),

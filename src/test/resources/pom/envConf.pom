@@ -11,31 +11,31 @@
     <groupId>se.env</groupId>
     <artifactId>mc</artifactId>
     <version>0.0.4-SNAPSHOT</version>
-    <name>yapp.pom.name</name>
-    <description>yapp.pom.description</description>
-    <url>yapp.pom.url</url>
-    <inceptionYear>yapp.pom.inceptionYear</inceptionYear>
+    <name>yapp.mavenPublishing.name</name>
+    <description>yapp.mavenPublishing.description</description>
+    <url>yapp.mavenPublishing.url</url>
+    <inceptionYear>yapp.mavenPublishing.inceptionYear</inceptionYear>
     <licenses>
         <license>
-            <name>yapp.pom.licenseName</name>
-            <url>yapp.pom.licenseUrl</url>
-            <distribution>yapp.pom.licenseDistribution</distribution>
-            <comments>yapp.pom.licenseComments</comments>
+            <name>yapp.mavenPublishing.licenseName</name>
+            <url>yapp.mavenPublishing.licenseUrl</url>
+            <distribution>yapp.mavenPublishing.licenseDistribution</distribution>
+            <comments>yapp.mavenPublishing.licenseComments</comments>
         </license>
     </licenses>
     <developers>
         <developer>
-            <id>yapp.pom.developerId</id>
-            <name>yapp.pom.developerName</name>
-            <email>yapp.pom.developerEmail</email>
-            <organization>yapp.pom.organization</organization>
-            <organizationUrl>yapp.pom.organizationUrl</organizationUrl>
+            <id>yapp.mavenPublishing.developerId</id>
+            <name>yapp.mavenPublishing.developerName</name>
+            <email>yapp.mavenPublishing.developerEmail</email>
+            <organization>yapp.mavenPublishing.organization</organization>
+            <organizationUrl>yapp.mavenPublishing.organizationUrl</organizationUrl>
         </developer>
     </developers>
     <scm>
-        <connection>yapp.pom.scmConnection</connection>
-        <developerConnection>yapp.pom.scmDeveloperConnection</developerConnection>
-        <url>yapp.pom.scmUrl</url>
+        <connection>yapp.mavenPublishing.scmConnection</connection>
+        <developerConnection>yapp.mavenPublishing.scmDeveloperConnection</developerConnection>
+        <url>yapp.mavenPublishing.scmUrl</url>
     </scm>
     <dependencies>
         <dependency>

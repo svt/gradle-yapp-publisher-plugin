@@ -1,6 +1,6 @@
 pluginManagement {
     repositories {
-      // mavenLocal()
+       mavenLocal()
         gradlePluginPortal()
         // maven(url="https://dl.bintray.com/kotlin/dokka")
     }

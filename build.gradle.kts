@@ -5,22 +5,23 @@ plugins {
     `java-gradle-plugin`
     signing
     idea
-    kotlin("jvm") version "1.5.21"
-    id("org.jetbrains.dokka") version "1.5.30"
+    kotlin("jvm") version "1.5.31"
+    id("org.jetbrains.dokka") version "1.5.31"
     id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
     id("org.jmailen.kotlinter") version "3.6.0"
-    id("org.owasp.dependencycheck") version "6.3.1"
+    id("org.owasp.dependencycheck") version "6.4.1.1"
     id("com.gradle.plugin-publish") version "0.16.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.3"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.15"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.30"
 }
 
 group = "se.svt.oss"
-version = scmVersion.version
+//version = scmVersion.version
+version = "0.1.33"
 description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
-    //mavenLocal()
+    mavenLocal()
     gradlePluginPortal()
     mavenCentral()
 //    maven(url="https://dl.bintray.com/kotlin/dokka")
@@ -61,16 +62,18 @@ gradlePlugin {
     }
 }
 */
+
+
+kotlin {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 
     withSourcesJar()
     withJavadocJar()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
 }
 
 tasks.named<Wrapper>("wrapper") {
