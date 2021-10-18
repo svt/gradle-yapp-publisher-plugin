@@ -1,0 +1,45 @@
+package se.svt.oss.gradle.yapp.artifact
+
+import org.gradle.api.Project
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+
+class ArtifactConfigure() {
+
+    fun javaKotlinConfigure(project: Project) {
+
+        val javaDoc = "javadocJar"
+        val sources = "sourcesJar"
+
+        /*   project.afterEvaluate {
+           project.extensions.configure(JavaPluginExtension::class.java) { java ->
+               java.withJavadocJar()
+               java.withSourcesJar()
+
+           }
+      }*/
+        project.extensions.configure(PublishingExtension::class.java) { pe ->
+
+            pe.publications { publications ->
+                val p = publications.getByName("pluginMaven") as MavenPublication
+                p.from(project.components.getByName("java"))
+
+                val source = project.tasks.findByPath(sources)
+                val docs = project.tasks.findByPath(javaDoc)
+
+                when (docs) {
+                    null -> {
+                        val d = project.tasks.register(javaDoc, JavaDoc::class.java)
+                        p.artifact(d)
+                    }
+                }
+                when (source) {
+                    null -> {
+                        val s = project.tasks.register(sources, Sources::class.java)
+                        p.artifact(s)
+                    }
+                }
+            }
+        }
+    }
+}

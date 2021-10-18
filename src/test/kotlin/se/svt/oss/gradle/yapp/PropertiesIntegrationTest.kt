@@ -61,6 +61,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         )
 
         val pomDiff: Diff = diff(resource("pom/propertyConf.pom"), generatedPom("mc", "property", version))
+        println(pomDiff.toString())
 
         assertFalse(pomDiff.hasDifferences())
     }
@@ -91,7 +92,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         val group = "se.order"
         val version = "0.0.4-SNAPSHOT"
 
-        environmentVariables.set("YAPP_POM_NAME", "envname")
+        environmentVariables.set("YAPP_MAVENPUBLISHING_NAME", "envname")
 
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile),
@@ -99,12 +100,12 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             
             yapp{
             
-                pom {
+                mavenPublishing {
                     name.set("confname")
                 }
             }
             """.trimIndent(),
-            """yapp.pom.name=propertyname""",
+            """yapp.mavenPublishing.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -112,7 +113,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.pom.name=propertyname""",
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.mavenPublishing.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -138,12 +139,12 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             """
                 
             yapp{
-                pom {
+                mavenPublishing {
                     name.set("confname")
                 }
             }
             """.trimIndent(),
-            """yapp.pom.name=propertyname""",
+            """yapp.mavenPublishing.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -151,7 +152,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.pom.name=propertyname""",
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.mavenPublishing.name=propertyname""",
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -159,7 +160,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
     }
 
     fun yappConf() = """yapp {
-           pom {
+           mavenPublishing {
                name.set("asdf")
            }
        }
