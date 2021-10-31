@@ -3,21 +3,20 @@ package se.svt.oss.gradle.yapp.publishtarget
 import org.gradle.api.Project
 import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
 import se.svt.oss.gradle.yapp.isSnapShot
-import se.svt.oss.gradle.yapp.plugin.MavenPublishing
-import se.svt.oss.gradle.yapp.plugin.Signing
+import se.svt.oss.gradle.yapp.plugin.MavenPublishingPlugin
+import se.svt.oss.gradle.yapp.plugin.SigningPlugin
 import java.net.URI
 
 internal open class MavenCentral(
     override val project: Project,
     publishTarget: PublishTargetType
-) :
-    BasePublishTarget(project, publishTarget) {
+) : BasePublishTarget(project, publishTarget) {
 
     override fun configure() {
 
-        MavenPublishing().configure(ossrhCredential(), publishTarget, project)
-        ArtifactConfigure().javaKotlinConfigure(project)
-        Signing().configure(project)
+        MavenPublishingPlugin(project).configure(ossrhCredential(), publishTarget)
+        ArtifactConfigure(project).javaKotlinConfigure()
+        SigningPlugin(project).configure()
     }
 
     private fun ossrhCredential(): RepositoryConfiguration {
@@ -36,5 +35,5 @@ internal open class MavenCentral(
         }
     }
 
-    private fun getUrlPrefix(): String = if (yappExtension().publishTarget.mavenCentralLegacyUrl.get()) "" else "s01."
+    private fun getUrlPrefix(): String = if (yappExtension().mavenPublishing.mavenCentralLegacyUrl.get()) "" else "s01."
 }

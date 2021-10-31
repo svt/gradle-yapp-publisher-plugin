@@ -10,18 +10,16 @@ import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.plugin.use.resolve.internal.ArtifactRepositoriesPluginResolver
-import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 
-internal class GradlePluginPublishing() {
+internal class GradlePortalPublishingPlugin(project: Project) : BasePlugin(project) {
 
-    fun configure(project: Project) {
-        val plugins = project.plugins
+    fun configure() {
         val extensions = project.extensions
-        val ext = extensions.getByType(YappPublisherExtension::class.java)
+        val ext = yappExtension()
 
-        plugins.apply(MavenPublishPlugin::class.java)
-        plugins.apply(JavaGradlePluginPlugin::class.java)
-        plugins.apply(PublishPlugin::class.java)
+        project.plugins.apply(MavenPublishPlugin::class.java)
+        project.plugins.apply(JavaGradlePluginPlugin::class.java)
+        project.plugins.apply(PublishPlugin::class.java)
 
         project.afterEvaluate {
             extensions.configure(GradlePluginDevelopmentExtension::class.java) {

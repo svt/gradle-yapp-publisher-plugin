@@ -4,16 +4,21 @@ import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
-fun Project.prop(property: String, propPrefix: String? = "", envPrefix: String? = "", notFound: String = ""): String {
-    return (
-        this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.uppercase()}")
-            ?: notFound
-        ).toString()
+fun Project.prop(property: String, propPrefix: String? = "", envPrefix: String? = "", notFound: String = ""): Property<String> {
+    return withDefault(
+        (
+            this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.uppercase()}")
+                ?: notFound
+            ).toString()
+    )
 }
 
-fun Project.propBool(property: String, propPrefix: String, envPrefix: String): Boolean {
-    val prop = this.findProperty("$propPrefix$property")
-    return prop?.toString()?.toBoolean() ?: System.getenv("$envPrefix$property").toBoolean()
+fun Project.propBool(property: String, propPrefix: String? = "", envPrefix: String? = ""): Property<Boolean> {
+    var result = (
+        this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.uppercase()}")
+            ?: false
+        ).toString()
+    return withDefault(result.toBoolean())
 }
 
 fun Project.propList(property: String, propPrefix: String, envPrefix: String): List<String> {

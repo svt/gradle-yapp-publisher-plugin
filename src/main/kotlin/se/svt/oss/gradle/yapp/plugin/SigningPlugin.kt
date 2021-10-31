@@ -4,15 +4,13 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
-import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.isSnapShot
 import java.io.File
 
-class Signing() {
-    fun configure(project: Project) {
+class SigningPlugin(project: Project) : BasePlugin(project) {
+    fun configure() {
 
-        val extensions = project.extensions
-        val extension = extensions.getByType(YappPublisherExtension::class.java)
+        val extension = yappExtension()
 
         project.plugins.apply(SigningPlugin::class.java)
 

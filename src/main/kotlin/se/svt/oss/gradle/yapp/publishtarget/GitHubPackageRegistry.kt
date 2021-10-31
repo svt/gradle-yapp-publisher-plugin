@@ -1,6 +1,6 @@
 package se.svt.oss.gradle.yapp.publishtarget
 
-class GitHubPackageRegistry {
+class GitHubPackageRegistry() {
 
     // TO-DO
 }

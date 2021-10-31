@@ -1,10 +1,10 @@
-[![REUSE status](https://api.reuse.software/badge/github.com/fsfe/reuse-tool)](https://api.reuse.software/info/github.com/fsfe/reuse-tool) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/svt/gradle-yapp-publisher-plugin)
+![REUSE Compliance](https://img.shields.io/reuse/compliance/github.com/svt/gradle-yapp-publisher-plugin)
 
-# Gradle Yapp Publisher Plugin - Yet Another Publisher Plugin
+# Gradle Yapp Publisher Plugin - or Yet Another Publisher Plugin 
 
 ## What is it?
 
-A Gradle plugin for publishing releases and snapshots to Maven Central, Gradle Portal.
+A Gradle plugin for publishing Java and Kotlin releases/snapshots to Maven Central, Gradle Portal, GitLab Repositorys.
 
 ## Why does it exist?
 
@@ -15,9 +15,10 @@ To offer a simple clean union interface for these tasks.
 
 * Maven Central Publishing
 * Gradle Portal Publishing
+* GitLab Publishing
 * Signing
-* Choose between Build file, properties or System Environment Configuration
-* Semi smart configuration
+* Build file, Properties or System Environment Configuration 
+* Semi smart configuration (called semi smart because it is not really that eally :)
 
 ## How does it work?
 
@@ -28,8 +29,6 @@ It abstracts the following plugins:
 * [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
 * [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
 
-with more planned. JFrog, GitHub and so on
-
 ## How do I use it?
 
 TODO - step by step guide. with pics
@@ -38,10 +37,14 @@ TODO - step by step guide. with pics
 
 * A project type (for example, a java-library)
 * A publish target (for example, maven-central)
-* 
-It tries to identify the project and publish target depending on your configuration.
-You can also configure the type and target TO-DO NOT YET REALLY
 
+
+If you not give it a publish target one will be choosen from your set of plugins.
+It tries to identify the project target depending on your configuration.
+
+You can also configure the type and target (only the target yet)
+
+### Quickstart
 
 1. Add the plugin to your plugins block:
 
@@ -136,9 +139,31 @@ yapp.mavenPublishing.organizationUrl = my org url
 
 yapp.signing.enabled = false
 ```
+## Tasks
 
-## Configuration
+The plugin will render a few tasks under "yapp publisher".
+They names are 
 
+* createConfigurationTemplate TO-DO
+* publishArtifact - publish the artifact to the [publish target](#publish-target)
+* publishArtifactToLocalRepo - publish to local repo
+* yappConfiguration - show the plugins current configuration - i.e type of [publish target](#publish-target) and project type
+
+## Publish target
+
+A publish target defines where to publish the project.
+If you leave this empty, the plugin will make a guess based on your plugins and version.
+Run the *yappConfiguration* task to see what your current configuration is.
+
+Allowed target values are:
+
+- maven_central
+- maven_central_snapshot
+- gitlab
+- gradle_portal
+- custom TO-DO
+
+## Properties Configuration
 
 You can put your configuration in a
 
@@ -146,18 +171,25 @@ You can put your configuration in a
 - Property File (gradle.properties etc)
 - System Environment Variable
 
+This is also the order in which they will be read.
+
 NOTE: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
 
-NOTE: Configurations are picked up in this order: Build File, Property File, System Env.
-All locations are checked so theoretically, you can spread out your properties.
+The configuration tables are showing the values as 
+| Build file         | Property file     | System environment     |  Comment              |
 
-NOTE: The configuration examples given earlier should be enough for a working release.
+**Yapp Publisher General Configuration**
 
+
+| yapp { property }  | yapp.property     | YAPP_PROPERTY          | Value                   |
+| --------------     | ----------------- | ---------------------- | ----------------------------- |
+| target             | *                 | *                      |  A [publish target](#publish-target) or empty|
 
 **MavenPublishing Configuration**
 
 | yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
 | ---------------------------  | ----------------------- | ------------------------- | ----------- |
+| mavenCentralLegacyUrl          | *                 | *                      |              |
 | artifactId                   | *                       | *                         |             |
 | groupId                      | *                       | *                         |             | 
 | version                      | *                       | *                         |             | 
@@ -217,14 +249,18 @@ See the gpg folder under the Project test resources for examples.
 
 In a very early stage, the following features are planned, according to priority:
 
+* Create sample configuration
+* More targets are planned. JFrog, GitHub and Custom
 * Better semi smart Plugin identification
 * More settings can be simplified and auto set
 * Android Library support
 * Better Java support
 * Dokka-support
-* More tests are 
+* More tests
+* Docs/source inclusion/exclusion option
 * Nested object model, for the few 10% that might need them
 * Ability to do final release stage on maven central so one does not have to do it manually - MAYBE, on the other hand, it is a dangerous process.
+* Support other languages than Java/Kotlin
 * and more,
 
 # Q & A

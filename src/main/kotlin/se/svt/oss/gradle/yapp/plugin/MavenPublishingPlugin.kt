@@ -7,19 +7,16 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.authentication.http.HttpHeaderAuthentication
-import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.publishtarget.PublishTargetType
 import se.svt.oss.gradle.yapp.publishtarget.RepositoryConfiguration
 
-class MavenPublishing() {
+class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
     fun configure(
         repositoryConf: RepositoryConfiguration,
-        publishTarget: PublishTargetType,
-        project: Project
+        publishTarget: PublishTargetType
     ) {
 
-        val extensions = project.extensions
-        val ext = extensions.getByType(YappPublisherExtension::class.java)
+        val ext = yappExtension()
         println(ext.mavenPublishing.name)
         project.plugins.apply(MavenPublishPlugin::class.java)
         project.extensions.configure(PublishingExtension::class.java) { p ->
@@ -46,7 +43,6 @@ class MavenPublishing() {
                                 description.set(ext.mavenPublishing.description)
                                 inceptionYear.set(ext.mavenPublishing.inceptionYear)
                                 url.set(ext.mavenPublishing.url)
-                                packaging
 
                                 licenses { l ->
                                     l.license { license ->

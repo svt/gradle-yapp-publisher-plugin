@@ -4,9 +4,9 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
-class ArtifactConfigure() {
+data class ArtifactConfigure(val project: Project) {
 
-    fun javaKotlinConfigure(project: Project) {
+    fun javaKotlinConfigure() {
 
         val javaDoc = "javadocJar"
         val sources = "sourcesJar"

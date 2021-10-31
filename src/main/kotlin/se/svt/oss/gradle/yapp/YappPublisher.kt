@@ -9,6 +9,11 @@ import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import se.svt.oss.gradle.yapp.config.ProjectType
 import se.svt.oss.gradle.yapp.config.ProjectType.Companion.projectType
+import se.svt.oss.gradle.yapp.extension.GitLabExtension
+import se.svt.oss.gradle.yapp.extension.GradlePluginPublishingExtension
+import se.svt.oss.gradle.yapp.extension.MavenPublishingExtension
+import se.svt.oss.gradle.yapp.extension.PublishTargetExtension
+import se.svt.oss.gradle.yapp.extension.SigningExtension
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.projecttype.GradleJavaPlugin
 import se.svt.oss.gradle.yapp.projecttype.GradleKotlinPlugin
@@ -34,16 +39,23 @@ class YappPublisher : Plugin<Project> {
 
         isMinSupportedGradleVersion(project)
 
-        project.tasks.register("yappConfiguration", ConfigurationList::class.java)
-        project.extensions.create("yapp", YappPublisherExtension::class.java, project)
+        project.extensions.create(
+            "yapp", YappPublisherExtension::class.java, project,
+            SigningExtension(project),
+            MavenPublishingExtension(project),
+            GitLabExtension(project),
+            GradlePluginPublishingExtension(project),
+            PublishTargetExtension(project)
+        )
 
         val projectType = projectType(project)
+        val publishTarget = publishTarget(projectType, project)
 
         project.afterEvaluate {
 
-            val publishTarget = publishTarget(projectType, project)
             publishTarget.configure()
-            registerYappPublisherTask(project, projectType, publishTarget)
+
+            registerTasks(project, projectType, publishTarget)
             project.logger.info(
                 "Yapp Publisher Plugin: Name: {}, Type: {}, Target: {}",
                 project.name, projectType.javaClass.simpleName, publishTarget.name()
@@ -51,11 +63,13 @@ class YappPublisher : Plugin<Project> {
         }
     }
 
-    private fun registerYappPublisherTask(
+    private fun registerTasks(
         project: Project,
         projectType: ProjectType,
         publishTarget: BasePublishTarget
     ) {
+        project.tasks.register("yappConfiguration", ConfigurationList::class.java)
+
         project.tasks.register<PublishToLocal>(
             "publishArtifactToLocalRepo",
             PublishToLocal::class.java,
@@ -83,12 +97,6 @@ class YappPublisher : Plugin<Project> {
     }
 }
 
-/*    private fun log(message: String, filterOptions: GradleRepositoryPublisherExtension) {
-        if (filterOptions.log.get()) {
-            log.quiet(message)
-        }
-    }
-*/
 fun Project.hasPlugin(value: String): Boolean = project.plugins.hasPlugin(value)
 
 fun publishTarget(
