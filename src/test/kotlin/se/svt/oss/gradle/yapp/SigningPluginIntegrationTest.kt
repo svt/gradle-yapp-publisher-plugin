@@ -20,7 +20,7 @@ import kotlin.io.path.ExperimentalPathApi
     SystemStubsExtension::class
 )
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SigningIntegrationTest : AbstractIntegrationTest() {
+class SigningPluginIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun before() {
