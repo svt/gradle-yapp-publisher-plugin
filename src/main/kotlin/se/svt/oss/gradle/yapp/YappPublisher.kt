@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import se.svt.oss.gradle.yapp.config.ProjectType
 import se.svt.oss.gradle.yapp.config.ProjectType.Companion.projectType
+import se.svt.oss.gradle.yapp.extension.GitHubExtension
 import se.svt.oss.gradle.yapp.extension.GitLabExtension
 import se.svt.oss.gradle.yapp.extension.GradlePluginPublishingExtension
 import se.svt.oss.gradle.yapp.extension.MavenPublishingExtension
@@ -22,7 +23,7 @@ import se.svt.oss.gradle.yapp.projecttype.JavaProject
 import se.svt.oss.gradle.yapp.projecttype.KotlinLibrary
 import se.svt.oss.gradle.yapp.publishtarget.BasePublishTarget
 import se.svt.oss.gradle.yapp.publishtarget.MavenCentral
-import se.svt.oss.gradle.yapp.publishtarget.PublishTargetType
+import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
 import se.svt.oss.gradle.yapp.publishtarget.UnknownPublishTarget
 import se.svt.oss.gradle.yapp.task.ConfigurationList
 import se.svt.oss.gradle.yapp.task.CreateConfigurationTemplate
@@ -44,6 +45,7 @@ class YappPublisher : Plugin<Project> {
             SigningExtension(project),
             MavenPublishingExtension(project),
             GitLabExtension(project),
+            GitHubExtension(project),
             GradlePluginPublishingExtension(project),
             PublishTargetExtension(project)
         )
@@ -108,9 +110,9 @@ fun publishTarget(
 private fun userSpecifiedPublishTargetType(project: Project): BasePublishTarget? {
     val target = project.extensions.getByType(YappPublisherExtension::class.java).publishTarget.target.get()
     return if (target.isNullOrEmpty()) {
-        PublishTargetType.NA.publishTarget(project)
+        PublishingTargetType.NA.publishTarget(project)
     } else {
-        PublishTargetType.valueOf(target.uppercase()).publishTarget(project)
+        PublishingTargetType.valueOf(target.uppercase()).publishTarget(project)
     }
 }
 
@@ -120,11 +122,11 @@ private fun defaultPublishTargetType(
 ): BasePublishTarget {
 
     return when (projectType) {
-        is GradleKotlinPlugin -> GradlePluginPortal(project, PublishTargetType.GRADLE_PORTAL)
-        is GradleJavaPlugin -> GradlePluginPortal(project, PublishTargetType.GRADLE_PORTAL)
-        is JavaLibrary -> MavenCentral(project, PublishTargetType.MAVEN_CENTRAL)
-        is JavaProject -> MavenCentral(project, PublishTargetType.MAVEN_CENTRAL)
-        is KotlinLibrary -> MavenCentral(project, PublishTargetType.MAVEN_CENTRAL)
-        else -> UnknownPublishTarget(project, PublishTargetType.NA)
+        is GradleKotlinPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
+        is GradleJavaPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
+        is JavaLibrary -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
+        is JavaProject -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
+        is KotlinLibrary -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
+        else -> UnknownPublishTarget(project, PublishingTargetType.NA)
     }
 }

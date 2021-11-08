@@ -3,7 +3,7 @@ package se.svt.oss.gradle.yapp.publishtarget
 import GradlePluginPortal
 import org.gradle.api.Project
 
-enum class PublishTargetType {
+enum class PublishingTargetType {
 
     GRADLE_PORTAL {
         override fun publishTarget(project: Project): BasePublishTarget? =
@@ -20,6 +20,10 @@ enum class PublishTargetType {
     GITLAB {
         override fun publishTarget(project: Project): BasePublishTarget? =
             GitLabPackageRegistry(project, this)
+    },
+    GITHUB {
+        override fun publishTarget(project: Project): BasePublishTarget? =
+            GitHubPackageRegistry(project, this)
     },
     NA {
         override fun publishTarget(project: Project): BasePublishTarget? =

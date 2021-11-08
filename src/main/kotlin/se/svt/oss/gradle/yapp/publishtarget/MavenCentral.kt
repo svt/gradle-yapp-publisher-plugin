@@ -9,7 +9,7 @@ import java.net.URI
 
 internal open class MavenCentral(
     override val project: Project,
-    publishTarget: PublishTargetType
+    publishTarget: PublishingTargetType
 ) : BasePublishTarget(project, publishTarget) {
 
     override fun configure() {

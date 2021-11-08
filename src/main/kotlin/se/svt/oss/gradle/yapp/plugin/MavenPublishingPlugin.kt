@@ -7,13 +7,13 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.authentication.http.HttpHeaderAuthentication
-import se.svt.oss.gradle.yapp.publishtarget.PublishTargetType
+import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
 import se.svt.oss.gradle.yapp.publishtarget.RepositoryConfiguration
 
 class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
     fun configure(
         repositoryConf: RepositoryConfiguration,
-        publishTarget: PublishTargetType
+        publishTarget: PublishingTargetType
     ) {
 
         val ext = yappExtension()
@@ -83,7 +83,7 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                             name = repositoryConf.name
                             url = repositoryConf.uri
 
-                            if (publishTarget == PublishTargetType.GITLAB) {
+                            if (publishTarget == PublishingTargetType.GITLAB) {
                                 credentials(HttpHeaderCredentials::class.java) {
                                     it.name = repositoryConf.credential.name
                                     it.value = repositoryConf.credential.value

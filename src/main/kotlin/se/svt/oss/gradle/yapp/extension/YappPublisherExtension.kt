@@ -11,6 +11,7 @@ open class YappPublisherExtension(
     var signing: SigningExtension,
     var mavenPublishing: MavenPublishingExtension,
     var gitLab: GitLabExtension,
+    var gitHub: GitHubExtension,
     var gradlePortalPublishing: GradlePluginPublishingExtension,
     var publishTarget: PublishTargetExtension
 ) {
@@ -19,6 +20,7 @@ open class YappPublisherExtension(
 
     fun mavenPublishing(action: Action<in MavenPublishingExtension>) = action.execute(mavenPublishing)
     fun gitLab(action: Action<in GitLabExtension>) = action.execute(gitLab)
+    fun gitHub(action: Action<in GitHubExtension>) = action.execute(gitHub)
     fun signing(action: Action<in SigningExtension>) = action.execute(signing)
     fun gradlePortalPublishing(action: Action<in GradlePluginPublishingExtension>) =
         action.execute(gradlePortalPublishing)

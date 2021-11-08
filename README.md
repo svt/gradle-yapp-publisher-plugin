@@ -7,7 +7,8 @@
 
 ## What is it?
 
-A Gradle plugin for publishing and optionally signing Java and Kotlin releases/snapshots to Maven Central, Gradle Portal, GitLab.
+A Gradle plugin for publishing and optionally signing Java and Kotlin packages to Maven Central,
+Gradle Portal, GitHub, GitLab.
 
 ## Why does it exist?
 
@@ -20,13 +21,14 @@ To offer a simple, flexible union interface for these tasks, regardless of publi
 * Maven Central Publishing
 * Gradle Portal Publishing
 * GitLab Publishing
+* GitHub Publishing
 * Signing
-* Chose Build file, Properties or System Environment Configuration 
+* Choose Build file, Properties or System Environment Configuration 
 * Semi smart configuration :)
 
-### Quickstart steps
+### Quickstart
 
-1. Add this [plugin](#plugin-addition) plugin itself to your plugins block
+1. Add this [plugin](#plugin-addition) itself to your plugins block
 
 2. Add a [Basic publish plugin identificator](#plugin-addition)
     
@@ -37,7 +39,7 @@ The examples show the most basic settings - there are lots more to [configure or
 
 5. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo if you want to verify
 
-6. Run [Gradle Task](#tasks) *publish* to publish your plugin, if all is good.
+6. Run [Gradle Task](#tasks) *publish* to publish your plugin.
 
 ## Plugin addition 
 
@@ -52,7 +54,7 @@ plugins {
 
 You also need to add one of the following  basic publishing plugins as a placeholder
 
-*Publishing to Maven Central/GitLab/Custom (Java/Kotlin Library)*
+*Publishing to Maven Central/GitLab/GitHub/Custom (Java/Kotlin Library)*
 
 ```kotlin
 plugins {
@@ -61,7 +63,7 @@ plugins {
 }            
 ```
 
-* Gradle Portal (Gradle Plugin)*
+* Publishing to Gradle Portal (Gradle Plugin)*
 
 ```kotlin
 plugins {
@@ -75,155 +77,78 @@ plugins {
 The plugin offers a few tasks found under "yapp publisher".
 
 * createConfigurationTemplate TO-DO
-* publishArtifact - publish the artifact to the [publish target](#publish-target)
+* publishArtifact - publish the artifact to the [publishing target](#publishing-target)
 * publishArtifactToLocalRepo - publish to local repo
-* yappConfiguration - show the plugins current configuration - i.e type of [publish target](#publish-target), project type and more
+* yappConfiguration - show the plugins current configuration - i.e. type of [publishing target](#publishing-target), project type and more
 
-## Publish target
+## Publishing target
 
-A publish target defines where to publish the project.
-If you leave this empty, the plugin will make a guess based on your plugins and version.
+A publishing target defines where to publish the project.
 
 Allowed target values are:
-
+- 
 - maven_central
 - maven_central_snapshot
 - gitlab
+- github
 - gradle_portal
 - custom TO-DO
 
-### So, The plugin needs to know about:
+If you leave this empty, the plugin will make a guess based on your added plugins and version. 
 
+### In summary, The plugin needs to know about:
+
+* A [Publishing Target](#publish-target)
+* A few properties, depending on your configuration target
 * A project type (for example, a java-library)
-* A [Publish Target](#publish-target)
-* A few properties, depending on your configuration
 
-If project type and publish target are not configured explicitly, _they are chosen on a best-effort guess_, depending on you chosen plugin and version setup.
-
-## Configurations
-
-You can put your configuration in a
-
-- Build File (build.gradle.kts etc)
-- Property File (gradle.properties etc)
-- System Environment Variable
-
-This is also the order in which they will be read.
-
-The plugin abstracts:
-
-* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
-* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
-* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
-* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
-
-
-The following configuration tables are showing the values as 
-| Build file         | Property file     | System environment     |  Comment              |
-
-* NOTE: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
-
-* **Yapp Publisher General Configuration **
-
-| yapp { property }  | yapp.property     | YAPP_PROPERTY          | Value                   |
-| --------------     | ----------------- | ---------------------- | ----------------------------- |
-| target             | *                 | *                      |  A [publish target](#publish-target) or empty|
-
-**MavenPublishing Configuration**
-
-| yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
-| ---------------------------  | ----------------------- | ------------------------- | ----------- |
-| mavenCentralLegacyUrl          | *                 | *                      |              |
-| artifactId                   | *                       | *                         |             |
-| groupId                      | *                       | *                         |             | 
-| version                      | *                       | *                         |             | 
-| name                         | *                       | *                         |             | 
-| description                  | *                       | *                         |             | 
-| url                          | *                       | *                         |             | 
-| inceptionYear                | *                       | *                         |             | 
-| licenseName                  | *                       | *                         |             | 
-| licenseUrl                   | *                       | *                         |             | 
-| licenseDistribution          | *                       | *                         |             | 
-| licenseComments              | *                       | *                         |             | 
-| developerId                  | *                       | *                         |             | 
-| developerName                | *                       | *                         |             | 
-| developerEmail               | *                       | *                         |             | 
-| organization                 | *                       | *                         |             | 
-| organizationUrl              | *                       | *                         |             | 
-| scmUrl                       | *                       | *                         |             | 
-| scmConnection                | *                       | *                         |             | 
-| scmDeveloperConnection       | *                       | *                         |             | 
-
-**Maven Central**
-
-| yapp { property }  | yapp.property     | YAPP_PROPERTY          |              |
-| --------------     | ----------------- | ---------------------- | ------------ |
-| ossrhUser          | *                 | *                      |              |
-| ossrhPassword      | *                 | *                      |              |
-
-**Signing**
-
-Note: If signing is enabled, the signing key can be either a path to an gpg-key or in text format with literal newlines
-as \n.
-See the gpg folder under the Project test resources for examples.
-
-| yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
-| ------------------------------- | ----------------------| ------------------------- | ------------ |
-| enabled                         | *                     | *                         |              |
-| signSnapshot                    | *                     | *                         |              |
-| keySecret                       | *                     | *                         |              |
-| keyId                           | *                     | *                         |              |
-| key                             | *                     | *                         |              |
-
-**Gradle Plugin and publishing**
-
-| yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
-| ------------------------------------ | -----------------------      | -------------------------  | ----------- |
-| web                                  | *                            | *                          |             |
-| vcs                                  | *                            | *                          |             |
-| tags                                 | *                            | *                          |             |
-| id                                   | *                            | *                          |             |
-| class                                | *                            | *                          |             |
-| description                          | *                            | *                          |             |
-| displayName                          | *                            | *                          |             |
-| key                                  | *                            | *                          |             |
-| keySecret                            | *                            | *                          |             |
-
-## Future
-
-In a very early stage, the following features are planned, according to priority:
-
-* More tests
-* More targets are planned. JFrog, GitHub and Custom
-* Better semi smart Plugin identification
-* More settings can be simplified and auto set
-* Ability to do final release stage on maven central so one does not have to do it manually
-* Create sample configuration
-* Android Library support
-* Better Java support
-* Dokka-support
-* Docs/source inclusion/exclusion option
-* Nested object model, for the few 10% that might need them
-* Support other languages than Java/Kotlin
-* and more,
-
-# F.A.Q
-
-* Why are there tasks called generateMetaDataFileForPluginMavenPublication and more, all relating to "pluginMaven"
-
-It is a design choice (or a bug), these tasks are autogenerated for the Maven Publish plugin and can't be disabled.
-Look att [https://github.com/gradle/gradle/issues/12394](https://github.com/gradle/gradle/issues/12394)
-
-* Why another publisher plugin ?
-
-At the time of starting this plugin there was none found that had all the features this one has. 
+* If project type and publish target are not configured explicitly, _they are chosen on a best-effort guess_, depending on you chosen plugin and version setup.
 
 
 ## Examples
 
-*Maven Central*
+*Gradle Portal*
 
-Build file(build.gradle.kts) configuration, with signing
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.target=gradle_portal  
+yapp.gradleplugin.id=se.svt.oss.gradle-yapp-publisher-plugin 
+yapp.gradleplugin.description=Yet another plugin that manages publishing for Gradle projects
+yapp.gradleplugin.web=https://github.com/svt/gradle-yapp-publisher-plugin
+yapp.gradleplugin.vcs=https://github.com/svt/gradle-yapp-publisher-plugin.git
+yapp.gradleplugin.tags=maven central, gradle portal, publishing
+yapp.gradleplugin.class=se.svt.oss.gradle.yapp.YappPublisher
+yapp.gradleplugin.displayname=Gradle Yapp Publisher Plugin
+```
+
+*GitHub*
+
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.target=GitHub
+yapp.github.actor=<YOUR-GITHUB-USER>
+yapp.github.token=<YOUR-GITHUB-PAT> -# put this global gradle.properties, or use system env so you dont commit it
+yapp.github.namespace=<YOUR-GITHUB-ORGANISATION/USER>
+yapp.github.reponame=<NAME-OF-REPO>
+```
+
+*GitLab*
+
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.gitlab.host=https://gitlab.com
+yapp.gitlab.token=<YOUR-GITLAB-TOKEN> -# put this global gradle.properties, or use system env so you dont commit it
+yapp.gitlab.tokenType=<YOUR-GITLAB-TOKEN-TYPE>
+yapp.gitlab.endpointLevel=project
+yapp.gitlab.glProjectId=<YOUR-GITLAB-PROJECT-ID>
+```
+
+*OSSRH/Maven Central*
+
+Build file(build.gradle.kts) configuration, including signing
 
 ```kotlin
 yapp {
@@ -266,7 +191,7 @@ yapp {
 
 Properties file(gradle.properties) configuration 
 
-```
+```properties
 yapp.mavenPublishing.name = exampleproject
 yapp.mavenPublishing.description = an pom example description
 yapp.mavenPublishing.url = https://github.com/myexamplaproject
@@ -288,6 +213,124 @@ yapp.mavenPublishing.organizationUrl = my org url
 yapp.signing.enabled = false
 ```
 
+## Configurations
+
+You can put your configuration in a
+
+- Build File (build.gradle.kts etc)
+- Property File (gradle.properties etc)
+- System Environment Variable
+
+This is also the order in which they will be picked up.
+
+The plugin abstracts:
+
+* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
+* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
+* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
+* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
+
+### Configuration options
+
+The following configuration tables are showing the values as
+| Build file         | Property file     | System environment     |  Comment              |
+
+* NOTE: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
+
+* **Yapp Publisher General Configuration **
+
+| yapp { property }  | yapp.property     | YAPP_PROPERTY          | Value                   |
+| --------------     | ----------------- | ---------------------- | ----------------------------- |
+| target             | *                 | *                      |  A [publishing target](#publishing-target) or empty|
+
+**MavenPublishing Configuration**
+
+| yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
+| ---------------------------  | ----------------------- | ------------------------- | ----------- |
+| mavenCentralLegacyUrl        | *                       | *                         |             |
+| artifactId                   | *                       | *                         |             |
+| groupId                      | *                       | *                         |             | 
+| version                      | *                       | *                         |             | 
+| name                         | *                       | *                         |             | 
+| description                  | *                       | *                         |             | 
+| url                          | *                       | *                         |             | 
+| inceptionYear                | *                       | *                         |             | 
+| licenseName                  | *                       | *                         |             | 
+| licenseUrl                   | *                       | *                         |             | 
+| licenseDistribution          | *                       | *                         |             | 
+| licenseComments              | *                       | *                         |             | 
+| developerId                  | *                       | *                         |             | 
+| developerName                | *                       | *                         |             | 
+| developerEmail               | *                       | *                         |             | 
+| organization                 | *                       | *                         |             | 
+| organizationUrl              | *                       | *                         |             | 
+| scmUrl                       | *                       | *                         |             | 
+| scmConnection                | *                       | *                         |             | 
+| scmDeveloperConnection       | *                       | *                         |             | 
+
+**Maven Central**
+
+| yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
+| --------------     | ----------------- | ---------------------- | ------------ |
+| ossrhUser          | *                 | *                      |              |
+| ossrhPassword      | *                 | *                      |              |
+
+**Signing**
+
+Note: If signing is enabled, the signing key can be either a path to an gpg-key or in text format with literal newlines
+as \n.
+See the gpg folder under the Project test resources for examples.
+
+| yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
+| ------------------------------- | ----------------------| ------------------------- | ------------ |
+| enabled                         | *                     | *                         |              |
+| signSnapshot                    | *                     | *                         |              |
+| keySecret                       | *                     | *                         |              |
+| keyId                           | *                     | *                         |              |
+| key                             | *                     | *                         |              |
+
+**Gradle Plugin and publishing**
+
+| yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
+| ------------------------------------ | -----------------------      | -------------------------  | ----------- |
+| web                                  | *                            | *                          |             |
+| vcs                                  | *                            | *                          |             |
+| tags                                 | *                            | *                          |             |
+| id                                   | *                            | *                          |             |
+| class                                | *                            | *                          |             |
+| description                          | *                            | *                          |             |
+| displayName                          | *                            | *                          |             |
+| key                                  | *                            | *                          |             |
+| keySecret                            | *                            | *                          |             |
+
+## Future
+
+In a very early stage, the following features are planned, according to priority:
+
+* More tests
+* More targets are planned. JFrog and Custom
+* Better semi smart Plugin identification
+* More settings can be simplified and auto set
+* Ability to do final release stage on maven central so one does not have to do it manually
+* Create sample configuration
+* Android Library support
+* Better Java support
+* Dokka-support
+* Docs/source inclusion/exclusion option
+* Nested object model, for the few 10% that might need them
+* Support other languages than Java/Kotlin
+* and more,
+
+# F.A.Q
+
+* Why are there tasks called generateMetaDataFileForPluginMavenPublication and more, all relating to "pluginMaven"
+
+It is a design choice (or a bug) from Gradle, these tasks are autogenerated for the Maven Publish plugin and can't be disabled.
+Look att [https://github.com/gradle/gradle/issues/12394](https://github.com/gradle/gradle/issues/12394)
+
+* Why another publisher plugin ?
+
+At the time of starting this plugin there was none found that had all the features this one has.
 
 ## Getting help
 
