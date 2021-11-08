@@ -7,9 +7,9 @@ import java.net.URI
 
 internal class GitLabPackageRegistry(
     override val project: Project,
-    publishTarget: PublishTargetType
+    publishTarget: PublishingTargetType
 ) :
-    MavenCentral(project, publishTarget) {
+    BasePublishTarget(project, publishTarget) {
 
     override fun configure() {
         // val tokenTypes = listOf("Private-Token", "Deploy-Token", "Job-Token")
