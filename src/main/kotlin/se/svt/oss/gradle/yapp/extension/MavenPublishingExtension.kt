@@ -3,45 +3,45 @@ package se.svt.oss.gradle.yapp.extension
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
-open class MavenPublishingExtension(project: Project) {
+open class MavenPublishingExtension(val project: Project) {
     open val envPrefix: String = "YAPP_MAVENPUBLISHING_"
     open var propPrefix: String = "yapp.mavenPublishing."
 
-    var mavenCentralLegacyUrl: Property<Boolean> = project.propBool("mavenCentralLegacyUrl", propPrefix, envPrefix)
+    var mavenCentralLegacyUrl: Property<Boolean> = propertyBool("mavenCentralLegacyUrl")
 
-    open var artifactId: Property<String> = project.prop("artifactId", propPrefix, envPrefix)
-    open var groupId: Property<String> = project.prop("groupId", propPrefix, envPrefix)
-    open var version: Property<String> = project.prop("version", propPrefix, envPrefix)
-    var name: Property<String> = project.prop("name", propPrefix, envPrefix)
+    open var artifactId: Property<String> = property("artifactId")
+    open var groupId: Property<String> = property("groupId")
+    open var version: Property<String> = property("version")
+    var name: Property<String> = property("name")
 
-    var description: Property<String> = project.prop("description", propPrefix, envPrefix)
-    var url: Property<String> = project.prop("url", propPrefix, envPrefix)
-    var inceptionYear: Property<String> =
-        project.prop("inceptionYear", propPrefix, envPrefix)
+    var description: Property<String> = property("description")
+    var url: Property<String> = property("url")
+    var inceptionYear: Property<String> = property("inceptionYear")
 
-    var licenseName: Property<String> = project.prop("licenseName", propPrefix, envPrefix)
-    var licenseUrl: Property<String> = project.prop("licenseUrl", propPrefix, envPrefix)
+    var licenseName: Property<String> = property("licenseName")
+    var licenseUrl: Property<String> = property("licenseUrl")
     var licenseDistribution: Property<String> =
-        project.prop("licenseDistribution", propPrefix, envPrefix)
-    var licenseComments: Property<String> =
-        project.prop("licenseComments", propPrefix, envPrefix)
+        property("licenseDistribution")
+    var licenseComments: Property<String> = property("licenseComments")
 
-    var developerId: Property<String> = project.prop("developerId", propPrefix, envPrefix)
-    var developerName: Property<String> =
-        project.prop("developerName", propPrefix, envPrefix)
-    var developerEmail: Property<String> =
-        project.prop("developerEmail", propPrefix, envPrefix)
+    var developerId: Property<String> = property("developerId")
+    var developerName: Property<String> = property("developerName")
+    var developerEmail: Property<String> = property("developerEmail")
 
-    var organization: Property<String> = project.prop("organization", propPrefix, envPrefix)
-    var organizationUrl: Property<String> =
-        project.prop("organizationUrl", propPrefix, envPrefix)
+    var organization: Property<String> = property("organization")
+    var organizationUrl: Property<String> = property("organizationUrl")
 
-    var scmUrl: Property<String> = project.prop("scmUrl", propPrefix, envPrefix)
-    var scmConnection: Property<String> =
-        project.prop("scmConnection", propPrefix, envPrefix)
-    var scmDeveloperConnection: Property<String> =
-        project.prop("scmDeveloperConnection", propPrefix, envPrefix)
+    var scmUrl: Property<String> = property("scmUrl")
 
-    var ossrhUser: Property<String> = project.prop("ossrhUser", "yapp.", "YAPP_")
-    var ossrhPassword: Property<String> = project.prop("ossrhPassword", "yapp.", "YAPP_")
+    var scmConnection: Property<String> = property("scmConnection")
+    var scmDeveloperConnection: Property<String> = property("scmDeveloperConnection",)
+
+    open var user: Property<String> = property("user")
+    open var password: Property<String> = property("password")
+    open var token: Property<String> = property("token")
+
+    open var directReleaseToMavenCentral: Property<Boolean> = propertyBool("directReleaseToMavenCentral")
+
+    internal fun property(property: String) = project.prop(property, propPrefix, envPrefix)
+    internal fun propertyBool(property: String) = project.propBool(property, propPrefix, envPrefix)
 }

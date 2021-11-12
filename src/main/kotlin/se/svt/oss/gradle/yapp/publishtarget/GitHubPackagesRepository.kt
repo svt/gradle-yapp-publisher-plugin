@@ -5,15 +5,15 @@ import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
 import se.svt.oss.gradle.yapp.plugin.MavenPublishingPlugin
 import java.net.URI
 
-internal class GitHubPackageRegistry(
+internal class GitHubPackagesRepository(
     override val project: Project,
-    publishTarget: PublishingTargetType
+    override val publishingTargetType: PublishingTargetType
 ) :
-    BasePublishTarget(project, publishTarget) {
+    BasePublishTarget(project, publishingTargetType) {
 
     override fun configure() {
-        MavenPublishingPlugin(project).configure(credentials(), publishTarget)
-        ArtifactConfigure(project).javaKotlinConfigure()
+        MavenPublishingPlugin(project).configure(credentials(), publishingTargetType)
+        ArtifactConfigure(project, publishingTargetType).javaKotlinConfigure()
     }
 
     private fun gitHubUri(): URI =
@@ -21,7 +21,7 @@ internal class GitHubPackageRegistry(
 
     private fun credentials(): RepositoryConfiguration {
         val credential = RepositoryCredential(
-            yappExtension().gitHub.actor.get(), yappExtension().gitHub.token.get()
+            yappExtension().gitHub.user.get(), yappExtension().gitHub.token.get()
         )
         return RepositoryConfiguration(gitHubUri(), "GitHubPackages", credential)
     }

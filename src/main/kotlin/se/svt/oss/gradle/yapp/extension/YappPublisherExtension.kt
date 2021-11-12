@@ -5,6 +5,7 @@ package se.svt.oss.gradle.yapp.extension
 
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 
 open class YappPublisherExtension(
     project: Project,
@@ -12,8 +13,7 @@ open class YappPublisherExtension(
     var mavenPublishing: MavenPublishingExtension,
     var gitLab: GitLabExtension,
     var gitHub: GitHubExtension,
-    var gradlePortalPublishing: GradlePluginPublishingExtension,
-    var publishTarget: PublishTargetExtension
+    var gradlePortalPublishing: GradlePluginPublishingExtension
 ) {
 
     // consumes `action` that for more flexible conf, see https://dzone.com/articles/the-complete-custom-gradle-plugin-building-tutoria
@@ -25,5 +25,8 @@ open class YappPublisherExtension(
     fun gradlePortalPublishing(action: Action<in GradlePluginPublishingExtension>) =
         action.execute(gradlePortalPublishing)
 
-    fun publishTarget(action: Action<in PublishTargetExtension>) = action.execute(publishTarget)
+    val envPrefix: String = "YAPP_"
+    var propPrefix: String = "yapp."
+
+    var targets: ListProperty<String> = project.propList("targets", propPrefix, envPrefix)
 }

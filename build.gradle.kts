@@ -19,8 +19,8 @@ version = "0.1.33"
 description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
-    mavenLocal()
     gradlePluginPortal()
+    mavenLocal()
     mavenCentral()
 //    maven(url="https://dl.bintray.com/kotlin/dokka")
 }
@@ -28,6 +28,7 @@ repositories {
 dependencies {
     api("com.gradle.publish:plugin-publish-plugin:0.16.0")
 
+    implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
     testImplementation("commons-io:commons-io:2.11.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.2")
     testImplementation("org.xmlunit:xmlunit-matchers:2.8.3")

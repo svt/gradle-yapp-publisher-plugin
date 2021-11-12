@@ -3,8 +3,9 @@ package se.svt.oss.gradle.yapp.artifact
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
 
-data class ArtifactConfigure(val project: Project) {
+data class ArtifactConfigure(val project: Project, val publishTarget: PublishingTargetType) {
 
     fun javaKotlinConfigure() {
 
@@ -21,7 +22,7 @@ data class ArtifactConfigure(val project: Project) {
         project.extensions.configure(PublishingExtension::class.java) { pe ->
 
             pe.publications { publications ->
-                val p = publications.getByName("pluginMaven") as MavenPublication
+                val p = publications.getByName(publishTarget.name) as MavenPublication
                 p.from(project.components.getByName("java"))
 
                 val source = project.tasks.findByPath(sources)

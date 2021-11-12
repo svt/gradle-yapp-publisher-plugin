@@ -18,10 +18,12 @@ abstract class ConfigurationList : DefaultTask() {
 
         val publishTarget = publishTarget(projectType, project)
 
+        publishTarget.forEach { println(it.name()) }
+
         println(
             """
        
-                | Yapp Publisher Plugin: Name: ${project.name}, Type: ${projectType.javaClass.simpleName}, Target: ${publishTarget.name()}
+                | Yapp Publisher Plugin: Name: ${project.name}, Type: ${projectType.javaClass.simpleName}, Target: ${publishTarget.map { it.name() }}
                 
             """.trimIndent()
         )
