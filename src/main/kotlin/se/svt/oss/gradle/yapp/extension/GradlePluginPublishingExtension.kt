@@ -5,26 +5,28 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 open class GradlePluginPublishingExtension(
-    project: Project
+    val project: Project
 ) {
 
     val envPrefix: String = "YAPP_GRADLEPLUGIN_"
     var propPrefix: String = "yapp.gradleplugin."
 
-    var id: Property<String> = project.prop("id", propPrefix, envPrefix)
-    var webSite: Property<String> = project.prop("web", propPrefix, envPrefix)
-    var vcsUrl: Property<String> = project.prop("vcs", propPrefix, envPrefix)
+    var id: Property<String> = property("id")
+    var webSite: Property<String> = property("web")
+    var vcsUrl: Property<String> = property("vcs")
     var tags: ListProperty<String> =
-        project.withDefaultList(project.propList("tags", propPrefix, envPrefix))
+        project.propList("tags", propPrefix, envPrefix)
     var implementationClass: Property<String> =
-        project.prop("class", propPrefix, envPrefix)
+        property("class")
     var description: Property<String> =
-        project.prop("description", propPrefix, envPrefix)
+        property("description")
     var displayName: Property<String> =
-        project.prop("displayname", propPrefix, envPrefix)
+        property("displayname")
 
     var key: Property<String> =
-        project.prop("key", propPrefix, envPrefix)
+        property("key")
     var keySecret: Property<String> =
-        project.prop("keySecret", propPrefix, envPrefix)
+        property("keySecret")
+
+    fun property(property: String) = project.prop(property, propPrefix, envPrefix)
 }

@@ -93,19 +93,15 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         val version = "0.0.4-SNAPSHOT"
 
         environmentVariables.set("YAPP_MAVENPUBLISHING_NAME", "envname")
+        environmentVariables.set("YAPP_TARGETS", "maven_central")
 
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile),
-            """
-            
-            yapp{
-            
-                mavenPublishing {
-                    name.set("confname")
-                }
-            }
-            """.trimIndent(),
-            """yapp.mavenPublishing.name=propertyname""",
+
+            conf.yappBuildGradleConf(group, version, name = "confname"),
+            """yapp.mavenPublishing.name=propertyname
+                |yapp.targets=maven_central
+            """.trimMargin(),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -113,7 +109,10 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.mavenPublishing.name=propertyname""",
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "",
+            """yapp.mavenPublishing.name=propertyname
+                |yapp.targets=maven_central
+            """.trimMargin(),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -138,13 +137,16 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             conf.buildGradle(group, version, buildGradleFile = buildFile),
             """
                 
-            yapp{
+            yapp {
+                targets.add("maven_central")
                 mavenPublishing {
                     name.set("confname")
                 }
             }
             """.trimIndent(),
-            """yapp.mavenPublishing.name=propertyname""",
+            """yapp.mavenPublishing.name=propertyname
+                |yapp.targets=maven_central
+            """.trimMargin(),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 
@@ -152,7 +154,11 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "", """yapp.mavenPublishing.name=propertyname""",
+            conf.buildGradle(group, version, buildGradleFile = buildFile), "",
+            """yapp.mavenPublishing.name=propertyname
+                |
+                |yapp.targets=maven_central
+            """.trimMargin(),
             projectdir = File("$testDirPath/$mcProjectPath")
         )
 

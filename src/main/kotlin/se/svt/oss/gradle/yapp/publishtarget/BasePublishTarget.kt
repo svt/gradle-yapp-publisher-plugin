@@ -10,7 +10,7 @@ import se.svt.oss.gradle.yapp.isSnapShot
 
 abstract class BasePublishTarget(
     open val project: Project,
-    open val publishTarget: PublishingTargetType
+    open val publishingTargetType: PublishingTargetType
 ) {
 
     abstract fun configure()

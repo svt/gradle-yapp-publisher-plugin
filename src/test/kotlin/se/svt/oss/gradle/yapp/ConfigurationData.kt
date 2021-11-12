@@ -30,7 +30,7 @@ object ConfigurationData {
     }
 
     fun yappPropertiesConf(name: String = pluginName, group: String, version: String) = """
-       
+       |yapp.targets=maven_central 
        |yapp.mavenPublishing.groupId=$group
        |yapp.mavenPublishing.version=$version
        |yapp.mavenPublishing.artifactId=$name
@@ -70,16 +70,18 @@ object ConfigurationData {
         version: String,
         signingKey: String = "",
         signingEnabled: Boolean = false,
-        signSnapshot: Boolean = false
+        signSnapshot: Boolean = false,
+        name: String = "pn",
     ) = """
        
 yapp {
-
+    targets.add("maven_central")
+    
     mavenPublishing {
         groupId.set("$group")
         version.set("$version")
 
-        name.set("pn")
+        name.set("$name")
         description.set("pd")
         url.set("http://p.se")
         inceptionYear.set("1999")
@@ -120,7 +122,7 @@ yapp {
     ) = """
        
 yapp {
-
+targets.add("maven_central")
     
     signing { 
         enabled.set($signingEnabled)
@@ -135,6 +137,7 @@ yapp {
     fun systemEnv(): Map<String, String> {
         val envPrefix = "YAPP_MAVENPUBLISHING_"
         return mapOf(
+            Pair("YAPP_TARGETS", "maven_central"),
             Pair("${envPrefix}NAME", "yapp.mavenPublishing.name"),
             Pair("${envPrefix}DESCRIPTION", "yapp.mavenPublishing.description"),
             Pair("${envPrefix}URL", "yapp.mavenPublishing.url"),
@@ -188,6 +191,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api("com.gradle.publish:plugin-publish-plugin:0.15.0")
 
+    implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
     testImplementation("commons-io:commons-io:2.8.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.2")
     testImplementation("org.xmlunit:xmlunit-matchers:2.8.2")

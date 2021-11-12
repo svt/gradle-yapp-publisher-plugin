@@ -7,7 +7,7 @@
 
 ## What is it?
 
-A Gradle plugin for publishing and optionally signing Java and Kotlin packages to Maven Central,
+A Gradle plugin for publishing and optionally signing Java and libraries packages to Maven Central,
 Gradle Portal, GitHub, GitLab.
 
 ## Why does it exist?
@@ -29,17 +29,15 @@ To offer a simple, flexible union interface for these tasks, regardless of publi
 ### Quickstart
 
 1. Add this [plugin](#plugin-addition) itself to your plugins block
-
-2. Add a [Basic publish plugin identificator](#plugin-addition)
     
-3. Configure the plugin, see the [examples](#examples).
+2. Configure the plugin, see the [examples](#examples).
 The examples show the most basic settings - there are lots more to [configure or override if you need/want to](#configurations).
 
-4. Run [Gradle Task](#tasks) *yappConfiguration* to view the plugins current project type and publish target configuration.
+3. Run [Gradle Task](#tasks) *yappConfiguration* to view the plugins current project type and publish target configuration.
 
-5. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo if you want to verify
+4. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo if you want to verify
 
-6. Run [Gradle Task](#tasks) *publish* to publish your plugin.
+5. Run [Gradle Task](#tasks) *publish* to publish your plugin.
 
 ## Plugin addition 
 
@@ -52,7 +50,8 @@ plugins {
 }
 ```
 
-You also need to add one of the following  basic publishing plugins as a placeholder
+You can also add one of the following basic publishing plugins as a placeholder.
+However, by setting the [Publishing Target](#publishing-target) 
 
 *Publishing to Maven Central/GitLab/GitHub/Custom (Java/Kotlin Library)*
 
@@ -98,7 +97,7 @@ If you leave this empty, the plugin will make a guess based on your added plugin
 
 ### In summary, The plugin needs to know about:
 
-* A [Publishing Target](#publish-target)
+* A [Publishing Target](#publishing-target)
 * A few properties, depending on your configuration target
 * A project type (for example, a java-library)
 
@@ -107,7 +106,7 @@ If you leave this empty, the plugin will make a guess based on your added plugin
 
 ## Examples
 
-*Gradle Portal*
+*Publish to Gradle Portal*
 
 With a gradle.properties file and System.ENV
 
@@ -222,19 +221,6 @@ You can put your configuration in a
 - System Environment Variable
 
 This is also the order in which they will be picked up.
-
-The plugin abstracts:
-
-* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
-* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
-* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
-* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
-
-### Configuration options
-
-The following configuration tables are showing the values as
-| Build file         | Property file     | System environment     |  Comment              |
-
 * NOTE: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
 
 * **Yapp Publisher General Configuration **
@@ -243,9 +229,15 @@ The following configuration tables are showing the values as
 | --------------     | ----------------- | ---------------------- | ----------------------------- |
 | target             | *                 | *                      |  A [publishing target](#publishing-target) or empty|
 
-**MavenPublishing Configuration**
+**General MavenPublishing Configuration/Maven Central**
 
-| yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.mavenPublishing.property             |
+| Build file       | build.gradle.kts-format      | yapp { mavenPublishing { property } } }   |
+| N/A              | environment variable         | YAPP_MAVENPUBLISHING_PROPERTY             |
+
+| property            | description           |   example value               |  (maps to)                                                                         |
 | ---------------------------  | ----------------------- | ------------------------- | ----------- |
 | mavenCentralLegacyUrl        | *                       | *                         |             |
 | artifactId                   | *                       | *                         |             |
@@ -267,51 +259,90 @@ The following configuration tables are showing the values as
 | scmUrl                       | *                       | *                         |             | 
 | scmConnection                | *                       | *                         |             | 
 | scmDeveloperConnection       | *                       | *                         |             | 
+| user                          | *                 | *                      |              |
+| password                      | *                 | *                      |              |
 
-**Maven Central**
-
-| yapp { mavenPublishing { property } } }  | yapp.mavenPublishing.property       | YAPP_MAVENPUBLISHING_PROPERTY         |             |
-| --------------     | ----------------- | ---------------------- | ------------ |
-| ossrhUser          | *                 | *                      |              |
-| ossrhPassword      | *                 | *                      |              |
 
 **Signing**
 
-Note: If signing is enabled, the signing key can be either a path to an gpg-key or in text format with literal newlines
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.signing.property             |
+| Build file       | build.gradle.kts-format      | yapp { signing { property } } }   |
+| N/A              | environment variable         | YAPP_SIGNING_PROPERTY             |
+
+| property            | description           |   example value               |  (maps to)                                                                         |
+| ------------------- | ----------------------| ----------------------------  | -------------------------------------------------------------------------------- |
+| enabled             | signing enabled       | true                          |                                                                                  |
+| signSnapshot        | sign snapshot         | true                          |                                                                                  |
+| keySecret           | signing key password  | <YOUR-SECRET-PW>              | [password](https://docs.gradle.org/current/userguide/signing_plugin.html)           |
+| keyId               | public key id (last 8)| abc12345                      | [keyId](https://docs.gradle.org/current/userguide/signing_plugin.html)             |
+| key                 | signing key           | /path/to/gpgkey or textformat | [secretKeyRingFile](https://docs.gradle.org/current/userguide/signing_plugin.html)            |
+
+Note: The signing key can be either a path to an gpg-key or in text format with literal newlines
 as \n.
 See the gpg folder under the Project test resources for examples.
 
-| yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
-| ------------------------------- | ----------------------| ------------------------- | ------------ |
-| enabled                         | *                     | *                         |              |
-| signSnapshot                    | *                     | *                         |              |
-| keySecret                       | *                     | *                         |              |
-| keyId                           | *                     | *                         |              |
-| key                             | *                     | *                         |              |
-
 **Gradle Plugin and publishing**
 
-| yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
-| ------------------------------------ | -----------------------      | -------------------------  | ----------- |
-| web                                  | *                            | *                          |             |
-| vcs                                  | *                            | *                          |             |
-| tags                                 | *                            | *                          |             |
-| id                                   | *                            | *                          |             |
-| class                                | *                            | *                          |             |
-| description                          | *                            | *                          |             |
-| displayName                          | *                            | *                          |             |
-| key                                  | *                            | *                          |             |
-| keySecret                            | *                            | *                          |             |
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.gradleplugin.property             |
+| Build file       | build.gradle.kts-format      | yapp { gradleplugin { property } } }   |
+| N/A              | environment variable         | YAPP_GRADLEPLUGIN_PROPERTY             |
+
+| property            | description                                         |  example value                              |  (maps to)    |
+| ------------------- | --------------------------------------------------- | ------------------------------------------  | ------------------------ |
+| web                 | the project weburl                                  | https://my.web.com/project                 |  [web](https://plugins.gradle.org/docs/publish-plugin)        |
+| vcs                 | The projects repo url                               | https://github.com/johndoe/GradlePlugins   |  [vcs](https://plugins.gradle.org/docs/publish-plugin)           |
+| tags                | Tags to describe the categories the plugin covers   | listOf("publishing", "ossrh")              |  [tags](https://plugins.gradle.org/docs/publish-plugin)           |
+| id                  | groupid.plugin-name                                 | org.best.myplugin                          |  [id](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)           |
+| class               | The extensions main class                           | org.best.plugin.SimplePlugin               |  [implementationClass](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)          |
+| description         | A description specifying the intent of the plugin.  | A plugin for doing x!                       |  [description](https://plugins.gradle.org/docs/publish-plugin)           |
+| displayName         | Overall plugin display name                         | Gradle Do-it Plugin                        |  [displayName](https://plugins.gradle.org/docs/publish-plugin)           |
+| token               | Plugin Portal token                                 | @£234234efkkdk                             |  [API Key](https://plugins.gradle.org/docs/publish-plugin)           |
+| password            | Plugin Portal password                              | <YOUR-SECRET-LOGIN-PASS                    |   [Account password](https://plugins.gradle.org/docs/publish-plugin)          |
+
+**GitLab Package Registry Publishing**
+
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.gitlab.property             |
+| Build file       | build.gradle.kts-format      | yapp { gitlab { property } } }   |
+| N/A              | environment variable         | YAPP_GITLAB_PROPERTY             |
+
+| property            | description                             |  example value                       |  (maps to)            |
+| ------------------- | --------------------------------------- | ------------------------------------ | ------------------------ |
+| host                | gitlab host                                         | https://gitlab.com         |  [web](https://plugins.gradle.org/docs/publish-plugin)        |
+| token               | [personal access, deploy or CI token](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html#authenticate-to-the-package-registry-with-maven) |  <YOUR-GITLAB-TOKEN> |  [credentialsvalue](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html) |
+| tokenType           | One of GitLabs token types                          |  Project-Token              |  [credentialsname](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html)           |
+| endpointLevel       | One of [GitLabs endpoint types](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html#use-the-gitlab-endpoint-for-maven-packages) | project                    |  [GItlabEndPoint](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html)           |
+| glProjectId         | Gitlab Project or GroupID                           | 24234242                   |  [projectOrGroupId](https://docs.gitlab.com/ee/user/packages/maven_repository/index.html)  |
+
+**GitHub Package Registry Publishing**
+
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.github.property             |
+| Build file       | build.gradle.kts-format      | yapp { github { property } } }   |
+| N/A              | environment variable         | YAPP_GITHUB_PROPERTY             |
+
+| property            | description                  |  example value                             |  (maps to)    |
+| ------------------- | ---------------------------- | ------------------------------------------ | ------------------------ |
+| user               | your github user             | johndoe                 |  [web](https://plugins.gradle.org/docs/publish-plugin)        |
+| token               | your github token            | secret token   |  [vcs](https://plugins.gradle.org/docs/publish-plugin)           |
+| namespace           | github-organisation/namespace | acmecorp               |  [tags](https://plugins.gradle.org/docs/publish-plugin)           |
+| repo                | github repo                  | pluginrep                         |  [id](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)           |
 
 ## Future
 
 In a very early stage, the following features are planned, according to priority:
 
 * More tests
-* More targets are planned. JFrog and Custom
-* Better semi smart Plugin identification
 * More settings can be simplified and auto set
 * Ability to do final release stage on maven central so one does not have to do it manually
+* More pre-configured targets. JFrog and Custom
+* Better semi smart Plugin identification
 * Create sample configuration
 * Android Library support
 * Better Java support
@@ -319,7 +350,6 @@ In a very early stage, the following features are planned, according to priority
 * Docs/source inclusion/exclusion option
 * Nested object model, for the few 10% that might need them
 * Support other languages than Java/Kotlin
-* and more,
 
 # F.A.Q
 
@@ -331,6 +361,13 @@ Look att [https://github.com/gradle/gradle/issues/12394](https://github.com/grad
 * Why another publisher plugin ?
 
 At the time of starting this plugin there was none found that had all the features this one has.
+
+## The plugin abstracts:
+
+* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
+* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
+* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
+* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
 
 ## Getting help
 

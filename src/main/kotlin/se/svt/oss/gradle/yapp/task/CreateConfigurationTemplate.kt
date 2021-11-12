@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 abstract class CreateConfigurationTemplate @Inject constructor(
     private val projectType: ProjectType,
-    private val publishTarget: BasePublishTarget
+    private val publishTarget: List<BasePublishTarget>
 ) : DefaultTask() {
     init {
         group = "yapp publisher"

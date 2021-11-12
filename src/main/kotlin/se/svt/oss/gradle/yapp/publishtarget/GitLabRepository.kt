@@ -5,17 +5,17 @@ import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
 import se.svt.oss.gradle.yapp.plugin.MavenPublishingPlugin
 import java.net.URI
 
-internal class GitLabPackageRegistry(
+internal class GitLabRepository(
     override val project: Project,
-    publishTarget: PublishingTargetType
+    override val publishingTargetType: PublishingTargetType
 ) :
-    BasePublishTarget(project, publishTarget) {
+    BasePublishTarget(project, publishingTargetType) {
 
     override fun configure() {
         // val tokenTypes = listOf("Private-Token", "Deploy-Token", "Job-Token")
 
-        MavenPublishingPlugin(project).configure(credentials(), publishTarget)
-        ArtifactConfigure(project).javaKotlinConfigure()
+        MavenPublishingPlugin(project).configure(credentials(), publishingTargetType)
+        ArtifactConfigure(project, publishingTargetType).javaKotlinConfigure()
     }
 
     private fun gitLabUri(): URI {

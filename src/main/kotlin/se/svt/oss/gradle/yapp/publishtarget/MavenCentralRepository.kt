@@ -7,22 +7,22 @@ import se.svt.oss.gradle.yapp.plugin.MavenPublishingPlugin
 import se.svt.oss.gradle.yapp.plugin.SigningPlugin
 import java.net.URI
 
-internal open class MavenCentral(
+internal open class MavenCentralRepository(
     override val project: Project,
-    publishTarget: PublishingTargetType
-) : BasePublishTarget(project, publishTarget) {
-
+    val publishTargetType: PublishingTargetType
+) :
+    BasePublishTarget(project, publishTargetType) {
     override fun configure() {
 
-        MavenPublishingPlugin(project).configure(ossrhCredential(), publishTarget)
-        ArtifactConfigure(project).javaKotlinConfigure()
+        MavenPublishingPlugin(project).configure(ossrhCredential(), publishTargetType)
+        ArtifactConfigure(project, publishTargetType).javaKotlinConfigure()
         SigningPlugin(project).configure()
     }
 
     private fun ossrhCredential(): RepositoryConfiguration {
         val uri = ossrhUrl()
         val credential = RepositoryCredential(
-            yappExtension().mavenPublishing.ossrhUser.get(), yappExtension().mavenPublishing.ossrhPassword.get()
+            yappExtension().mavenPublishing.user.get(), yappExtension().mavenPublishing.password.get()
         )
         return RepositoryConfiguration(uri, "MavenCentral", credential)
     }
@@ -31,7 +31,7 @@ internal open class MavenCentral(
         return if (project.isSnapShot()) {
             URI("https://${getUrlPrefix()}oss.sonatype.org/content/repositories/snapshots/")
         } else {
-            URI("https://${getUrlPrefix()}oss.sonatype.org/service/local/staging/deploy/maven2/")
+            URI("https://${getUrlPrefix()}oss.sonatype.org/service/local/")
         }
     }
 

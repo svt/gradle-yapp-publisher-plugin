@@ -5,9 +5,9 @@ import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
 
 class GradlePluginPortal(
     project: Project,
-    publishTarget: PublishingTargetType
+    override val publishingTargetType: PublishingTargetType
 ) :
-    BasePublishTarget(project, publishTarget) {
+    BasePublishTarget(project, publishingTargetType) {
 
     override fun configure() {
         GradlePortalPublishingPlugin(project).configure()

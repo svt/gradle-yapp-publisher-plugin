@@ -21,9 +21,11 @@ fun Project.propBool(property: String, propPrefix: String? = "", envPrefix: Stri
     return withDefault(result.toBoolean())
 }
 
-fun Project.propList(property: String, propPrefix: String, envPrefix: String): List<String> {
-    return (this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix$property") ?: "").toString()
+fun Project.propList(property: String, propPrefix: String, envPrefix: String): ListProperty<String> {
+
+    var result = (this.findProperty("$propPrefix$property") ?: System.getenv("$envPrefix${property.uppercase()}") ?: "").toString()
         .split(",")
+    return withDefaultList(result)
 }
 
 inline fun <reified T> Project.withDefault(value: T): Property<T> =

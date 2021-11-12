@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 abstract class PublishToLocal @Inject constructor(
     private val projectType: ProjectType,
-    private val publishTarget: BasePublishTarget
+    private val publishTarget: List<BasePublishTarget>
 ) : DefaultTask() {
     init {
 
@@ -16,6 +16,7 @@ abstract class PublishToLocal @Inject constructor(
         description = "Publish ${project.name} as a ${projectType.javaClass.simpleName} to the local repository"
         dependsOn(project.tasks.getByName("publishToMavenLocal"))
         doLast {
+
             println("Publish ${project.name} as a ${projectType.javaClass.simpleName} to the local repository")
         }
     }

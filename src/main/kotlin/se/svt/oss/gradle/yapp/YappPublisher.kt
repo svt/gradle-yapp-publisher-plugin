@@ -8,12 +8,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import se.svt.oss.gradle.yapp.config.ProjectType
-import se.svt.oss.gradle.yapp.config.ProjectType.Companion.projectType
 import se.svt.oss.gradle.yapp.extension.GitHubExtension
 import se.svt.oss.gradle.yapp.extension.GitLabExtension
 import se.svt.oss.gradle.yapp.extension.GradlePluginPublishingExtension
 import se.svt.oss.gradle.yapp.extension.MavenPublishingExtension
-import se.svt.oss.gradle.yapp.extension.PublishTargetExtension
 import se.svt.oss.gradle.yapp.extension.SigningExtension
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.projecttype.GradleJavaPlugin
@@ -22,7 +20,7 @@ import se.svt.oss.gradle.yapp.projecttype.JavaLibrary
 import se.svt.oss.gradle.yapp.projecttype.JavaProject
 import se.svt.oss.gradle.yapp.projecttype.KotlinLibrary
 import se.svt.oss.gradle.yapp.publishtarget.BasePublishTarget
-import se.svt.oss.gradle.yapp.publishtarget.MavenCentral
+import se.svt.oss.gradle.yapp.publishtarget.MavenCentralRepository
 import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
 import se.svt.oss.gradle.yapp.publishtarget.UnknownPublishTarget
 import se.svt.oss.gradle.yapp.task.ConfigurationList
@@ -46,21 +44,20 @@ class YappPublisher : Plugin<Project> {
             MavenPublishingExtension(project),
             GitLabExtension(project),
             GitHubExtension(project),
-            GradlePluginPublishingExtension(project),
-            PublishTargetExtension(project)
+            GradlePluginPublishingExtension(project)
         )
 
-        val projectType = projectType(project)
-        val publishTarget = publishTarget(projectType, project)
-
         project.afterEvaluate {
+            val projectType = ProjectType.projectType(project)
+            val publishTarget = publishTarget(projectType, project)
+            println("HERE we go ${projectType.javaClass.simpleName}")
 
-            publishTarget.configure()
+            publishTarget.forEach { it.configure() }
 
             registerTasks(project, projectType, publishTarget)
             project.logger.info(
                 "Yapp Publisher Plugin: Name: {}, Type: {}, Target: {}",
-                project.name, projectType.javaClass.simpleName, publishTarget.name()
+                project.name, projectType.javaClass.simpleName, publishTarget.forEach { it.name() }
             )
         }
     }
@@ -68,7 +65,7 @@ class YappPublisher : Plugin<Project> {
     private fun registerTasks(
         project: Project,
         projectType: ProjectType,
-        publishTarget: BasePublishTarget
+        publishTarget: List<BasePublishTarget>
     ) {
         project.tasks.register("yappConfiguration", ConfigurationList::class.java)
 
@@ -83,6 +80,7 @@ class YappPublisher : Plugin<Project> {
             Publish::class.java,
             projectType,
             publishTarget
+
         )
         project.tasks.register<CreateConfigurationTemplate>(
             "createConfigurationTemplate",
@@ -104,17 +102,21 @@ fun Project.hasPlugin(value: String): Boolean = project.plugins.hasPlugin(value)
 fun publishTarget(
     projectType: ProjectType,
     project: Project
-): BasePublishTarget =
-    userSpecifiedPublishTargetType(project) ?: defaultPublishTargetType(project, projectType)
+): List<BasePublishTarget> {
+    val targets = userSpecifiedPublishTargetType(project)
 
-private fun userSpecifiedPublishTargetType(project: Project): BasePublishTarget? {
-    val target = project.extensions.getByType(YappPublisherExtension::class.java).publishTarget.target.get()
-    return if (target.isNullOrEmpty()) {
-        PublishingTargetType.NA.publishTarget(project)
-    } else {
-        PublishingTargetType.valueOf(target.uppercase()).publishTarget(project)
+    return when (targets.isEmpty()) {
+        true -> {
+            listOf(defaultPublishTargetType(project, projectType))
+        }
+        else -> targets
     }
 }
+
+private fun userSpecifiedPublishTargetType(project: Project): List<BasePublishTarget> =
+    project.extensions.getByType(YappPublisherExtension::class.java).targets.getOrElse(emptyList()).map {
+        PublishingTargetType.valueOf(it.uppercase().trim()).publishTarget(project)
+    }
 
 private fun defaultPublishTargetType(
     project: Project,
@@ -124,9 +126,9 @@ private fun defaultPublishTargetType(
     return when (projectType) {
         is GradleKotlinPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
         is GradleJavaPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
-        is JavaLibrary -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
-        is JavaProject -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
-        is KotlinLibrary -> MavenCentral(project, PublishingTargetType.MAVEN_CENTRAL)
-        else -> UnknownPublishTarget(project, PublishingTargetType.NA)
+        is JavaLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
+        is JavaProject -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
+        is KotlinLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
+        else -> UnknownPublishTarget(project)
     }
 }

@@ -1,5 +1,7 @@
 package se.svt.oss.gradle.yapp.plugin
 
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
+import io.github.gradlenexus.publishplugin.NexusPublishPlugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.PasswordCredentials
 import org.gradle.api.credentials.HttpHeaderCredentials
@@ -13,16 +15,17 @@ import se.svt.oss.gradle.yapp.publishtarget.RepositoryConfiguration
 class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
     fun configure(
         repositoryConf: RepositoryConfiguration,
-        publishTarget: PublishingTargetType
+        publishTargetType: PublishingTargetType
     ) {
 
         val ext = yappExtension()
-        println(ext.mavenPublishing.name)
+        println(ext.mavenPublishing.name.get())
         project.plugins.apply(MavenPublishPlugin::class.java)
+
         project.extensions.configure(PublishingExtension::class.java) { p ->
 
             p.publications { publications ->
-                publications.register("pluginMaven", MavenPublication::class.java) { publication ->
+                publications.register(publishTargetType.name, MavenPublication::class.java) { publication ->
                     project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                         // so we cant get rid of the afterEvalute
 
@@ -83,7 +86,7 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                             name = repositoryConf.name
                             url = repositoryConf.uri
 
-                            if (publishTarget == PublishingTargetType.GITLAB) {
+                            if (publishTargetType == PublishingTargetType.GITLAB) {
                                 credentials(HttpHeaderCredentials::class.java) {
                                     it.name = repositoryConf.credential.name
                                     it.value = repositoryConf.credential.value
@@ -100,6 +103,27 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        println(publishTargetType)
+        if (publishTargetType == PublishingTargetType.MAVEN_CENTRAL && ext.mavenPublishing.directReleaseToMavenCentral.get()) {
+            project.plugins.apply(NexusPublishPlugin::class.java)
+            project.extensions.configure(NexusPublishExtension::class.java) { extension ->
+                extension.repositories.forEach { println(it.name) }
+                if (extension.repositories.isNullOrEmpty()) {
+                    extension.repositories.sonatype { nexus ->
+                        if (repositoryConf.uri.path.contains("SNAPSHOT")) {
+                            nexus.snapshotRepositoryUrl.set(repositoryConf.uri)
+                        } else {
+                            nexus.nexusUrl.set(repositoryConf.uri)
+                        }
+                        nexus.username.set(repositoryConf.credential.name)
+                        nexus.password.set(repositoryConf.credential.value)
+                    }
+
+                    extension.repositories.forEach { println("${it.name}asfasdf") }
                 }
             }
         }
