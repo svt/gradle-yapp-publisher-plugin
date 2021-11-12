@@ -1,4 +1,4 @@
-package se.svt.oss.gradle.yapp.publishtarget
+package se.svt.oss.gradle.yapp.publishingtarget
 
 import org.gradle.api.Project
 import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
@@ -16,13 +16,11 @@ internal class GitHubPackagesRepository(
         ArtifactConfigure(project, publishingTargetType).javaKotlinConfigure()
     }
 
-    private fun gitHubUri(): URI =
-        URI("https://maven.pkg.github.com/${yappExtension().gitHub.namespace.get()}/${yappExtension().gitHub.repoName.get()}")
-
     private fun credentials(): RepositoryConfiguration {
+        val uri = URI("https://maven.pkg.github.com/${yappExtension().gitHub.namespace.get()}/${yappExtension().gitHub.repoName.get()}")
         val credential = RepositoryCredential(
             yappExtension().gitHub.user.get(), yappExtension().gitHub.token.get()
         )
-        return RepositoryConfiguration(gitHubUri(), "GitHubPackages", credential)
+        return RepositoryConfiguration(uri, uri, "GitHubPackages", credential)
     }
 }

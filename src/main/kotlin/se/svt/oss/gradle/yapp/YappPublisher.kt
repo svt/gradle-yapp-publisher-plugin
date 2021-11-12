@@ -3,41 +3,56 @@
 // SPDX-License-Identifier: Apache-2.0
 package se.svt.oss.gradle.yapp
 
-import GradlePluginPortal
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import se.svt.oss.gradle.yapp.config.ProjectType
+import se.svt.oss.gradle.yapp.config.identifyProjectType
 import se.svt.oss.gradle.yapp.extension.GitHubExtension
 import se.svt.oss.gradle.yapp.extension.GitLabExtension
 import se.svt.oss.gradle.yapp.extension.GradlePluginPublishingExtension
 import se.svt.oss.gradle.yapp.extension.MavenPublishingExtension
 import se.svt.oss.gradle.yapp.extension.SigningExtension
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
-import se.svt.oss.gradle.yapp.projecttype.GradleJavaPlugin
-import se.svt.oss.gradle.yapp.projecttype.GradleKotlinPlugin
-import se.svt.oss.gradle.yapp.projecttype.JavaLibrary
-import se.svt.oss.gradle.yapp.projecttype.JavaProject
-import se.svt.oss.gradle.yapp.projecttype.KotlinLibrary
-import se.svt.oss.gradle.yapp.publishtarget.BasePublishTarget
-import se.svt.oss.gradle.yapp.publishtarget.MavenCentralRepository
-import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
-import se.svt.oss.gradle.yapp.publishtarget.UnknownPublishTarget
-import se.svt.oss.gradle.yapp.task.ConfigurationList
-import se.svt.oss.gradle.yapp.task.CreateConfigurationTemplate
-import se.svt.oss.gradle.yapp.task.Publish
-import se.svt.oss.gradle.yapp.task.PublishToLocal
+import se.svt.oss.gradle.yapp.publishingtarget.BasePublishTarget
+import se.svt.oss.gradle.yapp.publishingtarget.identifyPublishTarget
+import se.svt.oss.gradle.yapp.task.CreateConfigurationTemplateTask
+import se.svt.oss.gradle.yapp.task.PublishArtifactTask
+import se.svt.oss.gradle.yapp.task.PublishArtifactToLocalRepoTask
+import se.svt.oss.gradle.yapp.task.YappConfigurationTask
 
 class YappPublisher : Plugin<Project> {
 
     companion object {
-        val MIN_GRADLE = GradleVersion.version("7.1")
+        val MIN_GRADLE: GradleVersion = GradleVersion.version("7.1")
     }
 
     override fun apply(project: Project) {
-
         isMinSupportedGradleVersion(project)
+        buildExtensions(project)
 
+        project.afterEvaluate {
+            val projectType = identifyProjectType(project)
+            val publishTarget = identifyPublishTarget(projectType, project)
+            project.logger.info("HERE we go ${projectType.javaClass.simpleName}") // TODO remove
+
+            configurePublishingTargets(publishTarget)
+            registerTasks(project, projectType, publishTarget)
+
+            project.logger.info( // TODO remove
+                "Yapp Publisher Plugin: Name: {}, Type: {}, Target: {}",
+                project.name, projectType.javaClass.simpleName, publishTarget.forEach { it.name() }
+            )
+        }
+    }
+
+    private fun isMinSupportedGradleVersion(project: Project) {
+        if (GradleVersion.version(project.gradle.gradleVersion) < MIN_GRADLE) {
+            error("This plugin is tested with $MIN_GRADLE and higher")
+        }
+    }
+
+    private fun buildExtensions(project: Project) {
         project.extensions.create(
             "yapp", YappPublisherExtension::class.java, project,
             SigningExtension(project),
@@ -46,89 +61,36 @@ class YappPublisher : Plugin<Project> {
             GitHubExtension(project),
             GradlePluginPublishingExtension(project)
         )
-
-        project.afterEvaluate {
-            val projectType = ProjectType.projectType(project)
-            val publishTarget = publishTarget(projectType, project)
-            println("HERE we go ${projectType.javaClass.simpleName}")
-
-            publishTarget.forEach { it.configure() }
-
-            registerTasks(project, projectType, publishTarget)
-            project.logger.info(
-                "Yapp Publisher Plugin: Name: {}, Type: {}, Target: {}",
-                project.name, projectType.javaClass.simpleName, publishTarget.forEach { it.name() }
-            )
-        }
     }
+
+    private fun configurePublishingTargets(publishingTargets: List<BasePublishTarget>) =
+        publishingTargets.forEach { it.configure() }
 
     private fun registerTasks(
         project: Project,
         projectType: ProjectType,
-        publishTarget: List<BasePublishTarget>
+        publishingTargets: List<BasePublishTarget>
     ) {
-        project.tasks.register("yappConfiguration", ConfigurationList::class.java)
+        project.tasks.register("yappConfiguration", YappConfigurationTask::class.java)
 
-        project.tasks.register<PublishToLocal>(
+        project.tasks.register(
             "publishArtifactToLocalRepo",
-            PublishToLocal::class.java,
+            PublishArtifactToLocalRepoTask::class.java,
             projectType,
-            publishTarget
+            publishingTargets
         )
-        project.tasks.register<Publish>(
+        project.tasks.register(
             "publishArtifact",
-            Publish::class.java,
+            PublishArtifactTask::class.java,
             projectType,
-            publishTarget
+            publishingTargets
 
         )
-        project.tasks.register<CreateConfigurationTemplate>(
+        project.tasks.register(
             "createConfigurationTemplate",
-            CreateConfigurationTemplate::class.java,
+            CreateConfigurationTemplateTask::class.java,
             projectType,
-            publishTarget
+            publishingTargets
         )
-    }
-
-    private fun isMinSupportedGradleVersion(project: Project) {
-        if (GradleVersion.version(project.gradle.gradleVersion) < MIN_GRADLE) {
-            error("This plugin is tested with $MIN_GRADLE and higher")
-        }
-    }
-}
-
-fun Project.hasPlugin(value: String): Boolean = project.plugins.hasPlugin(value)
-
-fun publishTarget(
-    projectType: ProjectType,
-    project: Project
-): List<BasePublishTarget> {
-    val targets = userSpecifiedPublishTargetType(project)
-
-    return when (targets.isEmpty()) {
-        true -> {
-            listOf(defaultPublishTargetType(project, projectType))
-        }
-        else -> targets
-    }
-}
-
-private fun userSpecifiedPublishTargetType(project: Project): List<BasePublishTarget> =
-    project.extensions.getByType(YappPublisherExtension::class.java).targets.getOrElse(emptyList()).map {
-        PublishingTargetType.valueOf(it.uppercase().trim()).publishTarget(project)
-    }
-
-private fun defaultPublishTargetType(
-    project: Project,
-    projectType: ProjectType
-): BasePublishTarget {
-
-    return when (projectType) {
-        is GradleKotlinPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
-        is GradleJavaPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
-        is JavaLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        is JavaProject -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        is KotlinLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        else -> UnknownPublishTarget(project)
     }
 }

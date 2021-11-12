@@ -9,7 +9,7 @@
     <!-- do_not_remove: published-with-gradle-metadata -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.property</groupId>
-    <artifactId>mc</artifactId>
+    <artifactId>kotlinlibrary</artifactId>
     <version>0.0.3-SNAPSHOT</version>
     <name>property name</name>
     <description>property description</description>

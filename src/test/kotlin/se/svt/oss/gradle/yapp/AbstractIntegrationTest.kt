@@ -26,7 +26,7 @@ import kotlin.io.path.writeText
 @ExperimentalPathApi
 abstract class AbstractIntegrationTest {
 
-    open val mcProjectPath: String = "/src/test/resources/projects/mcproject/"
+    open val kotlinLibraryPath: String = "/src/test/resources/projects/kotlinlibrary/"
     open val buildFileTemplatePath: String = "/src/test/resources/projects/build.gradle.kts"
 
     open lateinit var settingsFile: Path
@@ -94,7 +94,7 @@ abstract class AbstractIntegrationTest {
         tmpdir, "se", subdir, name, version
     ).toFile().walk().filter { it.extension == "asc" }.map { it.name }.toList().sorted()
 
-    fun xpathFieldDiff(query: String, expectedValue: String, subdir: String, version: String, name: String = "mc") {
+    fun xpathFieldDiff(query: String, expectedValue: String, subdir: String, version: String, name: String = "kotlinlibrary") {
         val xpath: XPathEngine = JAXPXPathEngine()
         xpath.setNamespaceContext(mapOf(Pair("m", "http://maven.apache.org/POM/4.0.0")))
         val nodes = xpath.selectNodes(query, Input.fromFile(generatedPom(name, subdir, version)).build())
@@ -106,7 +106,7 @@ abstract class AbstractIntegrationTest {
         }
     }
 
-    fun copyTemplateBuildFile(projectPath: String = mcProjectPath) {
+    fun copyTemplateBuildFile(projectPath: String = kotlinLibraryPath) {
         Files.copy(
             Paths.get("$testDirPath", buildFileTemplatePath),
             Paths.get("$testDirPath", projectPath, "build.gradle.kts"), StandardCopyOption.REPLACE_EXISTING
@@ -118,4 +118,6 @@ abstract class AbstractIntegrationTest {
         @TempDir
         lateinit var testDirPath: Path
     }
+
+    fun projectDir() = File("$testDirPath/$kotlinLibraryPath")
 }

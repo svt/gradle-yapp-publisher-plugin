@@ -16,6 +16,7 @@ To make life (arguably) easier when configuring the plugins needed for these tas
 
 To offer a simple, flexible union interface for these tasks, regardless of publishing target.
 
+
 ## Features
 
 * Maven Central Publishing
@@ -23,8 +24,11 @@ To offer a simple, flexible union interface for these tasks, regardless of publi
 * GitLab Publishing
 * GitHub Publishing
 * Signing
-* Choose Build file, Properties or System Environment Configuration 
+* Choose Build file, Properties or System Environment Configuration
+* Publish to several targets at once
+* Configure autorelease to Maven Central
 * Semi smart configuration :)
+* ... and more
 
 ### Quickstart
 
@@ -35,7 +39,7 @@ The examples show the most basic settings - there are lots more to [configure or
 
 3. Run [Gradle Task](#tasks) *yappConfiguration* to view the plugins current project type and publish target configuration.
 
-4. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo if you want to verify
+4. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo for verification.
 
 5. Run [Gradle Task](#tasks) *publish* to publish your plugin.
 
@@ -50,8 +54,7 @@ plugins {
 }
 ```
 
-You can also add one of the following basic publishing plugins as a placeholder.
-However, by setting the [Publishing Target](#publishing-target) 
+You can also add one of the following basic publishing plugins as a placeholder, [Publishing Target](#publishing-target) 
 
 *Publishing to Maven Central/GitLab/GitHub/Custom (Java/Kotlin Library)*
 
@@ -78,7 +81,7 @@ The plugin offers a few tasks found under "yapp publisher".
 * createConfigurationTemplate TO-DO
 * publishArtifact - publish the artifact to the [publishing target](#publishing-target)
 * publishArtifactToLocalRepo - publish to local repo
-* yappConfiguration - show the plugins current configuration - i.e. type of [publishing target](#publishing-target), project type and more
+* yappConfiguration - show the current configuration - i.e. type of [publishing target](#publishing-target), project type and more
 
 ## Publishing target
 
@@ -102,7 +105,6 @@ If you leave this empty, the plugin will make a guess based on your added plugin
 * A project type (for example, a java-library)
 
 * If project type and publish target are not configured explicitly, _they are chosen on a best-effort guess_, depending on you chosen plugin and version setup.
-
 
 ## Examples
 
@@ -225,9 +227,15 @@ This is also the order in which they will be picked up.
 
 * **Yapp Publisher General Configuration **
 
-| yapp { property }  | yapp.property     | YAPP_PROPERTY          | Value                   |
+| File             | Type                         |                                        |
+| ---------------- | --------------------------   | -------------------                    |
+| Property file    | gradle.properties-format:    | yapp.property             |
+| Build file       | build.gradle.kts-format      | yapp { property  }   |
+| N/A              | environment variable         | YAPP_PROPERTY             |
+
+| property            | description           |   example value               |  (maps to)                                                                         |
 | --------------     | ----------------- | ---------------------- | ----------------------------- |
-| target             | *                 | *                      |  A [publishing target](#publishing-target) or empty|
+| targets             |                  | *                      |  A [publishing target](#publishing-target) or empty|
 
 **General MavenPublishing Configuration/Maven Central**
 
@@ -293,7 +301,7 @@ See the gpg folder under the Project test resources for examples.
 
 | property            | description                                         |  example value                              |  (maps to)    |
 | ------------------- | --------------------------------------------------- | ------------------------------------------  | ------------------------ |
-| web                 | the project weburl                                  | https://my.web.com/project                 |  [web](https://plugins.gradle.org/docs/publish-plugin)        |
+| web                 | The project weburl                                  | https://my.web.com/project                 |  [web](https://plugins.gradle.org/docs/publish-plugin)        |
 | vcs                 | The projects repo url                               | https://github.com/johndoe/GradlePlugins   |  [vcs](https://plugins.gradle.org/docs/publish-plugin)           |
 | tags                | Tags to describe the categories the plugin covers   | listOf("publishing", "ossrh")              |  [tags](https://plugins.gradle.org/docs/publish-plugin)           |
 | id                  | groupid.plugin-name                                 | org.best.myplugin                          |  [id](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)           |
@@ -340,7 +348,6 @@ In a very early stage, the following features are planned, according to priority
 
 * More tests
 * More settings can be simplified and auto set
-* Ability to do final release stage on maven central so one does not have to do it manually
 * More pre-configured targets. JFrog and Custom
 * Better semi smart Plugin identification
 * Create sample configuration

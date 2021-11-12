@@ -3,12 +3,12 @@ package se.svt.oss.gradle.yapp.task
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import se.svt.oss.gradle.yapp.config.ProjectType
-import se.svt.oss.gradle.yapp.publishTarget
+import se.svt.oss.gradle.yapp.publishingtarget.identifyPublishTarget
 
-abstract class ConfigurationList : DefaultTask() {
+abstract class YappConfigurationTask : DefaultTask() {
     init {
         group = "yapp publisher"
-        description = "Print out the Yapp Publisher Plugin configuration"
+        description = "Prints out the current Yapp Publisher Plugin configuration"
     }
 
     @TaskAction
@@ -16,7 +16,7 @@ abstract class ConfigurationList : DefaultTask() {
 
         val projectType = ProjectType.projectType(project)
 
-        val publishTarget = publishTarget(projectType, project)
+        val publishTarget = identifyPublishTarget(projectType, project)
 
         publishTarget.forEach { println(it.name()) }
 

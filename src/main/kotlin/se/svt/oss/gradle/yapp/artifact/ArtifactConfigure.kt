@@ -3,7 +3,7 @@ package se.svt.oss.gradle.yapp.artifact
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
+import se.svt.oss.gradle.yapp.publishingtarget.PublishingTargetType
 
 data class ArtifactConfigure(val project: Project, val publishTarget: PublishingTargetType) {
 

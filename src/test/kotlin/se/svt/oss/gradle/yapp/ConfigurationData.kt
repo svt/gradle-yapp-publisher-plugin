@@ -156,7 +156,7 @@ targets.add("maven_central")
             Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.mavenPublishing.scmDeveloperConnection"),
             Pair("${envPrefix}GROUPID", "se.env"),
             Pair("${envPrefix}VERSION", "0.0.4-SNAPSHOT"),
-            Pair("${envPrefix}ARTIFACTID", "mc"),
+            Pair("${envPrefix}ARTIFACTID", "kotlinlibrary"),
             Pair("YAPP_SIGNING_ENABLED", "false"),
             Pair("YAPP_SIGNING_SIGNSNAPSHOT", "false"),
             Pair("YAPP_SIGNING_KEYID", "yapp.signing.keyId"),

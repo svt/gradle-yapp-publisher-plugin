@@ -26,9 +26,9 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun before() {
         copyTemplateBuildFile()
-        settingsFile = Paths.get("$testDirPath/${mcProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${mcProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${mcProjectPath}gradle.properties")
+        settingsFile = Paths.get("$testDirPath/${kotlinLibraryPath}settings.gradle.kts")
+        buildFile = Paths.get("$testDirPath/${kotlinLibraryPath}build.gradle.kts")
+        propertyFile = Paths.get("$testDirPath/${kotlinLibraryPath}gradle.properties")
     }
 
     @Test
@@ -40,10 +40,10 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile),
             conf.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
-        val pomDiff: Diff = diff(resource("pom/buildGradleConf.pom"), generatedPom("mc", "build", version))
+        val pomDiff: Diff = diff(resource("pom/buildGradleConf.pom"), generatedPom("kotlinlibrary", "build", version))
 
         assertFalse(pomDiff.hasDifferences())
     }
@@ -56,11 +56,11 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile),
             "",
-            conf.yappPropertiesConf("mc", group, version),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            conf.yappPropertiesConf("kotlinlibrary", group, version),
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
-        val pomDiff: Diff = diff(resource("pom/propertyConf.pom"), generatedPom("mc", "property", version))
+        val pomDiff: Diff = diff(resource("pom/propertyConf.pom"), generatedPom("kotlinlibrary", "property", version))
         println(pomDiff.toString())
 
         assertFalse(pomDiff.hasDifferences())
@@ -78,10 +78,10 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
 
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
-        val pomDiff: Diff = diff(resource("pom/envConf.pom"), generatedPom("mc", "env", version))
+        val pomDiff: Diff = diff(resource("pom/envConf.pom"), generatedPom("kotlinlibrary", "env", version))
 
         assertFalse(pomDiff.hasDifferences())
     }
@@ -102,7 +102,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
@@ -113,7 +113,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
@@ -121,7 +121,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         copyTemplateBuildFile()
         publishToTmp(
             conf.buildGradle(group, version, buildGradleFile = buildFile), "", "",
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
         xpathFieldDiff("m:project/m:name", "envname", "order", version)
@@ -147,7 +147,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
@@ -159,7 +159,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
                 |
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$mcProjectPath")
+            projectdir = File("$testDirPath/$kotlinLibraryPath")
         )
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
