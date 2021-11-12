@@ -1,4 +1,4 @@
-package se.svt.oss.gradle.yapp.publishtarget
+package se.svt.oss.gradle.yapp.publishingtarget
 
 import org.gradle.api.Project
 import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
@@ -32,6 +32,6 @@ internal class GitLabRepository(
         val credential = RepositoryCredential(
             yappExtension().gitLab.tokenType.get(), yappExtension().gitLab.token.get()
         )
-        return RepositoryConfiguration(gitLabUri(), "GitLab", credential)
+        return RepositoryConfiguration(gitLabUri(), gitLabUri(), "GitLab", credential)
     }
 }

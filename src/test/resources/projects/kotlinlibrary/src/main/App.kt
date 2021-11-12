@@ -1,8 +1,9 @@
+
 // SPDX-FileCopyrightText: 2021 Sveriges Television AB
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package projects.mcproject.src.main.kotlin.se.svt.oss
+package projects.kotlinlibrary.src.main
 
 class App {
     val greeting: String

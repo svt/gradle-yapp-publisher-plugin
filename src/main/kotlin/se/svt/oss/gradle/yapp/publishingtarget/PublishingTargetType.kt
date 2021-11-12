@@ -1,4 +1,4 @@
-package se.svt.oss.gradle.yapp.publishtarget
+package se.svt.oss.gradle.yapp.publishingtarget
 
 import GradlePluginPortal
 import org.gradle.api.Project
@@ -10,10 +10,6 @@ enum class PublishingTargetType {
             GradlePluginPortal(project, this)
     },
     MAVEN_CENTRAL {
-        override fun publishTarget(project: Project): BasePublishTarget =
-            MavenCentralRepository(project, this)
-    },
-    MAVEN_CENTRAL_SNAPSHOT {
         override fun publishTarget(project: Project): BasePublishTarget =
             MavenCentralRepository(project, this)
     },

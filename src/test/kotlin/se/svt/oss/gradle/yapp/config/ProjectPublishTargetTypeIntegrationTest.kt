@@ -14,10 +14,10 @@ import kotlin.io.path.ExperimentalPathApi
 @ExperimentalPathApi
 class ProjectPublishTargetTypeIntegrationTest : AbstractIntegrationTest() {
 
-    val kotlinLibProjectPath: String = "/src/test/resources/projects/kotlin-library/"
-    val javaLibProjectPath: String = "/src/test/resources/projects/java-library/"
-    val javaGradlePluginProjectPath: String = "/src/test/resources/projects/java-gradle-plugin/"
-    val kotlinGradlePluginProjectPath: String = "/src/test/resources/projects/kotlin-gradle-plugin/"
+    val kotlinLibProjectPath: String = "/src/test/resources/projects/kotlinlibrary/"
+    val javaLibProjectPath: String = "/src/test/resources/projects/javalibrary/"
+    val javaGradlePluginProjectPath: String = "/src/test/resources/projects/javagradleplugin/"
+    val kotlinGradlePluginProjectPath: String = "/src/test/resources/projects/kotlingradleplugin/"
     val unknownLibraryProjectPath: String = "/src/test/resources/projects/unknown-library/"
 
     @Test

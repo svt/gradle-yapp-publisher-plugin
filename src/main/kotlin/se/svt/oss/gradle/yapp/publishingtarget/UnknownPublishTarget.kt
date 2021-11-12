@@ -1,4 +1,4 @@
-package se.svt.oss.gradle.yapp.publishtarget
+package se.svt.oss.gradle.yapp.publishingtarget
 
 import org.gradle.api.Project
 

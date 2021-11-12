@@ -1,7 +1,6 @@
 package se.svt.oss.gradle.yapp.config
 
 import org.gradle.api.Project
-import se.svt.oss.gradle.yapp.hasPlugin
 import se.svt.oss.gradle.yapp.projecttype.GradleJavaPlugin
 import se.svt.oss.gradle.yapp.projecttype.GradleKotlinPlugin
 import se.svt.oss.gradle.yapp.projecttype.JavaLibrary
@@ -26,3 +25,6 @@ open class ProjectType(open val project: Project) {
         }
     }
 }
+
+fun Project.hasPlugin(value: String): Boolean = project.plugins.hasPlugin(value)
+fun identifyProjectType(project: Project) = ProjectType.projectType(project)

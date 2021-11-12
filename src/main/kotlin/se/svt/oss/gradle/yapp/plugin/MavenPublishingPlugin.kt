@@ -9,13 +9,14 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.authentication.http.HttpHeaderAuthentication
-import se.svt.oss.gradle.yapp.publishtarget.PublishingTargetType
-import se.svt.oss.gradle.yapp.publishtarget.RepositoryConfiguration
+import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
+import se.svt.oss.gradle.yapp.publishingtarget.PublishingTargetType
+import se.svt.oss.gradle.yapp.publishingtarget.RepositoryConfiguration
 
 class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
     fun configure(
         repositoryConf: RepositoryConfiguration,
-        publishTargetType: PublishingTargetType
+        publishingTargetType: PublishingTargetType
     ) {
 
         val ext = yappExtension()
@@ -25,7 +26,7 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
         project.extensions.configure(PublishingExtension::class.java) { p ->
 
             p.publications { publications ->
-                publications.register(publishTargetType.name, MavenPublication::class.java) { publication ->
+                publications.register(publishingTargetType.name, MavenPublication::class.java) { publication ->
                     project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                         // so we cant get rid of the afterEvalute
 
@@ -86,7 +87,7 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                             name = repositoryConf.name
                             url = repositoryConf.uri
 
-                            if (publishTargetType == PublishingTargetType.GITLAB) {
+                            if (publishingTargetType == PublishingTargetType.GITLAB) {
                                 credentials(HttpHeaderCredentials::class.java) {
                                     it.name = repositoryConf.credential.name
                                     it.value = repositoryConf.credential.value
@@ -107,6 +108,14 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
             }
         }
 
+        directRelease(publishingTargetType, ext, repositoryConf)
+    }
+
+    private fun directRelease(
+        publishTargetType: PublishingTargetType,
+        ext: YappPublisherExtension,
+        repositoryConf: RepositoryConfiguration
+    ) {
         println(publishTargetType)
         if (publishTargetType == PublishingTargetType.MAVEN_CENTRAL && ext.mavenPublishing.directReleaseToMavenCentral.get()) {
             project.plugins.apply(NexusPublishPlugin::class.java)
@@ -114,11 +123,8 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                 extension.repositories.forEach { println(it.name) }
                 if (extension.repositories.isNullOrEmpty()) {
                     extension.repositories.sonatype { nexus ->
-                        if (repositoryConf.uri.path.contains("SNAPSHOT")) {
-                            nexus.snapshotRepositoryUrl.set(repositoryConf.uri)
-                        } else {
-                            nexus.nexusUrl.set(repositoryConf.uri)
-                        }
+                        nexus.snapshotRepositoryUrl.set(repositoryConf.snapShotUri)
+                        nexus.nexusUrl.set(repositoryConf.uri)
                         nexus.username.set(repositoryConf.credential.name)
                         nexus.password.set(repositoryConf.credential.value)
                     }
