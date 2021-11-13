@@ -23,145 +23,145 @@ class ProjectPublishTargetTypeIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `a java library is identified correctly`() {
         copyTemplateBuildFile(javaLibProjectPath)
-        settingsFile = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${javaLibProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${javaLibProjectPath}gradle.properties")
 
         val group = "se.javalib"
         val version = "0.0.2"
 
         publishToTmp(
-            ConfigurationData.buildGradle(
+            ConfigurationData.buildFileData(
                 group,
                 version,
                 "",
                 plugin2 = """`java-library`""",
-                buildGradleFile = buildFile
+                buildGradleFile = buildFilePath
             ),
-            ConfigurationData.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$javaLibProjectPath")
+            ConfigurationData.buildFileYappConfData(group, version),
+            projectDir = File("$testDirPath/$javaLibProjectPath")
         )
     }
 
     @Test
     fun `a java library having a snapshot version is identified correctly`() {
         copyTemplateBuildFile(javaLibProjectPath)
-        settingsFile = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${javaLibProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${javaLibProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${javaLibProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${javaLibProjectPath}gradle.properties")
 
         val group = "se.javalib"
         val version = "0.0.1-SNAPSHOT"
 
         publishToTmp(
-            ConfigurationData.buildGradle(
+            ConfigurationData.buildFileData(
                 group,
                 version,
                 "",
                 plugin2 = """`java-library`""",
-                buildGradleFile = buildFile
+                buildGradleFile = buildFilePath
             ),
-            ConfigurationData.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$javaLibProjectPath")
+            ConfigurationData.buildFileYappConfData(group, version),
+            projectDir = File("$testDirPath/$javaLibProjectPath")
         )
     }
 
     @Test
     fun `a kotlin library is identified correctly`() {
         copyTemplateBuildFile(kotlinLibProjectPath)
-        settingsFile = Paths.get("$testDirPath/${kotlinLibProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${kotlinLibProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${kotlinLibProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${kotlinLibProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${kotlinLibProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${kotlinLibProjectPath}gradle.properties")
 
         val group = "se.kotlinlib"
         val version = "0.0.1-SNAPSHOT"
 
         publishToTmp(
-            ConfigurationData.buildGradle(
+            ConfigurationData.buildFileData(
                 group, version, "",
                 plugin2 = """kotlin("jvm") version "1.5.21" 
                 | `java-library`""".trimMargin(),
-                buildGradleFile = buildFile
+                buildGradleFile = buildFilePath
             ),
 
-            ConfigurationData.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$kotlinLibProjectPath")
+            ConfigurationData.buildFileYappConfData(group, version),
+            projectDir = File("$testDirPath/$kotlinLibProjectPath")
         )
     }
 
     @Test
     fun `a kotlin gradle plugin is identified correctly`() {
         copyTemplateBuildFile(kotlinGradlePluginProjectPath)
-        settingsFile = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${kotlinGradlePluginProjectPath}gradle.properties")
 
         val group = "se.kotlingradleplugin"
         val version = "0.0.1-SNAPSHOT"
 
         publishToTmp(
-            ConfigurationData.buildGradle(
+            ConfigurationData.buildFileData(
                 group, version, "",
                 plugin2 = """id("org.jetbrains.kotlin.jvm") version "1.5.31"  
                 | `java-gradle-plugin`""".trimMargin(),
-                buildGradleFile = buildFile
+                buildGradleFile = buildFilePath
             ),
 
-            ConfigurationData.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$kotlinGradlePluginProjectPath"),
-            properties = """yapp.gradleplugin.id=$group"""
+            ConfigurationData.buildFileYappConfData(group, version),
+            projectDir = File("$testDirPath/$kotlinGradlePluginProjectPath"),
+            propertiesData = """yapp.gradleplugin.id=$group"""
         )
     }
 
     @Test
     fun `a java gradle plugin is identified correctly`() {
         copyTemplateBuildFile(javaGradlePluginProjectPath)
-        settingsFile = Paths.get("$testDirPath/${javaGradlePluginProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${javaGradlePluginProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${javaGradlePluginProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${javaGradlePluginProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${javaGradlePluginProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${javaGradlePluginProjectPath}gradle.properties")
 
         val group = "se.javagradleplugin"
         val version = "0.0.1-SNAPSHOT"
 
         publishToTmp(
-            ConfigurationData.buildGradle(
+            ConfigurationData.buildFileData(
                 group,
                 version,
                 "",
                 plugin1 = "",
                 plugin2 = """`java-gradle-plugin`""".trimMargin(),
-                buildGradleFile = buildFile
+                buildGradleFile = buildFilePath
             ),
 
-            ConfigurationData.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$javaGradlePluginProjectPath"),
-            properties = """yapp.gradleplugin.id=$group"""
+            ConfigurationData.buildFileYappConfData(group, version),
+            projectDir = File("$testDirPath/$javaGradlePluginProjectPath"),
+            propertiesData = """yapp.gradleplugin.id=$group"""
         )
     }
 
     @Disabled
     fun `could not identify the project type`() {
         copyTemplateBuildFile(unknownLibraryProjectPath)
-        settingsFile = Paths.get("$testDirPath/${unknownLibraryProjectPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${unknownLibraryProjectPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${unknownLibraryProjectPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath/${unknownLibraryProjectPath}settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath/${unknownLibraryProjectPath}build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath/${unknownLibraryProjectPath}gradle.properties")
 
         val group = "se.unknownplugin"
         val version = "0.0.1-SNAPSHOT"
 
         assertThrows<IllegalStateException> {
             publishToTmp(
-                ConfigurationData.buildGradle(
+                ConfigurationData.buildFileData(
                     group,
                     version,
                     "",
                     plugin1 = "",
                     plugin2 = "".trimMargin(),
-                    buildGradleFile = buildFile
+                    buildGradleFile = buildFilePath
                 ),
 
-                ConfigurationData.yappBuildGradleConf(group, version),
-                projectdir = File("$testDirPath/$unknownLibraryProjectPath"),
+                ConfigurationData.buildFileYappConfData(group, version),
+                projectDir = File("$testDirPath/$unknownLibraryProjectPath"),
             )
         }
     }

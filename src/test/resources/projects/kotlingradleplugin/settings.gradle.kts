@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "kotlin-gradle-plugin"
+rootProject.name = "kotlingradleplugin"
