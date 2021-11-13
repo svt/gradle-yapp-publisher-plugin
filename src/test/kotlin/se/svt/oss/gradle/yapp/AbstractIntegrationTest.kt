@@ -6,7 +6,9 @@ package se.svt.oss.gradle.yapp
 
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.jupiter.api.Assertions
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.io.TempDir
 import org.xmlunit.builder.DiffBuilder
@@ -26,12 +28,11 @@ import kotlin.io.path.writeText
 @ExperimentalPathApi
 abstract class AbstractIntegrationTest {
 
-    open val kotlinLibraryPath: String = "/src/test/resources/projects/kotlinlibrary/"
     open val buildFileTemplatePath: String = "/src/test/resources/projects/build.gradle.kts"
 
-    open lateinit var settingsFile: Path
-    open lateinit var buildFile: Path
-    open lateinit var propertyFile: Path
+    open lateinit var settingsFilePath: Path
+    open lateinit var buildFilePath: Path
+    open lateinit var propertyFilePath: Path
     lateinit var signingKey: String
 
     private val pluginName = "gradle-yapp-publisher-plugin"
@@ -43,35 +44,37 @@ abstract class AbstractIntegrationTest {
     }
 
     private fun publishYappPluginToTmp() {
-        settingsFile = testDirPath.resolve("settings.gradle.kts")
-        buildFile = testDirPath.resolve("build.gradle.kts")
-        propertyFile = testDirPath.resolve("gradle.properties")
+        settingsFilePath = testDirPath.resolve("settings.gradle.kts")
+        buildFilePath = testDirPath.resolve("build.gradle.kts")
+        propertyFilePath = testDirPath.resolve("gradle.properties")
 
         signingKey = resource("gpg/sec_signingkey_ascii_newlineliteral.asc").readText()
 
-        FileUtils.copyDirectory(File("./"), File(testDirPath.toAbsolutePath().toString()))
+        FileUtils.copyDirectory(File("./"), testDirPath.toAbsolutePath().toFile())
 
         publishToTmp(ConfigurationData.yappBasePlugin())
     }
 
     fun publishToTmp(
-        buildGradleBase: String = "",
-        buildGradleAppend: String = "",
-        properties: String = "",
+        buildFileData: String,
+        buildFileAppendData: String = "",
+        propertiesData: String = "",
         gradleTask: String = "publishToMavenLocal",
-        projectdir: File = testDirPath.toFile()
+        projectDir: File = testDirPath.toFile()
     ) {
 
-        buildFile.writeText(buildGradleBase)
-        buildFile.appendText(buildGradleAppend)
-        propertyFile.toFile().writeText(properties)
+        buildFilePath.writeText(buildFileData)
+        buildFilePath.appendText(buildFileAppendData)
+        propertyFilePath.toFile().writeText(propertiesData)
 
         val buildResult = GradleRunner.create()
-            .withProjectDir(projectdir)
+            .withProjectDir(projectDir)
             .withArguments("-Dmaven.repo.local=$tmpdir", gradleTask)
             .withPluginClasspath()
             .forwardOutput()
             .build()
+
+        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":$gradleTask")!!.outcome)
     }
 
     fun resource(resource: String): File = File(javaClass.classLoader.getResource(resource)!!.file)
@@ -94,19 +97,25 @@ abstract class AbstractIntegrationTest {
         tmpdir, "se", subdir, name, version
     ).toFile().walk().filter { it.extension == "asc" }.map { it.name }.toList().sorted()
 
-    fun xpathFieldDiff(query: String, expectedValue: String, subdir: String, version: String, name: String = "kotlinlibrary") {
+    fun xpathFieldDiff(
+        query: String,
+        expectedValue: String,
+        subdir: String,
+        version: String,
+        name: String = testLibraryDir()
+    ) {
         val xpath: XPathEngine = JAXPXPathEngine()
         xpath.setNamespaceContext(mapOf(Pair("m", "http://maven.apache.org/POM/4.0.0")))
         val nodes = xpath.selectNodes(query, Input.fromFile(generatedPom(name, subdir, version)).build())
 
-        Assertions.assertTrue(nodes.count() > 0)
+        assertTrue(nodes.count() > 0)
 
         nodes.forEach {
-            Assertions.assertEquals(expectedValue, it.textContent)
+            assertEquals(expectedValue, it.textContent)
         }
     }
 
-    fun copyTemplateBuildFile(projectPath: String = kotlinLibraryPath) {
+    fun copyTemplateBuildFile(projectPath: String = testLibraryPath()) {
         Files.copy(
             Paths.get("$testDirPath", buildFileTemplatePath),
             Paths.get("$testDirPath", projectPath, "build.gradle.kts"), StandardCopyOption.REPLACE_EXISTING
@@ -119,5 +128,9 @@ abstract class AbstractIntegrationTest {
         lateinit var testDirPath: Path
     }
 
-    fun projectDir() = File("$testDirPath/$kotlinLibraryPath")
+    open fun projectDir() = File("$testDirPath/${testLibraryPath()}")
+
+    open fun testLibraryPath() = "/src/test/resources/projects/kotlinlibrary"
+
+    open fun testLibraryDir() = testLibraryPath().substringAfterLast("/")
 }

@@ -24,9 +24,9 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun before() {
         copyTemplateBuildFile()
-        settingsFile = Paths.get("$testDirPath/${kotlinLibraryPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${kotlinLibraryPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${kotlinLibraryPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath", testLibraryPath(), "settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath", testLibraryPath(), "build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath", testLibraryPath(), "gradle.properties")
     }
 
     @Test
@@ -38,11 +38,11 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
         var signatures = signatures(version)
 
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
             ConfigurationData.yappBuildGradleConfSigning(signingKey, true),
-            projectdir = projectDir()
+            projectDir = projectDir()
         )
-        assertIterableEquals(generatedSignatures("kotlinlibrary", "signing", version), signatures)
+        assertIterableEquals(generatedSignatures(testLibraryDir(), "signing", version), signatures)
 
         version = "0.0.7-SNAPSHOT"
 
@@ -50,23 +50,23 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
 
         signatures = signatures(version)
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
             ConfigurationData.yappBuildGradleConfSigning(signingKey, true, true),
-            projectdir = projectDir()
+            projectDir = projectDir()
         )
 
-        assertIterableEquals(generatedSignatures("kotlinlibrary", "signing", version), signatures)
+        assertIterableEquals(generatedSignatures(testLibraryDir(), "signing", version), signatures)
 
         copyTemplateBuildFile()
 
         version = "0.0.8-SNAPSHOT"
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true, false),
-            projectdir = projectDir()
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
+            ConfigurationData.buildFileYappConfData(group, version, signingKey, true, false),
+            projectDir = projectDir()
         )
 
-        assertTrue(generatedSignatures("kotlinlibrary", "signing", version).isEmpty())
+        assertTrue(generatedSignatures(testLibraryDir(), "signing", version).isEmpty())
     }
 
     @Test
@@ -77,20 +77,20 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
         var version = "0.0.9"
 
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConf(group, version, signingKey, false),
-            projectdir = projectDir()
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
+            ConfigurationData.buildFileYappConfData(group, version, signingKey, false),
+            projectDir = projectDir()
 
         )
-        assertTrue(generatedSignatures("kotlinlibrary", "signing", version).isEmpty())
+        assertTrue(generatedSignatures(testLibraryDir(), "signing", version).isEmpty())
 
         copyTemplateBuildFile()
 
         version = "0.0.10-SNAPSHOT"
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
-            projectdir = projectDir()
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
+            ConfigurationData.buildFileYappConfData(group, version, signingKey, true),
+            projectDir = projectDir()
         )
     }
 
@@ -102,13 +102,13 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
         val signatures = signatures(version)
 
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
-            projectdir = projectDir()
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
+            ConfigurationData.buildFileYappConfData(group, version, signingKey, true),
+            projectDir = projectDir()
         )
 
-        assertIterableEquals(generatedSignatures("kotlinlibrary", "signing", version), signatures)
-        val generatedSignatures = generatedSignatures("kotlinlibrary", "signing", version)
+        assertIterableEquals(generatedSignatures(testLibraryDir(), "signing", version), signatures)
+        val generatedSignatures = generatedSignatures(testLibraryDir(), "signing", version)
 
         signingKey = resource("gpg/sec_signingkey.gpg").canonicalPath
 
@@ -116,21 +116,21 @@ class SigningPluginIntegrationTest : AbstractIntegrationTest() {
 
         copyTemplateBuildFile()
         publishToTmp(
-            ConfigurationData.buildGradle(group, version, buildGradleFile = buildFile),
-            ConfigurationData.yappBuildGradleConf(group, version, signingKey, true),
-            projectdir = projectDir()
+            ConfigurationData.buildFileData(group, version, buildGradleFile = buildFilePath),
+            ConfigurationData.buildFileYappConfData(group, version, signingKey, true),
+            projectDir = projectDir()
 
         )
-        assertIterableEquals(generatedSignatures("kotlinlibrary", "signing2", version), generatedSignatures)
+        assertIterableEquals(generatedSignatures(testLibraryDir(), "signing2", version), generatedSignatures)
     }
 
     private fun signatures(version: String): List<String> {
         val signatures = listOf(
-            "kotlinlibrary-$version.pom.asc",
-            "kotlinlibrary-$version-javadoc.jar.asc",
-            "kotlinlibrary-$version.jar.asc",
-            "kotlinlibrary-$version.module.asc",
-            "kotlinlibrary-$version-sources.jar.asc"
+            "${testLibraryDir()}-$version.pom.asc",
+            "${testLibraryDir()}-$version-javadoc.jar.asc",
+            "${testLibraryDir()}-$version.jar.asc",
+            "${testLibraryDir()}-$version.module.asc",
+            "${testLibraryDir()}-$version-sources.jar.asc"
         )
         return signatures.sorted()
     }

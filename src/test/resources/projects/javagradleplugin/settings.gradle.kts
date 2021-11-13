@@ -4,4 +4,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "java-gradle-plugin"
+rootProject.name = "javagradleplugin"

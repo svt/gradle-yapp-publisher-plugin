@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.xmlunit.diff.Diff
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension
-import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
 import se.svt.oss.gradle.yapp.ConfigurationData as conf
@@ -26,9 +25,9 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun before() {
         copyTemplateBuildFile()
-        settingsFile = Paths.get("$testDirPath/${kotlinLibraryPath}settings.gradle.kts")
-        buildFile = Paths.get("$testDirPath/${kotlinLibraryPath}build.gradle.kts")
-        propertyFile = Paths.get("$testDirPath/${kotlinLibraryPath}gradle.properties")
+        settingsFilePath = Paths.get("$testDirPath", testLibraryPath(), "settings.gradle.kts")
+        buildFilePath = Paths.get("$testDirPath", testLibraryPath(), "build.gradle.kts")
+        propertyFilePath = Paths.get("$testDirPath", testLibraryPath(), "gradle.properties")
     }
 
     @Test
@@ -38,12 +37,12 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         val version = "0.0.2-SNAPSHOT"
 
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile),
-            conf.yappBuildGradleConf(group, version),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath),
+            conf.buildFileYappConfData(group, version),
+            projectDir = projectDir()
         )
 
-        val pomDiff: Diff = diff(resource("pom/buildGradleConf.pom"), generatedPom("kotlinlibrary", "build", version))
+        val pomDiff: Diff = diff(resource("pom/buildGradleConf.pom"), generatedPom(testLibraryDir(), "build", version))
 
         assertFalse(pomDiff.hasDifferences())
     }
@@ -54,13 +53,13 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         val version = "0.0.3-SNAPSHOT"
 
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile),
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath),
             "",
-            conf.yappPropertiesConf("kotlinlibrary", group, version),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            conf.yappPropertiesConf(testLibraryDir(), group, version),
+            projectDir = projectDir()
         )
 
-        val pomDiff: Diff = diff(resource("pom/propertyConf.pom"), generatedPom("kotlinlibrary", "property", version))
+        val pomDiff: Diff = diff(resource("pom/propertyConf.pom"), generatedPom(testLibraryDir(), "property", version))
         println(pomDiff.toString())
 
         assertFalse(pomDiff.hasDifferences())
@@ -77,11 +76,11 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         }
 
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath),
+            projectDir = projectDir()
         )
 
-        val pomDiff: Diff = diff(resource("pom/envConf.pom"), generatedPom("kotlinlibrary", "env", version))
+        val pomDiff: Diff = diff(resource("pom/envConf.pom"), generatedPom(testLibraryDir(), "env", version))
 
         assertFalse(pomDiff.hasDifferences())
     }
@@ -96,32 +95,32 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         environmentVariables.set("YAPP_TARGETS", "maven_central")
 
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile),
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath),
 
-            conf.yappBuildGradleConf(group, version, name = "confname"),
+            conf.buildFileYappConfData(group, version, name = "confname"),
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            projectDir = projectDir()
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "",
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath), "",
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            projectDir = projectDir()
         )
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "", "",
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath), "", "",
+            projectDir = projectDir()
         )
 
         xpathFieldDiff("m:project/m:name", "envname", "order", version)
@@ -134,7 +133,7 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
         val version = "0.0.5-SNAPSHOT"
 
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile),
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath),
             """
                 
             yapp {
@@ -147,19 +146,19 @@ class PropertiesIntegrationTest : AbstractIntegrationTest() {
             """yapp.mavenPublishing.name=propertyname
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            projectDir = projectDir()
         )
 
         xpathFieldDiff("m:project/m:name", "confname", "order", version)
 
         copyTemplateBuildFile()
         publishToTmp(
-            conf.buildGradle(group, version, buildGradleFile = buildFile), "",
+            conf.buildFileData(group, version, buildGradleFile = buildFilePath), "",
             """yapp.mavenPublishing.name=propertyname
                 |
                 |yapp.targets=maven_central
             """.trimMargin(),
-            projectdir = File("$testDirPath/$kotlinLibraryPath")
+            projectDir = projectDir()
         )
 
         xpathFieldDiff("m:project/m:name", "propertyname", "order", version)

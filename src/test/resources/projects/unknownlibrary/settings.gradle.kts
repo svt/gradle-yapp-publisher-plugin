@@ -4,4 +4,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "unknown-library"
+rootProject.name = "unknownlibrary"
