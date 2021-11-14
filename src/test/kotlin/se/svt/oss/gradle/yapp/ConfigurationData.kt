@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package se.svt.oss.gradle.yapp
 
+import se.svt.oss.gradle.yapp.AbstractIntegrationTest.Companion.TLD
 import java.nio.file.Path
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.readText
@@ -154,7 +155,7 @@ targets.add("maven_central")
             Pair("${envPrefix}SCMURL", "yapp.mavenPublishing.scmUrl"),
             Pair("${envPrefix}SCMCONNECTION", "yapp.mavenPublishing.scmConnection"),
             Pair("${envPrefix}SCMDEVELOPERCONNECTION", "yapp.mavenPublishing.scmDeveloperConnection"),
-            Pair("${envPrefix}GROUPID", "se.env"),
+            Pair("${envPrefix}GROUPID", "$TLD.env"),
             Pair("${envPrefix}VERSION", "0.0.4-SNAPSHOT"),
             Pair("${envPrefix}ARTIFACTID", "kotlinlibrary"),
             Pair("YAPP_SIGNING_ENABLED", "false"),
@@ -168,7 +169,7 @@ targets.add("maven_central")
     }
 
     fun yappBasePlugin(
-        group: String = "se.svt.oss",
+        group: String = "$TLD.svt.oss",
         version: String = "1.0.0-SNAPSHOT"
     ) = """
     
@@ -178,11 +179,7 @@ plugins {
     signing
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.dokka") version "1.5.31"
-    id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
-    id("org.jmailen.kotlinter") version "3.6.0"
-    id("org.owasp.dependencycheck") version "6.4.1.1"
     id("com.gradle.plugin-publish") version "0.16.0"
-    id("pl.allegro.tech.build.axion-release") version "1.13.6"
 }
 
 group = "$group"

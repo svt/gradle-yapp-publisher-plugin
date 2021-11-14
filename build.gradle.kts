@@ -6,8 +6,8 @@ plugins {
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.dokka") version "1.5.31"
     id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
-    id("org.jmailen.kotlinter") version "3.6.0"
-    id("org.owasp.dependencycheck") version "6.4.1.1"
+    id("org.jmailen.kotlinter") version "3.7.0"
+    id("org.owasp.dependencycheck") version "6.5.0.1"
     id("com.gradle.plugin-publish") version "0.16.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
     id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.30"
@@ -29,8 +29,7 @@ dependencies {
     api("com.gradle.publish:plugin-publish-plugin:0.16.0")
 
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
-    testImplementation("commons-io:commons-io:2.11.0")
-    testImplementation("org.xmlunit:xmlunit-core:2.8.2")
+    testImplementation("org.xmlunit:xmlunit-core:2.8.3")
     testImplementation("org.xmlunit:xmlunit-matchers:2.8.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
@@ -77,5 +76,5 @@ java {
 
 tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "7.2"
+    gradleVersion = "7.3"
 }
