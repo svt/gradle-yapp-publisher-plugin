@@ -2,20 +2,22 @@ package se.svt.oss.gradle.yapp.publishingtarget
 
 import org.gradle.api.Project
 import se.svt.oss.gradle.yapp.artifact.ArtifactConfigure
+import se.svt.oss.gradle.yapp.config.ProjectType
 import se.svt.oss.gradle.yapp.plugin.MavenPublishingPlugin
 import se.svt.oss.gradle.yapp.plugin.SigningPlugin
 import java.net.URI
 
 internal open class MavenCentralRepository(
     override val project: Project,
-    private val publishTargetType: PublishingTargetType
+    override val publishingTargetType: PublishingTargetType,
+    override val projectType: ProjectType
 ) :
-    BasePublishTarget(project, publishTargetType) {
+    BasePublishTarget(project, publishingTargetType, projectType) {
 
     override fun configure() {
 
-        MavenPublishingPlugin(project).configure(ossrhCredential(), publishTargetType)
-        ArtifactConfigure(project, publishTargetType).javaKotlinConfigure()
+        MavenPublishingPlugin(project).configure(ossrhCredential(), publishingTargetType)
+        ArtifactConfigure(project, publishingTargetType, projectType).configure()
         SigningPlugin(project).configure()
     }
 

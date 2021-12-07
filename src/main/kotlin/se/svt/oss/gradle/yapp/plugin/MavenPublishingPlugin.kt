@@ -27,6 +27,7 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
 
             p.publications { publications ->
                 publications.register(publishingTargetType.name, MavenPublication::class.java) { publication ->
+                    publication.from(project.components.getByName("java"))
                     project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                         // so we cant get rid of the afterEvalute
 

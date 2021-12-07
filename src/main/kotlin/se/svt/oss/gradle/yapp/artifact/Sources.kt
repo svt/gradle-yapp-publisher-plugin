@@ -4,14 +4,23 @@
 
 package se.svt.oss.gradle.yapp.artifact
 
+import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.jvm.tasks.Jar
+import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 
-open class Sources : Jar() {
+class Sources(val project: Project) {
+    fun yappExtension(): YappPublisherExtension = project.extensions.getByType(YappPublisherExtension::class.java)
+
     init {
+        project.extensions.configure(JavaPluginExtension::class.java) { java ->
+
+            if (!(yappExtension().withoutSource.get())) java.withSourcesJar()
+        }
+    }
+   /* init {
         archiveClassifier.set("sources")
 
         val javaPlugin = project.extensions.getByType(JavaPluginExtension::class.java)
         from(javaPlugin.sourceSets.getByName("main").allSource)
-    }
+    }*/
 }

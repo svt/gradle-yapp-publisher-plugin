@@ -17,7 +17,8 @@ import se.svt.oss.gradle.yapp.projecttype.KotlinLibrary
 
 abstract class BasePublishTarget(
     open val project: Project,
-    open val publishingTargetType: PublishingTargetType
+    open val publishingTargetType: PublishingTargetType,
+    open val projectType: ProjectType
 ) {
 
     abstract fun configure()
@@ -37,7 +38,7 @@ fun identifyPublishTarget(
     projectType: ProjectType,
     project: Project
 ): List<BasePublishTarget> {
-    val targets = userSpecifiedPublishTargetType(project)
+    val targets = specifiedPublishTargetType(project, projectType)
 
     return when (targets.isEmpty()) {
         true -> {
@@ -47,9 +48,9 @@ fun identifyPublishTarget(
     }
 }
 
-private fun userSpecifiedPublishTargetType(project: Project): List<BasePublishTarget> =
+private fun specifiedPublishTargetType(project: Project, projectType: ProjectType): List<BasePublishTarget> =
     project.extensions.getByType(YappPublisherExtension::class.java).targets.getOrElse(emptyList()).map {
-        PublishingTargetType.valueOf(it.uppercase().trim()).publishTarget(project)
+        PublishingTargetType.valueOf(it.uppercase().trim()).publishTarget(project, projectType)
     }
 
 private fun guessPublishTargetType(
@@ -58,11 +59,11 @@ private fun guessPublishTargetType(
 ): BasePublishTarget {
 
     return when (projectType) {
-        is GradleKotlinPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
-        is GradleJavaPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL)
-        is JavaLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        is JavaProject -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        is KotlinLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL)
-        else -> UnknownPublishTarget(project)
+        is GradleKotlinPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL, projectType)
+        is GradleJavaPlugin -> GradlePluginPortal(project, PublishingTargetType.GRADLE_PORTAL, projectType)
+        is JavaLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL, projectType)
+        is JavaProject -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL, projectType)
+        is KotlinLibrary -> MavenCentralRepository(project, PublishingTargetType.MAVEN_CENTRAL, projectType)
+        else -> UnknownPublishTarget(project, projectType)
     }
 }

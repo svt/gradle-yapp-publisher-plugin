@@ -6,6 +6,7 @@ package se.svt.oss.gradle.yapp.extension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 
 open class YappPublisherExtension(
     project: Project,
@@ -28,5 +29,8 @@ open class YappPublisherExtension(
     val envPrefix: String = "YAPP_"
     var propPrefix: String = "yapp."
 
+    var withoutSource: Property<Boolean> = project.propBool("withoutSource", propPrefix, envPrefix)
+    var withoutDoc: Property<Boolean> = project.propBool("withoutDoc", propPrefix, envPrefix)
+    var dokkaPublishings: ListProperty<String> = project.propList("dokkaPublishings", propPrefix, envPrefix)
     var targets: ListProperty<String> = project.propList("targets", propPrefix, envPrefix)
 }

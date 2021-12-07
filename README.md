@@ -7,7 +7,7 @@
 
 ## What is it?
 
-A Gradle plugin for publishing and optionally signing Java and libraries packages to Maven Central,
+A Gradle plugin for publishing and optionally signing JVM-based projects (currently Java/Kotlin) and libraries packages to Maven Central,
 Gradle Portal, GitHub, GitLab.
 
 ## Why does it exist?
@@ -27,6 +27,8 @@ To offer a simple, flexible union interface for these tasks, regardless of publi
 * Choose Build file, Properties or System Environment Configuration
 * Publish to several targets at once
 * Configure autorelease to Maven Central
+* Dokka Publish support
+* Choose to publish with or without source code and docs
 * Semi smart configuration :)
 * ... and more
 
@@ -344,7 +346,7 @@ See the gpg folder under the Project test resources for examples.
 
 ## Future
 
-In a very early stage, the following features are planned, according to priority:
+In an early stage, the following features are planned, according to priority:
 
 * More tests
 * More settings can be simplified and auto set
@@ -352,11 +354,9 @@ In a very early stage, the following features are planned, according to priority
 * Better semi smart Plugin identification
 * Create sample configuration
 * Android Library support
-* Better Java support
 * Dokka-support
-* Docs/source inclusion/exclusion option
 * Nested object model, for the few 10% that might need them
-* Support other languages than Java/Kotlin
+* Support other languages than Java/Kotlin (Groovy,Scala)
 
 # F.A.Q
 
