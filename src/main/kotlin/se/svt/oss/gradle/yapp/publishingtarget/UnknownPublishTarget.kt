@@ -1,9 +1,10 @@
 package se.svt.oss.gradle.yapp.publishingtarget
 
 import org.gradle.api.Project
+import se.svt.oss.gradle.yapp.config.ProjectType
 
-internal class UnknownPublishTarget(override val project: Project) :
-    BasePublishTarget(project, PublishingTargetType.UNKNOWN) {
+internal class UnknownPublishTarget(override val project: Project, projectType: ProjectType) :
+    BasePublishTarget(project, PublishingTargetType.UNKNOWN, projectType) {
 
     override fun configure() {
 

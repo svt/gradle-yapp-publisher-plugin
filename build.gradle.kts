@@ -8,7 +8,7 @@ plugins {
     id("se.ascp.gradle.gradle-versions-filter") version "0.1.10"
     id("org.jmailen.kotlinter") version "3.7.0"
     id("org.owasp.dependencycheck") version "6.5.0.1"
-    id("com.gradle.plugin-publish") version "0.16.0"
+    id("com.gradle.plugin-publish") version "0.18.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
     id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.30"
 }
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    api("com.gradle.publish:plugin-publish-plugin:0.16.0")
+    api("com.gradle.publish:plugin-publish-plugin:0.18.0")
 
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
     testImplementation("org.xmlunit:xmlunit-core:2.8.3")
