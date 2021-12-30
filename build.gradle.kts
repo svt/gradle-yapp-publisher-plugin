@@ -1,3 +1,4 @@
+
 plugins {
     `maven-publish`
     `java-gradle-plugin`
@@ -22,17 +23,19 @@ repositories {
     gradlePluginPortal()
     mavenLocal()
     mavenCentral()
+    google()
 //    maven(url="https://dl.bintray.com/kotlin/dokka")
 }
 
 dependencies {
     api("com.gradle.publish:plugin-publish-plugin:0.18.0")
+    compileOnly("com.android.tools.build:gradle:7.0.4")
 
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
-    testImplementation("org.xmlunit:xmlunit-core:2.8.3")
-    testImplementation("org.xmlunit:xmlunit-matchers:2.8.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.xmlunit:xmlunit-core:2.8.4")
+    testImplementation("org.xmlunit:xmlunit-matchers:2.8.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("uk.org.webcompere:system-stubs-jupiter:1.2.0")
 
 }
@@ -63,13 +66,13 @@ gradlePlugin {
 
 
 kotlin {
+
     jvmToolchain {
         (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
 java {
-
     withSourcesJar()
     withJavadocJar()
 }

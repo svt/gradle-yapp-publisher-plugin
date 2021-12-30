@@ -2,8 +2,8 @@ package se.svt.oss.gradle.yapp.task
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import se.svt.oss.gradle.yapp.config.ProjectType
-import se.svt.oss.gradle.yapp.publishingtarget.identifyPublishTarget
+import se.svt.oss.gradle.yapp.config.projectType
+import se.svt.oss.gradle.yapp.publishingtarget.publishingTargets
 
 abstract class YappConfigurationTask : DefaultTask() {
     init {
@@ -14,16 +14,12 @@ abstract class YappConfigurationTask : DefaultTask() {
     @TaskAction
     fun printConfiguration() {
 
-        val projectType = ProjectType.projectType(project)
-
-        val publishTarget = identifyPublishTarget(projectType, project)
-
-        publishTarget.forEach { println(it.name()) }
+        project.publishingTargets().forEach { println(it.name()) }
 
         println(
             """
        
-                | Yapp Publisher Plugin: Name: ${project.name}, Type: ${projectType.javaClass.simpleName}, Target: ${publishTarget.map { it.name() }}
+                | Yapp Publisher Plugin: Name: ${project.name}, Type: ${project.projectType().javaClass.simpleName}, Target: ${project.publishingTargets().map { it.name() }}
                 
             """.trimIndent()
         )

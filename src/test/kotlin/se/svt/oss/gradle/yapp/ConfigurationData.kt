@@ -189,11 +189,14 @@ description = "Yet another plugin that manages publishing for Gradle projects"
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    google()
 //    maven(url="https://dl.bintray.com/kotlin/dokka")
 }
 
 dependencies {
     api("com.gradle.publish:plugin-publish-plugin:0.16.0")
+    
+    compileOnly("com.android.tools.build:gradle:7.0.4")
 
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
     testImplementation("commons-io:commons-io:2.11.0")

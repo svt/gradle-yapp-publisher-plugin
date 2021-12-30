@@ -8,7 +8,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 
-class Sources(val project: Project) {
+class Source(val project: Project) {
     fun yappExtension(): YappPublisherExtension = project.extensions.getByType(YappPublisherExtension::class.java)
 
     init {
@@ -17,6 +17,7 @@ class Sources(val project: Project) {
             if (!(yappExtension().withoutSource.get())) java.withSourcesJar()
         }
     }
+
    /* init {
         archiveClassifier.set("sources")
 

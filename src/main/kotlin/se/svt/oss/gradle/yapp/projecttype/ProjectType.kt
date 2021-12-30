@@ -1,6 +1,7 @@
 package se.svt.oss.gradle.yapp.config
 
 import org.gradle.api.Project
+import se.svt.oss.gradle.yapp.projecttype.AndroidLibrary
 import se.svt.oss.gradle.yapp.projecttype.GradleJavaPlugin
 import se.svt.oss.gradle.yapp.projecttype.GradleKotlinPlugin
 import se.svt.oss.gradle.yapp.projecttype.JavaLibrary
@@ -12,6 +13,7 @@ open class ProjectType(open val project: Project) {
 
     companion object {
         fun projectType(project: Project): ProjectType = when {
+            project.hasPlugin("com.android.library") -> AndroidLibrary(project)
             project.hasPlugin("org.jetbrains.kotlin.jvm") &&
                 project.hasPlugin("java-gradle-plugin") &&
                 project.hasPlugin("java-library") -> GradleKotlinPlugin(project)
@@ -26,5 +28,5 @@ open class ProjectType(open val project: Project) {
     }
 }
 
-fun Project.hasPlugin(value: String): Boolean = project.plugins.hasPlugin(value)
-fun identifyProjectType(project: Project) = ProjectType.projectType(project)
+fun Project.hasPlugin(value: String): Boolean = plugins.hasPlugin(value)
+fun Project.projectType(): ProjectType = ProjectType.projectType(this)

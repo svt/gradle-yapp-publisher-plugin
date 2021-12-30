@@ -1,10 +1,9 @@
 package se.svt.oss.gradle.yapp.artifact.Dokka
 
-import org.gradle.jvm.tasks.Jar
-import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaDoc
-import se.svt.oss.gradle.yapp.publishingtarget.PublishingTargetType
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 
-open class DokkaHtml:
+open class DokkaHtml :
 
     DokkaDoc() {
 
@@ -13,5 +12,10 @@ open class DokkaHtml:
         val dokkaHtml = project.tasks.getByName("dokkaHtml")
         dependsOn(dokkaHtml)
         from(dokkaHtml)
+    }
+    internal companion object {
+        internal fun doc(task: String, project: Project): TaskProvider<*> {
+            return project.tasks.register("${task}Gen", DokkaHtml::class.java)
+        }
     }
 }
