@@ -27,10 +27,10 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
 
             p.publications { publications ->
                 publications.register(publishingTargetType.name, MavenPublication::class.java) { publication ->
-                    publication.from(project.components.getByName("java"))
                     project.afterEvaluate { // These values does not seem to use the newer api, i.e Lazy properties,
                         // so we cant get rid of the afterEvalute
 
+                        softwareCompontent(publication)
                         publication.groupId = ext.mavenPublishing.groupId.get().ifEmpty {
                             project.group.toString()
                         }
@@ -110,6 +110,13 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
         }
 
         directRelease(publishingTargetType, ext, repositoryConf)
+    }
+
+    private fun softwareCompontent(publication: MavenPublication) {
+        when (val component = project.components.findByName("release")) {
+            null -> publication.from(project.components.getByName("java"))
+            else -> publication.from(component)
+        }
     }
 
     private fun directRelease(

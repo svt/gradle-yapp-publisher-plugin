@@ -1,10 +1,9 @@
 package se.svt.oss.gradle.yapp.artifact.Dokka
 
-import org.gradle.jvm.tasks.Jar
-import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaDoc
-import se.svt.oss.gradle.yapp.publishingtarget.PublishingTargetType
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 
-open class DokkaGfm:
+open class DokkaGfm :
     DokkaDoc() {
 
     init {
@@ -12,5 +11,11 @@ open class DokkaGfm:
         val dokkaGfm = project.tasks.getByName("dokkaGfm")
         dependsOn(dokkaGfm)
         from(dokkaGfm)
+    }
+
+    internal companion object {
+        internal fun doc(task: String, project: Project): TaskProvider<*> {
+            return project.tasks.register("${task}Gen", DokkaGfm::class.java)
+        }
     }
 }

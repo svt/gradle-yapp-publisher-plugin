@@ -3,44 +3,53 @@ package se.svt.oss.gradle.yapp.artifact
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaDoc
-import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaGfm
+import org.gradle.api.tasks.TaskProvider
 import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaHtml
 import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaJavaDoc
-import se.svt.oss.gradle.yapp.artifact.Dokka.DokkaJekyll
-import se.svt.oss.gradle.yapp.config.ProjectType
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.publishingtarget.PublishingTargetType
 
 data class ArtifactConfigure(
     val project: Project,
     val publishTarget: PublishingTargetType,
-    val projectType: ProjectType
 ) {
 
     fun yappExtension(): YappPublisherExtension = project.extensions.getByType(YappPublisherExtension::class.java)
 
     fun configure() {
         doc()
-        Sources(project)
+        if (project.plugins.hasPlugin("com.android.library")) {
+
+            project.afterEvaluate {
+                addArtifact(AndroidSource.source("androidSourcesGen", project))
+            }
+        } else {
+            Source(project)
+        }
     }
 
     private fun doc() {
+        /*if (project.plugins.hasPlugin("com.android.library")) {
+            project.afterEvaluate {
+                addArtifact(AndroidDoc.doc("androidDocGen", project))
+            }
+
+        } else */
         if (project.plugins.hasPlugin("org.jetbrains.dokka")) {
             if (yappExtension().dokkaPublishings.get().contains("javadoc"))
-                dokkaDoc("dokkaJavadoc", DokkaJavaDoc::class.java)
+                addArtifact(DokkaJavaDoc.doc("dokkaJavadocGen", project))
             if (yappExtension().dokkaPublishings.get().contains("html"))
-                dokkaDoc("dokkaHtml", DokkaHtml::class.java)
+                addArtifact(DokkaHtml.doc("dokkaHtmlGen", project))
             if (yappExtension().dokkaPublishings.get().contains("gfm"))
-                dokkaDoc("dokkaGfm", DokkaGfm::class.java)
-            if (yappExtension().dokkaPublishings.get().contains("jekyll"))
-                dokkaDoc("dokkaJekyll", DokkaJekyll::class.java)
+                addArtifact(DokkaHtml.doc("dokkaGfmGen", project))
+            if (yappExtension().dokkaPublishings.get().contains("jekyll")) println()
+            addArtifact(DokkaHtml.doc("dokkaJekyllGen", project))
         } else {
             JavaDoc(project)
         }
     }
 
-    private inline fun <reified T : DokkaDoc> dokkaDoc(task: String, clazz: Class<T>) {
+    private fun addArtifact(provider: TaskProvider<*>) {
 
         project.extensions.configure(PublishingExtension::class.java) { pe ->
 
@@ -49,13 +58,8 @@ data class ArtifactConfigure(
                 val p = publications.getByName(publishTarget.name) as MavenPublication
                 // p.from(project.components.getByName("java"))
 
-                val source = project.tasks.findByPath(task)
-                val d = project.tasks.register("${task}Gen", clazz)
-                p.artifact(d)
-
-                println("${task}Gen")
+                p.artifact(provider)
             }
-
         }
     }
 }

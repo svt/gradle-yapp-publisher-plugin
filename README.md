@@ -10,21 +10,22 @@
 A Gradle plugin for publishing and optionally signing JVM-based projects (currently Java/Kotlin) and libraries packages to Maven Central,
 Gradle Portal, GitHub, GitLab.
 
+
 ## Why does it exist?
 
 To make life (arguably) easier when configuring the plugins needed for these tasks.
 
 To offer a simple, flexible union interface for these tasks, regardless of publishing target.
 
+If you want a coherent configuration for multiple publishing targets this gradle plugin could be for you.
+
 
 ## Features
 
-* Maven Central Publishing
-* Gradle Portal Publishing
-* GitLab Publishing
-* GitHub Publishing
+* Maven Central, Gradle Portal, GitLab, GitHub Publishing
 * Signing
-* Choose Build file, Properties or System Environment Configuration
+* Java, Kotlin, Android Library (aar) support (release variant)
+* Build file, Properties or System Environment Configuration - or all of them
 * Publish to several targets at once
 * Configure autorelease to Maven Central
 * Dokka Publish support
@@ -350,11 +351,10 @@ In an early stage, the following features are planned, according to priority:
 
 * More tests
 * More settings can be simplified and auto set
-* More pre-configured targets. JFrog and Custom
+* More pre-configured targets. JFrog, JitPack? and Custom Maven Publishing
 * Better semi smart Plugin identification
 * Create sample configuration
-* Android Library support
-* Dokka-support
+* Empty jar publishing (sources, jar, needed for maven central)
 * Nested object model, for the few 10% that might need them
 * Support other languages than Java/Kotlin (Groovy,Scala)
 
@@ -368,6 +368,7 @@ Look att [https://github.com/gradle/gradle/issues/12394](https://github.com/grad
 * Why another publisher plugin ?
 
 At the time of starting this plugin there was none found that had all the features this one has.
+I wanted an easy way to just drop in some configurations and publish to many places. And then it grew.
 
 ## The plugin abstracts:
 
