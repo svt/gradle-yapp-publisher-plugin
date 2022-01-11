@@ -59,14 +59,19 @@ class MavenPublishingPlugin(project: Project) : BasePlugin(project) {
                                 }
 
                                 println(ext.mavenPublishing.licenseComments)
-                                developers { d ->
-                                    d.developer { dev ->
-                                        dev.apply {
-                                            id.set(ext.mavenPublishing.developerId)
-                                            name.set(ext.mavenPublishing.developerName)
-                                            organization.set(ext.mavenPublishing.organization)
-                                            organizationUrl.set(ext.mavenPublishing.organizationUrl)
-                                            email.set(ext.mavenPublishing.developerEmail)
+
+                                ext.mavenPublishing.developers.get().forEach { devList ->
+                                    developers { d ->
+
+                                        d.developer { dev ->
+
+                                            dev.apply {
+                                                id.set(devList.id)
+                                                name.set(devList.name)
+                                                organization.set(ext.mavenPublishing.organization)
+                                                organizationUrl.set(ext.mavenPublishing.organizationUrl)
+                                                email.set(devList.email)
+                                            }
                                         }
                                     }
                                 }

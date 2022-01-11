@@ -18,7 +18,7 @@ object ConfigurationData {
         version: String,
         yappConf: String = "",
         plugin1: String = "id(\"maven-publish\")\n",
-        plugin2: String = "kotlin(\"jvm\") version \"1.5.21\"",
+        plugin2: String = "kotlin(\"jvm\") version \"1.5.30\"",
         buildGradleFile: Path
     ): String {
 
@@ -46,9 +46,7 @@ object ConfigurationData {
        |yapp.mavenPublishing.licenseDistribution=property distribution
        |yapp.mavenPublishing.licenseComments=property comments
             
-       |yapp.mavenPublishing.developerId=property developerid
-       |yapp.mavenPublishing.developerName=property developername
-       |yapp.mavenPublishing.developerEmail=property developeremail
+       |yapp.mavenPublishing.developer=property developerid,property developername,property developeremail
        |yapp.mavenPublishing.organization=property developerorganization
        |yapp.mavenPublishing.organizationUrl=property developerorganizationurl
 
@@ -92,9 +90,9 @@ yapp {
         licenseDistribution.set("pld")
         licenseComments.set("plc")
 
-        developerId.set("pdi")
-        developerName.set("pdn")
-        developerEmail.set("pde")
+        
+        developers.set(listOf(Developer("pdi","pdn","pde"),Developer("pdi2","pdn2","pde2")))
+        
 
         organization.set("pdo")
         organizationUrl.set("pou")
@@ -147,9 +145,7 @@ targets.add("maven_central")
             Pair("${envPrefix}LICENSEURL", "yapp.mavenPublishing.licenseUrl"),
             Pair("${envPrefix}LICENSEDISTRIBUTION", "yapp.mavenPublishing.licenseDistribution"),
             Pair("${envPrefix}LICENSECOMMENTS", "yapp.mavenPublishing.licenseComments"),
-            Pair("${envPrefix}DEVELOPERID", "yapp.mavenPublishing.developerId"),
-            Pair("${envPrefix}DEVELOPERNAME", "yapp.mavenPublishing.developerName"),
-            Pair("${envPrefix}DEVELOPEREMAIL", "yapp.mavenPublishing.developerEmail"),
+            Pair("${envPrefix}DEVELOPER", "yapp.mavenPublishing.developerId,yapp.mavenPublishing.developerName, yapp.mavenPublishing.developerEmail"),
             Pair("${envPrefix}ORGANIZATION", "yapp.mavenPublishing.organization"),
             Pair("${envPrefix}ORGANIZATIONURL", "yapp.mavenPublishing.organizationUrl"),
             Pair("${envPrefix}SCMURL", "yapp.mavenPublishing.scmUrl"),

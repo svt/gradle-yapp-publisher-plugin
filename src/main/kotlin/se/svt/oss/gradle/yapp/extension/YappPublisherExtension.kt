@@ -5,19 +5,20 @@ package se.svt.oss.gradle.yapp.extension
 
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-open class YappPublisherExtension(
-    project: Project,
-    var signing: SigningExtension,
-    var mavenPublishing: MavenPublishingExtension,
-    var gitLab: GitLabExtension,
-    var gitHub: GitHubExtension,
-    var gradlePortalPublishing: GradlePluginPublishingExtension
-) {
+open class YappPublisherExtension @Inject constructor(project: Project, objects: ObjectFactory) :
+    PropertyHandler(project, objects, "yapp.", "YAPP_") {
 
-    // consumes `action` that for more flexible conf, see https://dzone.com/articles/the-complete-custom-gradle-plugin-building-tutoria
+    val mavenPublishing =
+        objects.newInstance(MavenPublishingExtension::class.java, "yapp.mavenPublishing.", "YAPP_MAVENPUBLISHING_")
+    val gitLab = objects.newInstance(GitLabExtension::class.java)
+    val gitHub = objects.newInstance(GitHubExtension::class.java)
+    val signing = objects.newInstance(SigningExtension::class.java)
+    val gradlePortalPublishing = objects.newInstance(GradlePluginPublishingExtension::class.java)
 
     fun mavenPublishing(action: Action<in MavenPublishingExtension>) = action.execute(mavenPublishing)
     fun gitLab(action: Action<in GitLabExtension>) = action.execute(gitLab)
@@ -26,11 +27,8 @@ open class YappPublisherExtension(
     fun gradlePortalPublishing(action: Action<in GradlePluginPublishingExtension>) =
         action.execute(gradlePortalPublishing)
 
-    val envPrefix: String = "YAPP_"
-    var propPrefix: String = "yapp."
-
-    var withoutSource: Property<Boolean> = project.propBool("withoutSource", propPrefix, envPrefix)
-    var withoutDoc: Property<Boolean> = project.propBool("withoutDoc", propPrefix, envPrefix)
-    var dokkaPublishings: ListProperty<String> = project.propList("dokkaPublishings", propPrefix, envPrefix)
-    var targets: ListProperty<String> = project.propList("targets", propPrefix, envPrefix)
+    var withoutSource: Property<Boolean> = objects.propBool("withoutSource", propPrefix, envPrefix, project = project)
+    var withoutDoc: Property<Boolean> = objects.propBool("withoutDoc", propPrefix, envPrefix, project = project)
+    var dokkaPublishings: ListProperty<String> = propertyList("dokkaPublishings") { map -> map.values.first() }
+    var targets: ListProperty<String> = propertyList("targets") { map -> map.values.first() }
 }

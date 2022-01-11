@@ -1,11 +1,17 @@
 package se.svt.oss.gradle.yapp.extension
 
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-open class MavenPublishingExtension(val project: Project) {
-    open val envPrefix: String = "YAPP_MAVENPUBLISHING_"
-    open var propPrefix: String = "yapp.mavenPublishing."
+open class MavenPublishingExtension @Inject constructor(
+    project: Project,
+    objects: ObjectFactory,
+    propPrefix: String = "yapp.mavenPublishing.",
+    envPrefix: String = "YAPP_MAVENPUBLISHING_"
+) :
+    PropertyHandler(project, objects, propPrefix, envPrefix) {
 
     var mavenCentralLegacyUrl: Property<Boolean> = propertyBool("mavenCentralLegacyUrl")
 
@@ -24,9 +30,16 @@ open class MavenPublishingExtension(val project: Project) {
         property("licenseDistribution")
     var licenseComments: Property<String> = property("licenseComments")
 
-    var developerId: Property<String> = property("developerId")
-    var developerName: Property<String> = property("developerName")
-    var developerEmail: Property<String> = property("developerEmail")
+    var developers = propertyList<Developer>("developer") { map ->
+        map.values.map {
+
+            Developer(
+                it.getOrElse(0, { "a" }),
+                it.getOrElse(1, { "b" }),
+                it.getOrElse(2, { "c" })
+            )
+        }
+    }
 
     var organization: Property<String> = property("organization")
     var organizationUrl: Property<String> = property("organizationUrl")
@@ -34,14 +47,14 @@ open class MavenPublishingExtension(val project: Project) {
     var scmUrl: Property<String> = property("scmUrl")
 
     var scmConnection: Property<String> = property("scmConnection")
-    var scmDeveloperConnection: Property<String> = property("scmDeveloperConnection",)
+    var scmDeveloperConnection: Property<String> = property("scmDeveloperConnection")
 
     open var user: Property<String> = property("user")
     open var password: Property<String> = property("password")
     open var token: Property<String> = property("token")
 
     open var directReleaseToMavenCentral: Property<Boolean> = propertyBool("directReleaseToMavenCentral")
+}
 
-    internal fun property(property: String) = project.prop(property, propPrefix, envPrefix)
-    internal fun propertyBool(property: String) = project.propBool(property, propPrefix, envPrefix)
+data class Developer(val id: String, val name: String, val email: String) { // : StringConvertable<Developer> {
 }
