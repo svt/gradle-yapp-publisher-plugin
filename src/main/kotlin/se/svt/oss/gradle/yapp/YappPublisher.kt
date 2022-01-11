@@ -7,11 +7,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import se.svt.oss.gradle.yapp.config.projectType
-import se.svt.oss.gradle.yapp.extension.GitHubExtension
-import se.svt.oss.gradle.yapp.extension.GitLabExtension
-import se.svt.oss.gradle.yapp.extension.GradlePluginPublishingExtension
-import se.svt.oss.gradle.yapp.extension.MavenPublishingExtension
-import se.svt.oss.gradle.yapp.extension.SigningExtension
 import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
 import se.svt.oss.gradle.yapp.publishingtarget.publishingTargets
 import se.svt.oss.gradle.yapp.task.CreateConfigurationTemplateTask
@@ -44,12 +39,7 @@ class YappPublisher : Plugin<Project> {
 
     private fun buildExtensions(project: Project) {
         project.extensions.create(
-            "yapp", YappPublisherExtension::class.java, project,
-            SigningExtension(project),
-            MavenPublishingExtension(project),
-            GitLabExtension(project),
-            GitHubExtension(project),
-            GradlePluginPublishingExtension(project)
+            "yapp", YappPublisherExtension::class.java, project
         )
     }
 

@@ -1,3 +1,5 @@
+import se.svt.oss.gradle.yapp.extension.Developer
+
 plugins {
     {plugin1}
     {plugin2}

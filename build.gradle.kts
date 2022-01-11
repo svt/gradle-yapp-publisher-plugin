@@ -1,6 +1,6 @@
 
 plugins {
-    `maven-publish`
+   `maven-publish`
     `java-gradle-plugin`
     signing
     idea
@@ -11,7 +11,7 @@ plugins {
     id("org.owasp.dependencycheck") version "6.5.0.1"
     id("com.gradle.plugin-publish") version "0.18.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.30"
+   // id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.33"
 }
 
 group = "se.svt.oss"
@@ -24,7 +24,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     google()
-//    maven(url="https://dl.bintray.com/kotlin/dokka")
 }
 
 dependencies {
@@ -46,8 +45,7 @@ tasks {
     }
 }
 
-
-/*pluginBundle {
+pluginBundle {
     website = "https://github.com/svt/gradle-yapp-publisher-plugin"
     vcsUrl = "https://github.com/svt/gradle-yapp-publisher-plugin.git"
     tags = listOf("maven central", "gradle portal", "publish")
@@ -62,7 +60,6 @@ gradlePlugin {
         }
     }
 }
-*/
 
 
 kotlin {

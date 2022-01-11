@@ -116,7 +116,7 @@ If you leave this empty, the plugin will make a guess based on your added plugin
 With a gradle.properties file and System.ENV
 
 ```properties
-yapp.target=gradle_portal  
+yapp.targets=gradle_portal  
 yapp.gradleplugin.id=se.svt.oss.gradle-yapp-publisher-plugin 
 yapp.gradleplugin.description=Yet another plugin that manages publishing for Gradle projects
 yapp.gradleplugin.web=https://github.com/svt/gradle-yapp-publisher-plugin
@@ -131,7 +131,7 @@ yapp.gradleplugin.displayname=Gradle Yapp Publisher Plugin
 With a gradle.properties file and System.ENV
 
 ```properties
-yapp.target=GitHub
+yapp.targets= github
 yapp.github.actor=<YOUR-GITHUB-USER>
 yapp.github.token=<YOUR-GITHUB-PAT> -# put this global gradle.properties, or use system env so you dont commit it
 yapp.github.namespace=<YOUR-GITHUB-ORGANISATION/USER>
@@ -143,6 +143,7 @@ yapp.github.reponame=<NAME-OF-REPO>
 With a gradle.properties file and System.ENV
 
 ```properties
+yapp.targets = gitlab
 yapp.gitlab.host=https://gitlab.com
 yapp.gitlab.token=<YOUR-GITLAB-TOKEN> -# put this global gradle.properties, or use system env so you dont commit it
 yapp.gitlab.tokenType=<YOUR-GITLAB-TOKEN-TYPE>
@@ -171,9 +172,8 @@ yapp {
         licenseDistribution.set("pld")
         licenseComments.set("plc")
 
-        developerId.set("pdi")
-        developerName.set("pdn")
-        developerEmail.set("pde")
+
+        developers.set(listOf(Developer("a","b","c"),Developer("d","e","f")))
 
         organization.set("pdo")
         organizationUrl.set("pou")
@@ -196,6 +196,7 @@ yapp {
 Properties file(gradle.properties) configuration 
 
 ```properties
+yapp.targets= maven_central
 yapp.mavenPublishing.name = exampleproject
 yapp.mavenPublishing.description = an pom example description
 yapp.mavenPublishing.url = https://github.com/myexamplaproject
@@ -208,9 +209,7 @@ yapp.mavenPublishing.scmUrl = https://github.com/example
 yapp.mavenPublishing.licenseName = The Apache Software License, Version 2.0
 yapp.mavenPublishing.licenseUrl = http://www.apache.org/licenses/LICENSE-2.0.txt
 
-yapp.mavenPublishing.developerId = an dev id
-yapp.mavenPublishing.developerName = an dev name
-yapp.mavenPublishing.developerEmail = my@email.com
+yapp.mavenPublishing.developer = an dev id, an dev name, my@email.com
 yapp.mavenPublishing.organization =  my org name
 yapp.mavenPublishing.organizationUrl = my org url
 

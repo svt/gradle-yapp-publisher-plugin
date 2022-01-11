@@ -54,11 +54,16 @@ data class ArtifactConfigure(
         project.extensions.configure(PublishingExtension::class.java) { pe ->
 
             pe.publications { publications ->
+                publications.forEach { project.logger.warn("PUBLICATIONS " + it.name) }
 
-                val p = publications.getByName(publishTarget.name) as MavenPublication
-                // p.from(project.components.getByName("java"))
+                try {
+                    val p = publications.getByName(publishTarget.name) as MavenPublication
+                    // p.from(project.components.getByName("java"))
+                    p.artifact(provider)
+                } catch (e: Exception) {
 
-                p.artifact(provider)
+                    publications.forEach { project.logger.warn("ERRPUBLICATIONS " + it.name) }
+                }
             }
         }
     }
