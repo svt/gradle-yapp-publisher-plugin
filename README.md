@@ -13,6 +13,11 @@ to Maven Central, Gradle Portal, GitHub, GitLab, Artifactory (basic support).
 It is working for a lot of cases but under construction there will be compatibility breakage between versions
 in the 0.x.x series - alpha.
 
+NOTE - NOTE - NOTE: 0.1.16 rewrote a lot of things, so if using an earlier version you need to change properties
+and tasks, see the following (sparse) docs.
+Please help by testing and submitting bug-reports. For bug reports it is much more chance that they will
+be fixed properly if you add examples.
+
 ## Why does it exist?
 
 To make life (well, arguably) easier when configuring the plugins needed for these tasks.

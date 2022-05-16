@@ -5,13 +5,13 @@ plugins {
     idea
     kotlin("jvm") version "1.6.21"
     id("org.jetbrains.dokka") version "1.6.21"
-    id("se.ascp.gradle.gradle-versions-filter") version "0.1.13"
+    id("se.ascp.gradle.gradle-versions-filter") version "0.1.13+"
     id("org.jmailen.kotlinter") version "3.10.0"
     id("org.owasp.dependencycheck") version "7.1.0.1"
     // id("com.jfrog.artifactory") version "4.26.1"
     // id("com.gradle.plugin-publish") version "0.18.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.15"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.15+"
 }
 
 group = "se.svt.oss"
@@ -20,7 +20,7 @@ description = "Yet another plugin that manages publishing for Gradle projects"
 
 repositories {
     gradlePluginPortal()
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
     google()
 }
