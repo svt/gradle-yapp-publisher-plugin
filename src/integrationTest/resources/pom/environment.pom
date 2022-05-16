@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!-- This module was also published with a richer model, Gradle metadata,  -->
+    <!-- which should be used instead. Do not delete the following line which  -->
+    <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+    <!-- that they should prefer consuming it instead. -->
+    <!-- do_not_remove: published-with-gradle-metadata -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>se.env</groupId>
+    <artifactId>kotlinlibrary</artifactId>
+    <version>{VERSION}</version>
+    <name>yapp.mavenPublishing.name</name>
+    <description>yapp.mavenPublishing.description</description>
+    <url>yapp.mavenPublishing.url</url>
+    <inceptionYear>yapp.mavenPublishing.inceptionYear</inceptionYear>
+    <licenses>
+        <license>
+            <name>yapp.mavenPublishing.licenseName</name>
+            <url>yapp.mavenPublishing.licenseUrl</url>
+            <distribution>yapp.mavenPublishing.licenseDistribution</distribution>
+            <comments>yapp.mavenPublishing.licenseComments</comments>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>yapp.mavenPublishing.developerId</id>
+            <name>yapp.mavenPublishing.developerName</name>
+            <email>yapp.mavenPublishing.developerEmail</email>
+            <organization>org</organization>
+            <organizationUrl>orgu</organizationUrl>
+        </developer>
+        <developer>
+            <id>yapp.mavenPublishing.developerId2</id>
+            <name>yapp.mavenPublishing.developerName2</name>
+            <email>yapp.mavenPublishing.developerEmail2</email>
+            <organization>org2</organization>
+            <organizationUrl>orgu2</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>yapp.mavenPublishing.scmConnection</connection>
+        <developerConnection>yapp.mavenPublishing.scmDeveloperConnection</developerConnection>
+        <url>yapp.mavenPublishing.scmUrl</url>
+    </scm>
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>1.5.30</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

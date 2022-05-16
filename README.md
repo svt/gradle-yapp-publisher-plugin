@@ -1,65 +1,177 @@
-[![REUSE status](https://api.reuse.software/badge/github.com/fsfe/reuse-tool)](https://api.reuse.software/info/github.com/fsfe/reuse-tool) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/svt/gradle-yapp-publisher-plugin)
+# Gradle Yapp Publisher Plugin - or Yet Another Publisher Plugin
 
-# Gradle Yapp Publisher Plugin - Yet Another Publisher Plugin
+![REUSE Compliance](https://img.shields.io/reuse/compliance/github.com/svt/gradle-yapp-publisher-plugin)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/janderssonse/gradle-yapp-publisher-plugin)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 ## What is it?
 
-A Gradle plugin for publishing releases and snapshots to Maven Central, Gradle Portal.
+A Gradle plugin for publishing and optionally signing JVM-based projects (currently Java/Kotlin) and libraries packages
+to Maven Central, Gradle Portal, GitHub, GitLab, Artifactory (basic support).
+
+It is working for a lot of cases but under construction there will be compatibility breakage between versions
+in the 0.x.x series - alpha.
+
+NOTE - NOTE - NOTE: 0.1.16 rewrote a lot of things, so if using an earlier version you need to change properties
+and tasks, see the following (sparse) docs.
+Please help by testing and submitting bug-reports. For bug reports it is much more chance that they will
+be fixed properly if you add examples.
 
 ## Why does it exist?
 
-To make life easier when configuring the plugins needed for these tasks.
-To offer a simpler interface for these tasks.
+To make life (well, arguably) easier when configuring the plugins needed for these tasks.
+
+To offer a simple, flexible union interface for these tasks, regardless of publishing target.
+
+If you want a coherent configuration for multiple publishing targets this gradle plugin could be for you.
 
 ## Features
 
-* Maven Central Publishing
-* Gradle Portal Publishing
+* Maven Central, Gradle Portal, GitLab, GitHub, Artifactory Publishing
 * Signing
-* Choose between Build file, properties or System Environment Configuration
-* Semi smart configuration
+* Java, Kotlin, Android Library (aar) support (release variant)
+* Build file, Properties or System Environment Configuration - or all of them
+* Publish to several targets at once
+* Configure autorelease to Maven Central
+* Dokka Publish support
+* Choose to publish with or without source, docs artifacts or with empty source/doc artifacts
+* Mice configuration overview and guide for creating templates
+* Semi smart configuration :)
+* ... and more
 
-## How does it work?
+### Quickstart
 
-It abstracts the following plugins and creates a simplified, coherent configuration:
+1. Add this [plugin](#plugin-addition) itself to your plugins block
 
-* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
-* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
-* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
-* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
+2. Configure the plugin, see the [examples](#examples). The examples show the most basic settings - there are lots more
+   to [configure or override if you need/want to](#configurations).
 
-and more.
+3. Run [Gradle Task](#tasks) *yappConfiguration* to view the plugins current project type and publish target
+   configuration.
 
-## Usage
+4. Run [Gradle Task](#tasks) *publishArtifactToLocalRepo* to publish your task to the local repo for verification.
 
-1. Add the plugin to your plugins block:
+5. Run [Gradle Task](#tasks) *publish* to publish your plugin.
+
+## Plugin addition
+
+Besides adding this plugin
 
 ```kotlin
 plugins {
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.0.0"
-        ...
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "x.y.z"
+    //...
 }
+```
 
-2. If you are publishing to Maven Central (Java/Kotlin Library)
-    
+You can also add one of the following basic publishing plugins as a placeholder, [Publishing Target](#publishing-target)
+
+*Publishing to Maven Central/GitLab/GitHub/Custom (Java/Kotlin Library)*
+
+```kotlin
 plugins {
     `maven-publish`
-        ...
+        //...
 }            
-If you are publishing to Gradle Portal (Gradle Plugin)
+```
 
+* Publishing to Gradle Portal (Gradle Plugin)*
+
+```kotlin
 plugins {
     `java-gradle-plugin`
-        ...
+        //...
 }
+```
 
-(A semi smart identification  will add the necessary needed plugins)
-    
-3. Configure the plugin. Example - Pom with signing
+## Tasks
 
+The plugin offers a few tasks found under "yapp publisher".
+
+* createConfigurationTemplate TO-DO
+* publishArtifact - publish the artifact to the [publishing target](#publishing-target)
+* publishArtifactToLocalRepo - publish to local repo
+* yappConfiguration - show the current configuration - i.e. type of [publishing target](#publishing-target), project
+  type and more
+
+## Publishing target
+
+A publishing target defines where to publish the project.
+
+
+Allowed target values are
+
+
+- artifactory
+- maven_central
+- maven_central_snapshot
+- gitlab
+- github
+- gradle_portal
+- custom TO-DO
+
+If you leave this empty, the plugin will make a guess based on your added plugins and versions.
+
+### In summary, The plugin needs to know about
+
+* A [Publishing Target](#publishing-target)
+* A few properties, depending on your configuration target
+* A project type (for example, a java-library)
+
+* If project type and publish target are not configured explicitly, *they are chosen on a best-effort guess*, depending
+  on you chosen plugin and version setup.
+
+## Examples
+
+*Publish to Gradle Portal*
+
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.targets=gradle_portal  
+yapp.gradleplugin.id=se.svt.oss.gradle-yapp-publisher-plugin 
+yapp.gradleplugin.description=Yet another plugin that manages publishing for Gradle projects
+yapp.gradleplugin.web=https://github.com/svt/gradle-yapp-publisher-plugin
+yapp.gradleplugin.vcs=https://github.com/svt/gradle-yapp-publisher-plugin.git
+yapp.gradleplugin.tags=maven central, gradle portal, publishing
+yapp.gradleplugin.class=se.svt.oss.gradle.yapp.YappPublisher
+yapp.gradleplugin.displayname=Gradle Yapp Publisher Plugin
+```
+
+*GitHub*
+
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.targets= github
+yapp.github.actor=<YOUR-GITHUB-USER>
+yapp.github.token=<YOUR-GITHUB-PAT> -# put this global gradle.properties, or use system env so you dont commit it
+yapp.github.namespace=<YOUR-GITHUB-ORGANISATION/USER>
+yapp.github.reponame=<NAME-OF-REPO>
+```
+
+*GitLab*
+
+With a gradle.properties file and System.ENV
+
+```properties
+yapp.targets = gitlab
+yapp.gitlab.host=https://gitlab.com
+yapp.gitlab.token=<YOUR-GITLAB-TOKEN> -# put this global gradle.properties, or use system env so you dont commit it
+yapp.gitlab.tokenType=<YOUR-GITLAB-TOKEN-TYPE>
+yapp.gitlab.endpointLevel=project
+yapp.gitlab.glProjectId=<YOUR-GITLAB-PROJECT-ID>
+```
+
+*OSSRH/Maven Central*
+
+Build file(build.gradle.kts) configuration, including signing
+
+```kotlin
 yapp {
 
-    pom {
+    mavenPublishing {
         groupId.set("$group")
         version.set("$version")
 
@@ -73,9 +185,8 @@ yapp {
         licenseDistribution.set("pld")
         licenseComments.set("plc")
 
-        developerId.set("pdi")
-        developerName.set("pdn")
-        developerEmail.set("pde")
+
+        developers.set(listOf(Developer("a","b","c"),Developer("d","e","f")))
 
         organization.set("pdo")
         organizationUrl.set("pou")
@@ -95,115 +206,70 @@ yapp {
 }
 ```
 
-Or even simpler, configure it in a properties location like gradle.properties
+Properties file(gradle.properties) configuration
 
-```
-yapp.pom.name = exampleproject
-yapp.pom.description = an pom example description
-yapp.pom.url = https://github.com/myexamplaproject
-yapp.pom.inceptionYear = 2021
+```properties
+yapp.targets= maven_central
+yapp.mavenPublishing.name = exampleproject
+yapp.mavenPublishing.description = an pom example description
+yapp.mavenPublishing.url = https://github.com/myexamplaproject
+yapp.mavenPublishing.inceptionYear = 2021
 
-yapp.pom.scmConnection = scm:git:github.com/example.git
-yapp.pom.scmDeveloperConnection = scm:git:ssh://github.com/example.git
-yapp.pom.scmUrl = https://github.com/example
+yapp.mavenPublishing.scmConnection = scm:git:github.com/example.git
+yapp.mavenPublishing.scmDeveloperConnection = scm:git:ssh://github.com/example.git
+yapp.mavenPublishing.scmUrl = https://github.com/example
 
-yapp.pom.licenseName = The Apache Software License, Version 2.0
-yapp.pom.licenseUrl = http://www.apache.org/licenses/LICENSE-2.0.txt
+yapp.mavenPublishing.licenseName = The Apache Software License, Version 2.0
+yapp.mavenPublishing.licenseUrl = http://www.apache.org/licenses/LICENSE-2.0.txt
 
-yapp.pom.developerId = an dev id
-yapp.pom.developerName = an dev name
-yapp.pom.developerEmail = my@email.com
-yapp.pom.organization =  my org name
-yapp.pom.organizationUrl = my org url
+yapp.mavenPublishing.developer = an dev id, an dev name, my@email.com
+yapp.mavenPublishing.organization =  my org name
+yapp.mavenPublishing.organizationUrl = my org url
 
 yapp.signing.enabled = false
 ```
 
-## Configuration
+## Configurations
 
-You can put your configuration in a
-
-- Build File (build.gradle.kts etc)
-- Property File (gradle.properties etc)
-- System Environment Variable
-
-Note: System Environments are always in CAPITAL, i.e YAPP_POM_ARTIFACTID, and so on.
-
-Note: Configurations are picked up in this order: Build File, Property File, System Env.
-All locations are checked so theoretically, you can spread out your properties.
-
-**POM Configuration**
-
-| yapp { pom { property } } }  | yapp.pom.property       | YAPP_POM_PROPERTY         |             |
-| ---------------------------  | ----------------------- | ------------------------- | ----------- |
-| artifactId                   | *                       | *                         |             |
-| groupId                      | *                       | *                         |             | 
-| version                      | *                       | *                         |             | 
-| name                         | *                       | *                         |             | 
-| description                  | *                       | *                         |             | 
-| url                          | *                       | *                         |             | 
-| inceptionYear                | *                       | *                         |             | 
-| licenseName                  | *                       | *                         |             | 
-| licenseUrl                   | *                       | *                         |             | 
-| licenseDistribution          | *                       | *                         |             | 
-| licenseComments              | *                       | *                         |             | 
-| developerId                  | *                       | *                         |             | 
-| developerName                | *                       | *                         |             | 
-| developerEmail               | *                       | *                         |             | 
-| organization                 | *                       | *                         |             | 
-| organizationUrl              | *                       | *                         |             | 
-| scmUrl                       | *                       | *                         |             | 
-| scmConnection                | *                       | *                         |             | 
-| scmDeveloperConnection       | *                       | *                         |             | 
-
-**Maven Central**
-
-| yapp { property }  | yapp.property     | YAPP_PROPERTY          |              |
-| --------------     | ----------------- | ---------------------- | ------------ |
-| ossrhUser          | *                 | *                      |              |
-| ossrhPassword      | *                 | *                      |              |
-
-**Signing**
-
-Note: If signing is enabled, the signing key can be either a path to an gpg-key or in text format with literal newlines
-as \n.
-See the gpg folder under the Project test resources for examples.
-
-| yapp { signing { property } } } | yapp.signing.property | YAPP_SIGNING_PROPERTY     |              |
-| ------------------------------- | ----------------------| ------------------------- | ------------ |
-| enabled                         | *                     | *                         |              |
-| signSnapshot                    | *                     | *                         |              |
-| keySecret                       | *                     | *                         |              |
-| keyId                           | *                     | *                         |              |
-| key                             | *                     | *                         |              |
-
-**Gradle Plugin and publishing**
-
-| yapp { gradleplugin { property } } } | yapp.gradleplugin.property   | YAPP_GRADLEPLUGIN_PROPERTY |             |
-| ------------------------------------ | -----------------------      | -------------------------  | ----------- |
-| web                                  | *                            | *                          |             |
-| vcs                                  | *                            | *                          |             |
-| tags                                 | *                            | *                          |             |
-| id                                   | *                            | *                          |             |
-| class                                | *                            | *                          |             |
-| description                          | *                            | *                          |             |
-| displayName                          | *                            | *                          |             |
-| key                                  | *                            | *                          |             |
-| keySecret                            | *                            | *                          |             |
+See [docs/configuration.md](docs/configuration.md)
 
 ## Future
 
-In a very early stage, the following features are planned, according to priority:
+In an early stage, the following features would be a nice roadmap:
 
-* Better semi smart Plugin identification
+* More tests
 * More settings can be simplified and auto set
-* Android Library support
-* Better Java support
-* Dokka-support
-* More tests are 
-* Nested object model, for the few 10% that might need them
-* Ability to do final release stage on maven central so one does not have to do it manually - MAYBE, on the other hand, it is a dangerous process.
-* and more
+* Better handling of multi project setup
+* More pre-configured targets. Improve the existing ones - JitPack? and Custom Maven Publishing
+* Better semi smart Plugin identification
+* Create sample configurations
+* Support other languages than Java/Kotlin (Groovy,Scala)
+* Auto add base plugins based on user publishing target choice
+
+## F.A.Q
+
+* Why are there tasks called generateMetaDataFileForPluginMavenPublication and more, all relating to "pluginMaven"
+
+It is a design choice (or a bug) from Gradle, these tasks are autogenerated for the Maven Publish plugin and can't be
+disabled. Look att [https://github.com/gradle/gradle/issues/12394](https://github.com/gradle/gradle/issues/12394)
+
+* Why another publisher plugin ?
+
+At the time of starting this plugin there was none found that had all the features this one has. I wanted an easy way to
+just drop in some configurations and publish to many places. And then it grew.
+
+* Plugin must be applied to the root project but was applied to :subproject when using directReleaseToMavenCentral
+
+This is limitations in the Nexus Gradle Plugin used <https://github.com/gradle-nexus/publish-plugin/issues/81>
+and if using this feature, the project be a root project currently.
+
+## The plugin abstracts
+
+* [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
+* [Java Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html#java_gradle_plugin)
+* [Gradle Portal Publishing Plugin](https://plugins.gradle.org/docs/publish-plugin)
+* [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/publishing_signing.html)
+* [Gradle Nexus Publish Plugin](https://github.com/gradle-nexus/publish-plugin)
 
 ## Getting help
 
@@ -211,7 +277,7 @@ If you have questions, concerns, bug reports, etc, please file an issue in this 
 
 ## Getting involved
 
-General instructions for contributing [CONTRIBUTING](docs/CONTRIBUTIONS.adoc).
+General instructions for contributing [CONTRIBUTING](docs/CONTRIBUTING.adoc).
 
 ----
 
@@ -225,4 +291,10 @@ The Gradle Yapp Publisher Plugin is released under the:
 
 ## Primary Maintainer
 
-Josef Andersson https://github.com/jandersson-svt
+Josef Andersson <https://github.com/janderssonse>
+
+## Creators
+
+Josef Andersson <https://github.com/janderssonse>
+Rickard Andersson <https://github.com/rickard-svti>
+

@@ -1,37 +1,88 @@
-// SPDX-FileCopyrightText: 2021 Sveriges Television AB
+// SPDX-FileCopyrightText: 2022 Sveriges Television AB
 //
 // SPDX-License-Identifier: Apache-2.0
+
 package se.svt.oss.gradle.yapp
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.util.VersionNumber
-import org.slf4j.LoggerFactory
+import org.gradle.util.GradleVersion
+import se.svt.oss.gradle.yapp.config.projectType
+import se.svt.oss.gradle.yapp.extension.YappPublisherExtension
+import se.svt.oss.gradle.yapp.publishingtarget.publishingTargets
+import se.svt.oss.gradle.yapp.task.CreateConfigurationTemplateTask
+import se.svt.oss.gradle.yapp.task.PublishArtifactTask
+import se.svt.oss.gradle.yapp.task.PublishArtifactToLocalRepoTask
+import se.svt.oss.gradle.yapp.task.ValidateConfigurationTask
+import se.svt.oss.gradle.yapp.task.YappConfigurationTask
 
 class YappPublisher : Plugin<Project> {
+
     companion object {
-        // Why not Kotlinglogging etc - see https://discuss.gradle.org/t/logging-in-gradle-plugin/31685/2
-        val logger = LoggerFactory.getLogger("GradleYappPublisherPlugin")
-        val MIN_GRADLE = VersionNumber.parse("6.8.0")
+        private val MIN_GRADLE: GradleVersion = GradleVersion.version("7.1")
     }
 
     override fun apply(project: Project) {
         isMinSupportedGradleVersion(project)
+        buildExtensions(project)
 
-        val extension = project.extensions.create("yapp", YappPublisherExtension::class.java, project)
-        PublishTargetConfiguration(project, extension)
+        project.afterEvaluate {
+            configurePublishingTargets(project)
+            registerTasks(project)
+
+            projectInfo(project)
+        }
     }
 
     private fun isMinSupportedGradleVersion(project: Project) {
-        if (VersionNumber.parse(project.gradle.gradleVersion) < MIN_GRADLE) {
-            error("This plugin is tested with $MIN_GRADLE and higher")
+        require(GradleVersion.version(project.gradle.gradleVersion) >= MIN_GRADLE) {
+            "This plugin is tested with $MIN_GRADLE and higher"
         }
+    }
+
+    private fun buildExtensions(project: Project) {
+        project.extensions.create(
+            "yapp", YappPublisherExtension::class.java, project
+        )
+    }
+
+    private fun configurePublishingTargets(project: Project) =
+        project.publishingTargets().forEach { it.configure() }
+
+    private fun registerTasks(
+        project: Project
+    ) {
+        project.tasks.register("yappConfiguration", YappConfigurationTask::class.java)
+
+        project.tasks.register(
+            "publishArtifactToLocalRepo",
+            PublishArtifactToLocalRepoTask::class.java
+
+        )
+        project.tasks.register(
+            "publishArtifact",
+            PublishArtifactTask::class.java
+
+        )
+        project.tasks.register(
+            "createConfigurationTemplate",
+            CreateConfigurationTemplateTask::class.java
+        )
+
+        project.tasks.register(
+            "validateConfiguration",
+            ValidateConfigurationTask::class.java
+        )
+    }
+
+    private fun projectInfo(project: Project) {
+        project.logger.info(
+            "Yapp Publisher Plugin: Name: {}, Type: {}, Target: {}",
+            project.name, project.projectType().javaClass.simpleName, project.publishingTargets().forEach { it.name() }
+        )
     }
 }
 
-/*    private fun log(message: String, filterOptions: GradleRepositoryPublisherExtension) {
-        if (filterOptions.log.get()) {
-            log.quiet(message)
-        }
-    }
-*/
+fun Project.isSnapShot(): Boolean = version.toString().contains("SNAPSHOT")
+fun Project.yappExtension(): YappPublisherExtension = project.extensions.getByType(YappPublisherExtension::class.java)
+fun Project.isRootProject(): Boolean = rootProject == project
