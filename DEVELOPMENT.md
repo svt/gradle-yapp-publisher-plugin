@@ -18,7 +18,7 @@ git clone GITURL
    this plugin is not published (in the future, we can use this plugin for this also, but for now)
 
 ```console
-./gradlew publishToMavenLocal
+./gradlew publishArtifactToLocalRepo
 ```
 
 2. Verify that gradle plugins are searched for in your local repo (besides gradlePortal). Note: Gradle demands that the
@@ -33,7 +33,6 @@ pluginManagement {
     gradlePluginPortal()
     }
 }
-rootProject.name = ...
 ```
 
 3. Add the plugin to the plugins block in the labproject/testproject build file
@@ -45,29 +44,13 @@ by uncommenting the line
 ```kotlin
 
 plugins {
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "x.x.x"
+    id("se.svt.oss.gradle-yapp-publisher") version "x.y.z"
 }
 
 
 
 ```
 
-then comment the following plugins (they will cause collision otherwise)
-
-```kotlin
-
-plugins {
-    ...
-    //'maven-publish'
-   ...
-   // id("com.gradle.plugin-publish") version "0.18.0"
-
-
-}
-
-and finally comment the pluginbundle and gradleplugin sections, you are now using yaop instead.
-
-```
 
 4. Verify install
 
@@ -80,8 +63,9 @@ Refresh your gradle and you should see tasks yapp publisher. Verify that you can
 ## Use the plugin in a test project
 
 Init a gradle project (java/kotlin) with gradle init (or use an existing).  
-Add the plugin, and repo mavenLocal() to it's build.gradle.. Configure as in the README documentation, just copy the
-basic gradle.properties maven_central or alik
+Add the plugin, and repo mavenLocal() to it's build.gradle.
+Configure as in the README documentation, just copy the
+basic gradle.properties maven_central or alike.
 
 
 

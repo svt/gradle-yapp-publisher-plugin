@@ -135,7 +135,7 @@ yapp.gradleplugin.description=Yet another plugin that manages publishing for Gra
 yapp.gradleplugin.web=https://github.com/svt/gradle-yapp-publisher-plugin
 yapp.gradleplugin.vcs=https://github.com/svt/gradle-yapp-publisher-plugin.git
 yapp.gradleplugin.tags=maven central, gradle portal, publishing
-yapp.gradleplugin.class=se.svt.oss.gradle.yapp.YappPublisher
+yapp.gradleplugin.class=YappPublisher
 yapp.gradleplugin.displayname=Gradle Yapp Publisher Plugin
 ```
 

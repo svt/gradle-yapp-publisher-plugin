@@ -11,19 +11,12 @@ plugins {
     // id("com.jfrog.artifactory") version "4.26.1"
     // id("com.gradle.plugin-publish") version "0.18.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.16"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.17"
 }
 
 group = "se.svt.oss"
 version = scmVersion.version
 description = "Yet another plugin that manages publishing for Gradle projects"
-
-repositories {
-    gradlePluginPortal()
-//    mavenLocal()
-    mavenCentral()
-    google()
-}
 
 dependencies {
     api("com.gradle.publish:plugin-publish-plugin:0.21.0")
@@ -78,11 +71,6 @@ java {
 
     // withSourcesJar()
     // withJavadocJar()
-}
-
-tasks.named<Wrapper>("wrapper") {
-    distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "7.4.2"
 }
 
 /* NOTE: The following is to separate the integrationtests and run the after regular tests
