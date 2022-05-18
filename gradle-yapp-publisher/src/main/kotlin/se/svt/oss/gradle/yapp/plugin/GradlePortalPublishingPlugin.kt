@@ -52,8 +52,7 @@ internal class GradlePortalPublishingPlugin(project: Project) : BasePlugin(proje
                         as MavenPublication
                     val pluginId = declaration.id
                     val pluginGroupId = coordinates.groupId
-
-                    val pluginArtifactId = project.name.toString()
+                    val pluginArtifactId = project.name
 
                     val pluginVersion = coordinates.version
                     val publication = p.publications.create(

@@ -3,7 +3,7 @@
 1. Clone the project
 
 ```console
-$ git clone GITURL 
+git clone GITURL 
 ```
 
 2. Verify your setup works, run the tests,
@@ -63,7 +63,7 @@ Refresh your gradle and you should see tasks yapp publisher. Verify that you can
 ## Use the plugin in a test project
 
 Init a gradle project (java/kotlin) with gradle init (or use an existing).  
-Add the plugin, and repo mavenLocal() to it's build.gradle. 
+Add the plugin, and repo mavenLocal() to it's build.gradle.
 Configure as in the README documentation, just copy the
 basic gradle.properties maven_central or alike.
 
