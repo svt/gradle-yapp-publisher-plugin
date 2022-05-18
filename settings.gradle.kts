@@ -1,9 +1,16 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-//        mavenLocal()
-        // maven(url="https://dl.bintray.com/kotlin/dokka")
     }
 }
 
 rootProject.name = "gradle-yapp-publisher-plugin"
+include("gradle-yapp-publisher")
+
+dependencyResolutionManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+    }
+}

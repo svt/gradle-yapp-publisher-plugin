@@ -9,7 +9,7 @@ import kotlin.io.path.readText
 class ConfigurationData {
 
     companion object {
-        private const val pluginName = "gradle-yapp-publisher-plugin"
+        private const val pluginName = "gradle-yapp-publisher"
 
         fun buildFileData(
             group: String,
@@ -262,9 +262,9 @@ pluginBundle {
 gradlePlugin {
     plugins {
         create("yappPlugin") {
-            id = "se.svt.oss.gradle-yapp-publisher-plugin"
+            id = "se.svt.oss.gradle-yapp-publisher"
             displayName = "Gradle Yapp Publisher Plugin"
-            implementationClass = "se.svt.oss.gradle.yapp.YappPublisher"
+            implementationClass = "YappPublisher"
             description = project.description
         }
     }

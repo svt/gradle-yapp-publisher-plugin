@@ -52,9 +52,9 @@ internal class GradlePortalPublishingPlugin(project: Project) : BasePlugin(proje
                         as MavenPublication
                     val pluginId = declaration.id
                     val pluginGroupId = coordinates.groupId
-                    val pluginArtifactId = project.rootProject.name
 
-                    println("$pluginGroupId $pluginId $pluginArtifactId")
+                    val pluginArtifactId = project.name.toString()
+
                     val pluginVersion = coordinates.version
                     val publication = p.publications.create(
                         declaration.name + "PluginMarkerMaven",
@@ -63,7 +63,7 @@ internal class GradlePortalPublishingPlugin(project: Project) : BasePlugin(proje
                     publication.isAlias = true
                     publication.artifactId = pluginId + ArtifactRepositoriesPluginResolver.PLUGIN_MARKER_SUFFIX
                     publication.groupId = pluginId
-                    println("${publication.artifactId} ${declaration.name}${declaration.displayName}")
+
                     publication.pom.withXml { xmlProvider ->
                         val root = xmlProvider.asElement()
                         val document = root.ownerDocument
