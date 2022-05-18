@@ -11,7 +11,7 @@ plugins {
     // id("com.jfrog.artifactory") version "4.26.1"
     // id("com.gradle.plugin-publish") version "0.18.0"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
-    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.16"
+    id("se.svt.oss.gradle-yapp-publisher-plugin") version "0.1.17"
 }
 
 group = "se.svt.oss"
