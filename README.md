@@ -1,3 +1,6 @@
+# UNMAINTAINED ARCHIVE
+
+_This repository is no longer maintained by SVT. If you wish to continue to develop this code yourself, we recommend you fork it._</code>
 # Gradle Yapp Publisher Plugin - or Yet Another Publisher Plugin
 
 ![REUSE Compliance](https://img.shields.io/reuse/compliance/github.com/svt/gradle-yapp-publisher-plugin)
